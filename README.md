@@ -13,4 +13,31 @@ Here is some project management stuff to do (some already done):
 | Create github repository | Paul    | Named Reusefull-react    | done |
 | - Make Rob an Admin | Paul    |     | done |
 | Invite people to slack channel | Rob    |     | in progress |
+| Add people to slack channel | Paul    |     | in progress |
+| Choose architecture | Rob    |     | React and C# Backend |
+| Document architecture | Rob    |     |  |
+| Create initial react site | Rob    |     |  |
+| Create initial C# site | Rob    |     |  |
+| Create a Project in Github | Rob    |     |  |
+| Document architecture | Rob    |     |  |
+
+# Software resources
+* https://auth0.com/docs/customize/integrations/aws/aws-api-gateway-custom-authorizers
+* https://learn.microsoft.com/en-us/visualstudio/javascript/tutorial-asp-net-core-with-react?view=vs-2022
+* borrow ideas from here: https://www.donategoodstuff.org/donate-stuff.html
+* get AI dev resources here: https://app.smartsheet.com/b/form/220ec8bd29e8439eab06191fe2e199a3
+
+# Items to add to project task list
+* Add auth0, confirm email first. 
+* Add maps
+* Add, edit org profile.
+* Add items accepted. 
+* Add "drives'.
+* Search orgs.
+* View org details.
+* Show on maps
+* Search on map within range 
+* Search special events and drives. 
+* Approve org profile.
+* Auth 0 create account.  Fill out org info. Wait for approval.
 
