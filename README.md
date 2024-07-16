@@ -44,3 +44,11 @@ Here is some project management stuff to do (some already done):
 * Approve org profile.
 * Auth 0 create account.  Fill out org info. Wait for approval.
 
+# REST Endpoints
+* List of item categories for donations
+* List of organization categories for donations
+  * https://script.googleusercontent.com/macros/echo?user_content_key=WTn3pT80r89CwfbycwGlYkFOq45BrWEtdxvDDIa6VgdpP7oF8eriXSU91KMtgKwzSPYrckuPop6YQ7bKuZmZajpkjC0p1XtBm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCswIUprwEMkmXJ24KNma3jpFSTlPcbHfPamtIbp5EnAD8LtrluZqlo8Xg7uY4vD7Xj2xXWpg4GVMpaB8IleFVxLtgLZIrtqhw&lib=MBa0ZAi4iwRAcqTZQXaoXQwwJX0hRdcSS 
+* List of organizations that match search results (do matching client side?)
+  * List of all organizations
+* Details for each organization (all organizations), including logos and link to org profile page
+  * 
