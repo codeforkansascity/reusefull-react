@@ -27,28 +27,34 @@ Here is some project management stuff to do (some already done):
 # Software resources
 * https://auth0.com/docs/customize/integrations/aws/aws-api-gateway-custom-authorizers
 * https://learn.microsoft.com/en-us/visualstudio/javascript/tutorial-asp-net-core-with-react?view=vs-2022
-* borrow ideas from here: https://www.donategoodstuff.org/donate-stuff.html
+* borrow UI ideas from here: https://www.donategoodstuff.org/donate-stuff.html
+* borrow UI ideas from here: https://recyclespot.org/ 
 * get AI dev resources here: https://app.smartsheet.com/b/form/220ec8bd29e8439eab06191fe2e199a3
 
 # Items to add to project task list
-* Add auth0, confirm email first. 
-* Add maps
-* Add, edit org profile.
-* Add items accepted. 
-* Add "drives'.
-* Search orgs.
-* View org details.
-* Show on maps
-* Search on map within range 
-* Search special events and drives. 
-* Approve org profile.
-* Auth 0 create account.  Fill out org info. Wait for approval.
+* Phase 1 (UI for public searches)
+  * Search orgs.
+  * View org details.
+  * Show on maps
+  * Search on map within range of zip code
+* Phase 2 (UI for Adding/Maintaing Organizations)
+  * Add auth0, confirm email first. 
+  * Add, edit org profile.
+  * Add items accepted. 
+  * Add "drives'.
+  * Approve org profile.
+  * Auth 0 create account.  Fill out org info. Wait for approval.
+* Phase 3 (Special events enhancements
+  * Search special events and drives. 
 
 # REST Endpoints
-* List of item categories for donations
-* List of organization categories for donations
-  * https://script.googleusercontent.com/macros/echo?user_content_key=WTn3pT80r89CwfbycwGlYkFOq45BrWEtdxvDDIa6VgdpP7oF8eriXSU91KMtgKwzSPYrckuPop6YQ7bKuZmZajpkjC0p1XtBm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCswIUprwEMkmXJ24KNma3jpFSTlPcbHfPamtIbp5EnAD8LtrluZqlo8Xg7uY4vD7Xj2xXWpg4GVMpaB8IleFVxLtgLZIrtqhw&lib=MBa0ZAi4iwRAcqTZQXaoXQwwJX0hRdcSS 
-* List of organizations that match search results (do matching client side?)
-  * List of all organizations
+* This is a REST Endpoint you can use for testing.  It returns a list of item categories for donations
+  * https://script.google.com/macros/s/AKfycbxBEYLmsjbGfwUa_ONZR67lOhdgLVHyH_7xoUhnYjRAKSNnCe3ru-ezbW1lJz9d0Wfj/exec
+* This is a REST Endpoint you can use for testing.  It returns a list of organization categories for donations
+  * https://script.google.com/macros/s/AKfycbx9_rJzrtBV7u00y3akrhY0U1xX_78RcGlZOEWGOGQhdBKSpT9gKz8IsbhADDoMRNPH/exec  
+* This is a REST Endpoint you can use for testing.  It returns a partial list of organizations
+  *  https://script.google.com/macros/s/AKfycbwppj5DOvXQ3I1_OM9Npkoh5h5GGE1evJXM8c5y_dBXb7oYkzGqg_hSqAzNAEm0QkOTxA/exec
+* Organization match search results (do matching client side?)
+* List of all organizations
 * Details for each organization (all organizations), including logos and link to org profile page
   * 
