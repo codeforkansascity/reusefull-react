@@ -33,9 +33,9 @@ Here is some project management stuff to do (some already done):
 
 # Items to add to project task list
 * Phase 1 (UI for public searches)
-  * Search orgs.
-  * View org details.
-  * Show on maps
+  * Search orgs.  A page to replace this: https://app.reusefull.org/donate 
+  * View org details.  A page to replace pages like this: https://app.reusefull.org/charity/191 
+  * Show on maps.  A page to replace this: https://app.reusefull.org/donate/results 
   * Search on map within range of zip code
 * Phase 2 (UI for Adding/Maintaing Organizations)
   * Add auth0, confirm email first. 
