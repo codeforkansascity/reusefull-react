@@ -33,6 +33,8 @@ Here is some project management stuff to do (some already done):
 
 # Items to add to project task list
 * Phase 1 (UI for public searches)
+  * CSS to match www.reusefull.org
+  * Menus to match www.reusefull.org 
   * Search orgs.  A page to replace this: https://app.reusefull.org/donate 
   * View org details.  A page to replace pages like this: https://app.reusefull.org/charity/191 
   * Show on maps.  A page to replace this: https://app.reusefull.org/donate/results 
