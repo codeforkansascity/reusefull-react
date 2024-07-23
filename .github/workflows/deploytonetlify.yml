@@ -16,7 +16,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16' # or any version you prefer
+        node-version: '18' # or any version you prefer
 
     - name: Install dependencies
       run: npm install
@@ -26,6 +26,9 @@ jobs:
     
     - name: Build project
       run: npm run build
+      
+    - name: Install Netlify CLI
+      run: npm install -g netlify-cli
 
     - name: Deploy to Netlify
       env:
