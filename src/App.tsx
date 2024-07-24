@@ -36,7 +36,7 @@ function App() {
                     </tr>
                 )}
             </tbody>
-        </table>;
+        </table><p>Just a test of autodeploy</p>;
 
     return (
         <div>
