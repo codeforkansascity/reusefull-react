@@ -33,8 +33,11 @@ jobs:
     - name: Link Netlify site
       run: netlify link --id ${{ secrets.NETLIFY_SITE_ID }}
 
+    - name: build netlify
+      run: netlify build
+
     - name: Deploy to Netlify
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: npx netlify deploy --prod --dir=build # Adjust the directory to your build output folder
+      run: npx netlify deploy --prod --dir=dist # Adjust the directory to your build output folder
