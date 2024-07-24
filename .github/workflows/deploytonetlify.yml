@@ -16,7 +16,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18' # or any version you prefer
+        node-version: '20' # or any version you prefer
 
     - name: Install dependencies
       run: npm install
@@ -37,4 +37,4 @@ jobs:
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: npx netlify deploy --prod --dir=build # Adjust the directory to your build output folder
+      run: netlify deploy --prod --dir=build # Adjust the directory to your build output folder
