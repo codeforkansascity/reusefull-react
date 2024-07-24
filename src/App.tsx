@@ -42,7 +42,7 @@ function App() {
         <div>
             <h1 id="tableLabel">Weather forecast</h1>
             <p>This component demonstrates fetching data from the server.</p>
-            <p>Just a test of autodeploy</p>
+            <p>Another test of autodeploy</p>
             {contents}
         </div>
     );
