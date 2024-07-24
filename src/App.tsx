@@ -36,12 +36,13 @@ function App() {
                     </tr>
                 )}
             </tbody>
-        </table><p>Just a test of autodeploy</p>;
+        </table>;
 
     return (
         <div>
             <h1 id="tableLabel">Weather forecast</h1>
             <p>This component demonstrates fetching data from the server.</p>
+            <p>Just a test of autodeploy</p>
             {contents}
         </div>
     );
