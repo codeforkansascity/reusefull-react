@@ -30,6 +30,7 @@ Here is some project management stuff to do (some already done):
 * borrow UI ideas from here: https://www.donategoodstuff.org/donate-stuff.html
 * borrow UI ideas from here: https://recyclespot.org/ 
 * get AI dev resources here: https://app.smartsheet.com/b/form/220ec8bd29e8439eab06191fe2e199a3
+* React client currently builds and autodeploys when code changes are checked in to: https://reusefullreact.netlify.app/
 
 # Items to add to project task list
 * Phase 1 (UI for public searches)
