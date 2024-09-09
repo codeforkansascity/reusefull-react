@@ -36,6 +36,7 @@ Here is some project management stuff to do (some already done):
 
 # Items to add to project task list
 * Phase 1 (UI for public searches)
+  * UI Changes in this Figma document: https://www.figma.com/design/4UwSNZYLCzeelnAogPnDJV/Reusefull?node-id=58-32126&node-type=frame&t=j5lRfDc0LVA4kLd7-0 
   * CSS to match www.reusefull.org
   * Menus to match www.reusefull.org 
   * Search orgs.  A page to replace this: https://app.reusefull.org/donate 
