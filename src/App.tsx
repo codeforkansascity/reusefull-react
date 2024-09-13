@@ -1,11 +1,15 @@
 
 import './App.css';
-
+import DonationForm from './DonationForm/DonationForm.tsx';
+import ItemForm from './DonationItemForm/DonationItemForm.tsx'
+import CharityForm from './DonationCharityForm/DonationCharityForm.tsx'
 function App() {
    return (
-
-        <h1>Hello World!</h1>
-
+         <>
+         <DonationForm/>
+         <ItemForm/>
+        <CharityForm/>
+        </>
    );
 }
 
