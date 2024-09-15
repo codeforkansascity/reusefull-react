@@ -13,7 +13,7 @@ type Item = {
 function charityForm () {
   const [org,setOrgs] = useState<Item[]>([]);
   const [selectedOrg, setSelectedOrgs] = useState<number[]>([]);
-  const [displayText, setDisplayText] = useState<string>("Select All")
+  //const [displayText, setDisplayText] = useState<string>("Select All")
 
   useEffect( () => {
     async function fetchData() {
