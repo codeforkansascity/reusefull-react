@@ -34,6 +34,8 @@ Here is some project management stuff to do (some already done):
 * get AI dev resources here: https://app.smartsheet.com/b/form/220ec8bd29e8439eab06191fe2e199a3
 * React client currently builds and autodeploys when code changes are checked in to: https://reusefullreact.netlify.app/
 
+# use "npm run dev" to run this locally
+
 # Items to add to project task list
 * Phase 1 (UI for public searches)
   * UI Changes in this Figma document: https://www.figma.com/design/4UwSNZYLCzeelnAogPnDJV/Reusefull?node-id=58-32126&node-type=frame&t=j5lRfDc0LVA4kLd7-0 
