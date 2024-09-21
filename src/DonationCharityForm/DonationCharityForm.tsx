@@ -19,12 +19,12 @@ function charityForm () {
     async function fetchData() {
       try {
         const response = await axios.get(
-          'https://script.googleusercontent.com/macros/echo?user_content_key=L_BJnslcNPLjr0ci1JH7QckljkitdQaJ4DU3ICri5Khzos2k1rgtSW6UrH0HPZk06VmMs4k0EtBM00QkrQx0iJv2QJtuTgvxm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCswIUprwEMkmXJ24KNma3jpFSTlPcbHfPamtIbp5EnAD8LtrluZqlo8Xg7uY4vD7Xj2xXWpg4GVMpaB8IleFVxLtgLZIrtqhw&lib=MBa0ZAi4iwRAcqTZQXaoXQwwJX0hRdcSS'
+          'https://72m57zkngqsdsomp6ameqd2c6u0wqflv.lambda-url.us-east-2.on.aws/'
         );
 
-        const fetchedItems = response.data.splice(1).map((item: any[]) => ({
-          id: item[0],
-          type: item[1]
+        const fetchedItems = response.data.splice(1).map((item: any) => ({
+          id: item.Id,
+          type: item.Type
         }));
         setOrgs(fetchedItems);
       } catch (error) {
