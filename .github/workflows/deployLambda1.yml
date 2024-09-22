@@ -23,10 +23,10 @@ jobs:
     - name: Restore dependencies
       run: |
         cd Lambdas/GetCharityTypes
-        dotnet restore
+        dotnet restore GetCharityTypes.csproj
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build GetCharityTypes.csproj --configuration Release --no-restore
     
     - name: Publish
       run: dotnet publish -c Release -o ./publish
