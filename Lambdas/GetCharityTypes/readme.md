@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AWS Lambda Custom Runtime Function Project
 
 This starter project consists of:
@@ -68,3 +69,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 ON reusefull.* 
 TO 'RDSApp'@'%';
 
+=======
+What does the build do when I create this?
+
+ 
+>>>>>>> 621aa709cc0645eb61d9df2e3b050a963cc5a8cb

@@ -22,14 +22,14 @@ jobs:
     
     - name: Restore dependencies
       run: |
-        cd GetCharityTypes
-        dotnet restore
+        cd Lambdas/GetCharityTypes
+        dotnet restore GetCharityTypes.csproj
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Lambdas/GetCharityTypes/GetCharityTypes.csproj --configuration Release --no-restore
     
     - name: Publish
-      run: dotnet publish -c Release -o ./publish
+      run: dotnet publish Lambdas/GetCharityTypes/GetCharityTypes.csproj -c Release -o ./publish
     
     - name: Package Lambda
       run: |
@@ -41,7 +41,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1  # Replace with your AWS region
+        aws-region: us-east-2  # Replace with your AWS region
     
     - name: Deploy to AWS Lambda
       run: |
