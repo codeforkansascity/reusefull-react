@@ -8,3 +8,8 @@
 /obj/Debug
 /node_modules
 node_modules/
+/Lambdas/GetCharityTypes/bin
+/Lambdas/GetCharityTypes/obj
+/Lambdas/GetCharityTypes/publish
+/Lambdas/GetCharityTypes/.vs
+/Lambdas/GetCharityTypes/.aws-sam
