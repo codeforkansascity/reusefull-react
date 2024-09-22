@@ -1,4 +1,4 @@
-# AWS Lambda Custom Runtime Function Project
+# AWS Lambda Custom Runtime Function Project 
 
 This starter project consists of:
 * Function.cs - contains a class with a Main method that starts the bootstrap, and a single function handler method
