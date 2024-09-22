@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# AWS Lambda Custom Runtime Function Project
+# AWS Lambda Custom Runtime Function Project 
 
 This starter project consists of:
 * Function.cs - contains a class with a Main method that starts the bootstrap, and a single function handler method
@@ -69,8 +68,3 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 ON reusefull.* 
 TO 'RDSApp'@'%';
 
-=======
-What does the build do when I create this?
-
- 
->>>>>>> 621aa709cc0645eb61d9df2e3b050a963cc5a8cb
