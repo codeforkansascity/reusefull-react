@@ -22,7 +22,7 @@ jobs:
     
     - name: Restore dependencies
       run: |
-        cd GetCharityTypes
+        cd Lambdas/GetCharityTypes
         dotnet restore
     
     - name: Build
