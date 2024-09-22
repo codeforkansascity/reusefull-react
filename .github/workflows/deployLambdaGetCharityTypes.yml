@@ -29,11 +29,11 @@ jobs:
       run: dotnet build Lambdas/GetCharityTypes/GetCharityTypes.csproj --configuration Release --no-restore
     
     - name: Publish
-      run: dotnet publish -c Release -o ./publish
+      run: dotnet publish Lambdas/GetCharityTypes/GetCharityTypes.csproj -c Release -o ./publish
     
     - name: Package Lambda
       run: |
-        cd publish
+        cd Lambdas/GetCharityTypes/publish
         zip -r ../lambda-package.zip .
     
     - name: Configure AWS credentials
