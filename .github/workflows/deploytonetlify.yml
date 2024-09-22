@@ -2,8 +2,8 @@ name: Deploy to Netlify
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'src/**'
 
 jobs:
   deploy:
