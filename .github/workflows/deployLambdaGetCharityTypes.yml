@@ -45,6 +45,6 @@ jobs:
     
     - name: Deploy to AWS Lambda
       run: |
-        aws lambda update-function-code --function-name your-lambda-function-name --zip-file fileb://lambda-package.zip
+        aws lambda update-function-code --function-name arn:aws:lambda:us-east-2:537766411402:function:GetCharityTypes --zip-file fileb://lambda-package.zip
       env:
         AWS_DEFAULT_REGION: us-east-2  # Replace with your AWS region
