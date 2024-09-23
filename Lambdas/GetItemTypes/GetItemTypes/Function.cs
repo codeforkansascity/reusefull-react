@@ -36,24 +36,24 @@ public class Function
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
-        List<CharityType> types = new List<CharityType>();
+        List<ItemType> types = new List<ItemType>();
         try
         {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string sql = "SELECT id, name FROM types";
+                string sql = "SELECT id, name FROM item";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            types.Add(new CharityType
+                            types.Add(new ItemType
                             {
                                 Id = reader.GetInt32("id"),
-                                Type = reader.GetString("name")
+                                Name = reader.GetString("name")
                             });
                         }
                     }
@@ -67,8 +67,8 @@ public class Function
         return JsonSerializer.Serialize(types);
     }
 }
-public class CharityType
+public class ItemType
 {
     public int Id { get; set; }
-    public string Type { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 }
