@@ -15,3 +15,4 @@ node_modules/
 /Lambdas/GetCharityTypes/.aws-sam
 /Lambdas/GetItemTypes/GetItemTypes/.vs
 /Lambdas/GetItemTypes/GetItemTypes/obj
+/Lambdas/GetCharityTypes/readme.md
