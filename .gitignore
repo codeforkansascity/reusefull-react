@@ -13,3 +13,5 @@ node_modules/
 /Lambdas/GetCharityTypes/publish
 /Lambdas/GetCharityTypes/.vs
 /Lambdas/GetCharityTypes/.aws-sam
+/Lambdas/GetItemTypes/GetItemTypes/.vs
+/Lambdas/GetItemTypes/GetItemTypes/obj
