@@ -2,9 +2,9 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
 using Amazon.RDS.Util;
 using Amazon;
+using System.Text.Json;
 namespace GetCharityTypes;
 
 public class Function
@@ -64,7 +64,7 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        return JsonConvert.SerializeObject(types);
+        return JsonSerializer.Serialize(types);
     }
 }
 public class CharityType
