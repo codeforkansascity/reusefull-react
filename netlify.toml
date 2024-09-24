@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+
+[functions]
+  directory = "functions"
+
+[context.production]
+  command = "npm run build"
+
+[build.environment]
+  IGNORE = "git diff --quiet HEAD^ HEAD src/"
