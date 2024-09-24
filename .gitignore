@@ -17,3 +17,6 @@ node_modules/
 /Lambdas/GetItemTypes/GetItemTypes/obj
 /Lambdas/GetCharityTypes/readme.md
 /Lambdas/GetItemTypes/GetItemTypes/bin/Debug/net8.0
+/Lambdas/GetItemTypes/.vs/GetItemTypes
+/Lambdas/GetItemTypes/obj
+/Lambdas/GetItemTypes/bin/Debug/net8.0
