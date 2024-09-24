@@ -29,7 +29,7 @@ jobs:
       run: dotnet build Lambdas/GetItemTypes/GetItemTypes.csproj --configuration Release --no-restore
     
     - name: Publish
-      run: dotnet publish Lambdas/GetItemTypes/GetItemTypes.csproj -c Release -o ./publish
+      run: dotnet publish Lambdas/GetItemTypes/GetItemTypes.csproj -c Release -o ./publish /p:PublishReadyToRun=true /p:PublishTrimmed=true
     
     - name: Package Lambda
       run: |
