@@ -21,3 +21,4 @@ node_modules/
 /Lambdas/GetItemTypes/obj
 /Lambdas/GetItemTypes/bin/Debug/net8.0
 /Lambdas/GetItemTypes/.vs/ProjectEvaluation
+/Lambdas/GetItemTypes/bin/Debug/net6.0
