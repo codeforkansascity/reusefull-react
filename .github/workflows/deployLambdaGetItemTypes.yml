@@ -1,0 +1,50 @@
+name: Build and Deploy .NET Core Lambda
+
+on:
+  push:
+    paths:
+      - 'Lambdas/GetItemTypes/**'
+  pull_request:
+    paths:
+      - 'Lambdas/GetItemTypes/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'  # Specify your .NET Core version
+    
+    - name: Restore dependencies
+      run: |
+        cd Lambdas/GetItemTypes
+        dotnet restore GetItemTypes.csproj
+    
+    - name: Build
+      run: dotnet build Lambdas/GetItemTypes/GetItemTypes.csproj --configuration Release --no-restore
+    
+    - name: Publish
+      run: dotnet publish Lambdas/GetItemTypes/GetItemTypes.csproj -c Release -o ./publish
+    
+    - name: Package Lambda
+      run: |
+        cd publish
+        zip -r ../lambda-package.zip .
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2  # Replace with your AWS region
+    
+    - name: Deploy to AWS Lambda
+      run: |
+        aws lambda update-function-code --function-name arn:aws:lambda:us-east-2:537766411402:function:GetItemTypes --zip-file fileb://lambda-package.zip
+      env:
+        AWS_DEFAULT_REGION: us-east-2  # Replace with your AWS region
