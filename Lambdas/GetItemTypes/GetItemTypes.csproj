@@ -11,6 +11,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <OutputType>Exe</OutputType>
     <AssemblyName>bootstrap</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.Core" Version="2.3.0" />
