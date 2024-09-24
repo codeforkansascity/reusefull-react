@@ -1,4 +1,4 @@
-name: Build and Deploy .NET Core Lambda
+name: GetItemTypes Build/Deploy Lambda
 
 on:
   push:
