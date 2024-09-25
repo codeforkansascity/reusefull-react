@@ -15,11 +15,11 @@ import './DonationItemsForm.css'; // Assuming you create a CSS file for styling
       async function fetchData() {
         try {
           const response  = await axios.get(
-            'https://script.googleusercontent.com/macros/echo?user_content_key=ydX5gydWi9L2xQBy1cPqAfvo2G4XvKjRWlGR-OXPSE3oirQwZ6uAUfkysSgTax07ktXFu9uPesC7PkLjJ_64poV_wpLu0ztEm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnGDlHvq5n_D40Y8x4mOJ1B2ULLy_b6sRcTN7cGIjX0RivU4j_0iU8FyF1VOvCUmRq1Nik-KSHOklQG3fvj277uMDK7uTYojcUg&lib=M3qiWZiUFP0JC88b7jR5VfwwJX0hRdcSS'
+            'https://qg5u2h7j555msnkinngqaw2zfm0enled.lambda-url.us-east-2.on.aws/'
           );
-          const fetchedItems = response.data.slice(1).map((item: any[]) => ({
-            id: item[0],
-            type: item[1]
+          const fetchedItems = response.data.slice(1).map((item: any) => ({
+            id: item.Id,
+            type: item.Name
           }));
           setItems(fetchedItems);
         } catch (error) {
