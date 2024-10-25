@@ -72,6 +72,7 @@ function charityForm () {
         }}>
          {selectedOrg.length === org.length ? 'Deselect All' : 'Select All'}
       </a>
+      {org.length === 0 ? ( <div class="loader"></div> ) : <></>}
       <div className="checkbox-grid">
         {org.map((org) => (
           <label key={org.id} className="checkbox-label">
