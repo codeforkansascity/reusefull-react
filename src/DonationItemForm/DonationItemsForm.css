@@ -50,6 +50,12 @@ h2 {
   margin-bottom: 10px;
   font-size: 16px;
   box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.checkbox-label:hover {
+  border-color: #1a73e8;
+  transition: 0.3s;
 }
 
 .checkbox-label input {

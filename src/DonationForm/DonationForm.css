@@ -44,6 +44,7 @@ form label {
   color: black;
   box-sizing: border-box;  /* Ensure padding doesn't affect width */
   font-family: 'DM Sans', sans-serif;  /* Apply DM Sans to labels */
+  transition: 0.3s;
 }
 
 form input[type="checkbox"],
