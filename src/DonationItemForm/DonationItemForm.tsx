@@ -62,7 +62,7 @@ import './DonationItemsForm.css'; // Assuming you create a CSS file for styling
           }}>
           Clear selections
         </a>
-        {items.length === 0 ? ( <div class="loader"></div> ) : <></>}
+        {items.length === 0 ? ( <div className="loader"></div> ) : <></>}
         <div className="checkbox-grid">
             {items.map((item) => (
               <label key={item.id} className="checkbox-label">
