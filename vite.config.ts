@@ -5,11 +5,12 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
+import type { ServerOptions } from 'vite';
 
 // Skip certificate generation in CI environment
 const isCI = !!process.env.CI;
 
-let httpsSettings = false;
+let httpsSettings: false | { key: Buffer; cert: Buffer } = false;
 
 if (!isCI) {
     const baseFolder =
@@ -62,6 +63,6 @@ export default defineConfig({
             }
         },
         port: 5173,
-        https: httpsSettings
+        https: httpsSettings as ServerOptions['https']
     }
 });
