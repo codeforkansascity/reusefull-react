@@ -49,7 +49,7 @@ function DonationForm() {
     
     </form>
     
-    <h2 className="question">Do you have any extra considerations</h2>
+    <h2 className="question">Do you have any extra considerations?</h2>
 
     <form>
       <label>

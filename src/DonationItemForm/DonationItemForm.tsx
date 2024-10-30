@@ -52,7 +52,7 @@ import './DonationItemsForm.css'; // Assuming you create a CSS file for styling
 
       <>
       <div className="form-container">
-        <h2>What kinds of items do you have to donate?</h2>
+        <h2 className="question">What kinds of items do you have to donate?</h2>
         <a 
           href="#" 
           className = "clear-selections" 

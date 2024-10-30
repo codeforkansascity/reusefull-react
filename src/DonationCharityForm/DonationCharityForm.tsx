@@ -62,7 +62,7 @@ function charityForm () {
 
     <>
     <div className="form-container">
-      <h2>What kind of organization do you want to donate to?</h2>
+      <h2 className="question">What kind of organization do you want to donate to?</h2>
       <a 
         href="#" 
         className="Add-selections" 
