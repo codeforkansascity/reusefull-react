@@ -10,5 +10,55 @@ th, td {
     padding-right: 1rem;
 }
 
+.appContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: center;
+    max-width: 1040px;
+    text-align: left;
+    justify-self: center;
+     width: 100%;
+}
 
+.contrastText {
+    color: #fff
+}
 
+.resetButton {
+    box-sizing: border-box;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    font-size: 14px;
+    padding: 0px 25px;
+    height: 40px;
+    align-self: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.resetButton:hover {
+    background-color: #fff;
+    transition: 0.3s;
+    color: #000;
+}
+
+.submitButton {
+    border-radius: 999px;
+    background: #EE6C15;
+    border-color: rgba(0, 0, 0, 0);
+    color: white;
+    height: 40px;
+    padding: 0px 35px;
+    margin: 10px 0px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.submitButton:hover {
+    background: #CF5E12;
+    transition: 0.3s;
+}
