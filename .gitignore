@@ -26,3 +26,4 @@ node_modules/
 /Lambdas/GetOrgItems/obj
 /Lambdas/GetOrgItems/publish
 /Lambdas/GetOrgItems/.vs
+/Lambdas/.vs
