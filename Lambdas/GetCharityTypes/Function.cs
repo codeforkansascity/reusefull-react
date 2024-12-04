@@ -19,11 +19,11 @@ public class Function
     private static async Task Main(string[] args)
     {
 #if DEBUG
-        //_dbUser = "";
-        //string pwd = "";
-        //_connectionString = $"Server={dbHost};Database={dbName};Port={dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
-        //var result = await FunctionHandler(null);
-        //return;
+        _dbUser = "";
+        string pwd = "";
+        _connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
+        var result = await FunctionHandler(null);
+        return;
 #endif
             string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
 

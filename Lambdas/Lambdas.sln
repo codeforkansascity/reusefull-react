@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetItemTypes", "GetItemType
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetOrgs", "GetOrgs\GetOrgs.csproj", "{2BBE5D83-76B7-48E2-AC7B-1CE32B3C1D1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetOrgItems", "GetOrgItems\GetOrgItems.csproj", "{2DC23304-8DA5-48E0-BA8A-B6509B121262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetOrgItems", "GetOrgItems\GetOrgItems.csproj", "{2DC23304-8DA5-48E0-BA8A-B6509B121262}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
