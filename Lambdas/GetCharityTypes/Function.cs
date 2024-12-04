@@ -1,11 +1,10 @@
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
-using Amazon.Lambda.Serialization.SystemTextJson;
+//using Amazon.Lambda.Serialization.SystemTextJson;
 using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
-using Newtonsoft.Json;
-using System.Text;
+using System.Text.Json;
 namespace GetCharityTypes;
 
 public class Function
@@ -32,9 +31,20 @@ public class Function
                                       $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
             Func<ILambdaContext, Task<string>> handler = FunctionHandler;
-            await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer()).Build().RunAsync();
+            await LambdaBootstrapBuilder.Create(handler, new JsonSerializer()).Build().RunAsync();
     }
+    public class JsonSerializer : ILambdaSerializer
+    {
+        public T Deserialize<T>(Stream requestStream)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<T>(requestStream);
+        }
 
+        public void Serialize<T>(T response, Stream responseStream)
+        {
+            System.Text.Json.JsonSerializer.Serialize(responseStream, response);
+        }
+    }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
@@ -78,24 +88,24 @@ public class Function
 
         return $"[{string.Join(",", jsonParts)}]";
     }
-    public string ConvertToJsonWithStringBuilder(List<CharityType> charityTypes)
-    {
-        var sb = new StringBuilder();
-        sb.Append("[");
+    //public string ConvertToJsonWithStringBuilder(List<CharityType> charityTypes)
+    //{
+    //    var sb = new StringBuilder();
+    //    sb.Append("[");
 
-        for (int i = 0; i < charityTypes.Count; i++)
-        {
-            sb.Append($"{{\"Id\":{charityTypes[i].Id},\"Type\":\"{charityTypes[i].Type}\"}}");
+    //    for (int i = 0; i < charityTypes.Count; i++)
+    //    {
+    //        sb.Append($"{{\"Id\":{charityTypes[i].Id},\"Type\":\"{charityTypes[i].Type}\"}}");
 
-            if (i < charityTypes.Count - 1)
-            {
-                sb.Append(",");
-            }
-        }
+    //        if (i < charityTypes.Count - 1)
+    //        {
+    //            sb.Append(",");
+    //        }
+    //    }
 
-        sb.Append("]");
-        return sb.ToString();
-    }
+    //    sb.Append("]");
+    //    return sb.ToString();
+    //}
 }
 public class CharityType
 {
