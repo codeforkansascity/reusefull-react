@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 namespace GetCharityTypes;
 
 public class Function
@@ -64,7 +65,11 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        return JsonSerializer.Serialize(types);
+        var options = new JsonSerializerOptions
+        {
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+        };
+        return JsonSerializer.Serialize(types, options);
     }
 }
 public class CharityType
