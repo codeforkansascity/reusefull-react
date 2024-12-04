@@ -14,11 +14,11 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.Core" Version="2.3.0" />
-    <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.11.0" />
-    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.3" />
-    <PackageReference Include="AWSSDK.RDS" Version="3.7.402.3" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.5.0" />
+    <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.12.1" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.4" />
+    <PackageReference Include="AWSSDK.RDS" Version="3.7.409.1" />
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
-    <PackageReference Include="MySql.Data" Version="9.0.0" />
+    <PackageReference Include="MySql.Data" Version="9.1.0" />
   </ItemGroup>
 </Project>
