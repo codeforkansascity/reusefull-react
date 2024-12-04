@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
 using Newtonsoft.Json;
+using System.Text;
 namespace GetCharityTypes;
 
 public class Function
@@ -65,8 +66,35 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        string json = JsonConvert.SerializeObject(types);
+        //string json = JsonConvert.SerializeObject(types);
+        string json = ConvertToJson(types);
         return json;
+    }
+    public static string ConvertToJson(List<CharityType> charityTypes)
+    {
+        // Manually build JSON string
+        var jsonParts = charityTypes.Select(charity =>
+            $"{{\"Id\":{charity.Id},\"Type\":\"{charity.Type}\"}}");
+
+        return $"[{string.Join(",", jsonParts)}]";
+    }
+    public string ConvertToJsonWithStringBuilder(List<CharityType> charityTypes)
+    {
+        var sb = new StringBuilder();
+        sb.Append("[");
+
+        for (int i = 0; i < charityTypes.Count; i++)
+        {
+            sb.Append($"{{\"Id\":{charityTypes[i].Id},\"Type\":\"{charityTypes[i].Type}\"}}");
+
+            if (i < charityTypes.Count - 1)
+            {
+                sb.Append(",");
+            }
+        }
+
+        sb.Append("]");
+        return sb.ToString();
     }
 }
 public class CharityType
