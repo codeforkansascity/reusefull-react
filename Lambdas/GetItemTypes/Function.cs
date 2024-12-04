@@ -2,17 +2,17 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using MySql.Data.MySqlClient;
-using System.Text.Json;
 using Amazon.RDS.Util;
 using Amazon;
+using System.Text.Json;
 namespace GetItemTypes;
 
 public class Function
 {
     static string _dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "reusefull.cq0mnx0ystdx.us-east-2.rds.amazonaws.com";
     static string _dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "reusefull";
-    static int _dbPort = int.Parse(Environment.GetEnvironmentVariable("DB_PORT") ?? "3306");
-    static RegionEndpoint _dbRegion = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("DB_REGION") ?? "us-east-2");
+    static int _dbPort = 3306; // int.Parse(Environment.GetEnvironmentVariable("DB_PORT") ?? "3306");
+    static RegionEndpoint _dbRegion = RegionEndpoint.USEast2; // RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("DB_REGION") ?? "us-east-2");
     static string _dbUser = "reusefullrds";
     private static string _connectionString = string.Empty;
 
@@ -21,6 +21,7 @@ public class Function
 #if DEBUG
         _dbUser = "";
         string pwd = "";
+
         _connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
         var result = await FunctionHandler(null);
         return;
