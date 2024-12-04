@@ -67,7 +67,7 @@ public class Function
         }
         var options = new JsonSerializerOptions
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+            TypeInfoResolver = null // Enables reflection-based serialization
         };
         return JsonSerializer.Serialize(types, options);
     }
