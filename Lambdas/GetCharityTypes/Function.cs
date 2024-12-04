@@ -5,7 +5,9 @@ using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Nodes;
 namespace GetCharityTypes;
 
 public class Function
@@ -34,6 +36,7 @@ public class Function
             Func<ILambdaContext, Task<string>> handler = FunctionHandler;
             await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer()).Build().RunAsync();
     }
+
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
@@ -65,15 +68,25 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        var options = new JsonSerializerOptions
-        {
-            TypeInfoResolver = null // Enables reflection-based serialization
-        };
-        return JsonSerializer.Serialize(types, options);
+        var jsonNode = JsonNode.Parse(JsonSerializer.Serialize(types));
+        string json = jsonNode.ToJsonString();
+        return json;
     }
 }
-public class CharityType
+[JsonSourceGenerationOptions(
+    WriteIndented = true,
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    GenerationMode = JsonSourceGenerationMode.Serialization)]
+[JsonSerializable(typeof(CharityType))]
+public class CharityType //: JsonSerializerContext
 {
     public int Id { get; set; }
     public string Type { get; set; } = string.Empty;
+
+    //protected override JsonSerializerOptions? GeneratedSerializerOptions => throw new NotImplementedException();
+
+    //public override JsonTypeInfo? GetTypeInfo(Type type)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
