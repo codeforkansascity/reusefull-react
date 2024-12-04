@@ -21,6 +21,7 @@ public class Function
 #if DEBUG
         _dbUser = "";
         string pwd = "";
+
         _connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
         var result = await FunctionHandler(null);
         return;
