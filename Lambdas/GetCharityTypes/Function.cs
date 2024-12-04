@@ -4,10 +4,7 @@ using Amazon.Lambda.Serialization.SystemTextJson;
 using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
 namespace GetCharityTypes;
 
 public class Function
@@ -68,25 +65,12 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        var jsonNode = JsonNode.Parse(JsonSerializer.Serialize(types));
-        string json = jsonNode.ToJsonString();
+        string json = JsonConvert.SerializeObject(types);
         return json;
     }
 }
-[JsonSourceGenerationOptions(
-    WriteIndented = true,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    GenerationMode = JsonSourceGenerationMode.Serialization)]
-[JsonSerializable(typeof(CharityType))]
-public class CharityType //: JsonSerializerContext
+public class CharityType
 {
     public int Id { get; set; }
     public string Type { get; set; } = string.Empty;
-
-    //protected override JsonSerializerOptions? GeneratedSerializerOptions => throw new NotImplementedException();
-
-    //public override JsonTypeInfo? GetTypeInfo(Type type)
-    //{
-    //    throw new NotImplementedException();
-    //}
 }
