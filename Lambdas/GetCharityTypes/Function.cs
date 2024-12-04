@@ -4,7 +4,6 @@ using Amazon.Lambda.RuntimeSupport;
 using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
-using System.Text.Json;
 namespace GetCharityTypes;
 
 public class Function
@@ -33,19 +32,6 @@ public class Function
             Func<ILambdaContext, Task<string>> handler = FunctionHandler;
             await LambdaBootstrapBuilder.Create(handler, new JsonSerializer()).Build().RunAsync();
     }
-    public class JsonSerializer : ILambdaSerializer
-    {
-        public T Deserialize<T>(Stream requestStream)
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<T>(requestStream);
-        }
-
-        public void Serialize<T>(T response, Stream responseStream)
-        {
-            System.Text.Json.JsonSerializer.Serialize(responseStream, response);
-        }
-    }
-
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
         List<CharityType> types = new List<CharityType>();
@@ -88,6 +74,17 @@ public class Function
 
         return $"[{string.Join(",", jsonParts)}]";
     }
+    public class JsonSerializer : ILambdaSerializer
+    {
+        public T Deserialize<T>(Stream requestStream) => System.Text.Json.JsonSerializer.Deserialize<T>(requestStream);
+
+        public void Serialize<T>(T response, Stream responseStream)
+        {
+            System.Text.Json.JsonSerializer.Serialize(responseStream, response);
+        }
+    }
+
+
     //public string ConvertToJsonWithStringBuilder(List<CharityType> charityTypes)
     //{
     //    var sb = new StringBuilder();
