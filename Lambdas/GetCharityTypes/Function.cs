@@ -1,9 +1,13 @@
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
-//using Amazon.Lambda.Serialization.SystemTextJson;
+using Amazon.Lambda.Serialization.SystemTextJson;
 using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Serialization;
+using Amazon.Lambda.APIGatewayEvents;
 namespace GetCharityTypes;
 
 public class Function
@@ -24,14 +28,15 @@ public class Function
         var result = await FunctionHandler(null);
         return;
 #endif
-            string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
+        string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
 
-            _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
-                                      $"User={_dbUser};Password={authToken};SSL Mode=Required;";
+        _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
+                                  $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
-            Func<ILambdaContext, Task<string>> handler = FunctionHandler;
-            await LambdaBootstrapBuilder.Create(handler, new JsonSerializer()).Build().RunAsync();
+        Func<ILambdaContext, Task<string>> handler = FunctionHandler;
+        await LambdaBootstrapBuilder.Create(handler, new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()).Build().RunAsync();
     }
+
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
         List<CharityType> types = new List<CharityType>();
@@ -62,47 +67,19 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        //string json = JsonConvert.SerializeObject(types);
-        string json = ConvertToJson(types);
-        return json;
-    }
-    public static string ConvertToJson(List<CharityType> charityTypes)
-    {
-        // Manually build JSON string
-        var jsonParts = charityTypes.Select(charity =>
-            $"{{\"Id\":{charity.Id},\"Type\":\"{charity.Type}\"}}");
-
-        return $"[{string.Join(",", jsonParts)}]";
-    }
-    public class JsonSerializer : ILambdaSerializer
-    {
-        public T Deserialize<T>(Stream requestStream) => System.Text.Json.JsonSerializer.Deserialize<T>(requestStream);
-
-        public void Serialize<T>(T response, Stream responseStream)
+        var options = new JsonSerializerOptions
         {
-            System.Text.Json.JsonSerializer.Serialize(responseStream, response);
-        }
+            TypeInfoResolver = null // Enables reflection-based serialization
+        };
+        return JsonSerializer.Serialize(types, options);
     }
+}
+[JsonSerializable(typeof(APIGatewayProxyRequest))]
+[JsonSerializable(typeof(APIGatewayProxyResponse))]
+[JsonSerializable(typeof(CharityType))]
+public partial class CustomSerializer : JsonSerializerContext
+{
 
-
-    //public string ConvertToJsonWithStringBuilder(List<CharityType> charityTypes)
-    //{
-    //    var sb = new StringBuilder();
-    //    sb.Append("[");
-
-    //    for (int i = 0; i < charityTypes.Count; i++)
-    //    {
-    //        sb.Append($"{{\"Id\":{charityTypes[i].Id},\"Type\":\"{charityTypes[i].Type}\"}}");
-
-    //        if (i < charityTypes.Count - 1)
-    //        {
-    //            sb.Append(",");
-    //        }
-    //    }
-
-    //    sb.Append("]");
-    //    return sb.ToString();
-    //}
 }
 public class CharityType
 {
