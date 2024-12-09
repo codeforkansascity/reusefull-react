@@ -34,9 +34,11 @@ public class Function
         _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                   $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
+        Func<ILambdaContext, Task<string>> handler = FunctionHandler;
+
         // Use the source generator serializer
         await LambdaBootstrapBuilder.Create(
-            FunctionHandler,
+            handler,
             new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
         ).Build().RunAsync();
     }
