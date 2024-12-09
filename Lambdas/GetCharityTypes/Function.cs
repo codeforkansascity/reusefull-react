@@ -72,7 +72,7 @@ public class Function
         }
 
         // Use the source generator serialization
-        return JsonSerializer.Serialize(types, CustomSerializerContext.Default.ListCharityType);
+        return JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
     }
 }
 
