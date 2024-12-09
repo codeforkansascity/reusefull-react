@@ -5,7 +5,6 @@ using MySql.Data.MySqlClient;
 using Amazon.RDS.Util;
 using Amazon;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 using Amazon.Lambda.APIGatewayEvents;
 
@@ -34,13 +33,17 @@ public class Function
         _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                   $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
-        Func<ILambdaContext, Task<string>> handler = FunctionHandler;
 
-        // Use the source generator serializer
+        Func<ILambdaContext, Task<string>> handler = async (context) =>
+        {
+            return await FunctionHandler(context);
+        };
+
         await LambdaBootstrapBuilder.Create(
             handler,
             new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
         ).Build().RunAsync();
+
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
@@ -85,12 +88,6 @@ public class Function
 public partial class CustomSerializer : JsonSerializerContext
 {
 }
-
-//[JsonSerializable(typeof(List<CharityType>))]
-//[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
-//public partial class CustomSerializerContext : JsonSerializerContext
-//{
-//}
 
 public class CharityType
 {
