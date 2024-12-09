@@ -39,10 +39,10 @@ public class Function
             return await FunctionHandler(context);
         };
 
-        await LambdaBootstrapBuilder.Create(
-            handler,
-            new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
-        ).Build().RunAsync();
+        //await LambdaBootstrapBuilder.Create(
+        //    handler,
+        //    new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
+        //).Build().RunAsync();
 
     }
 
