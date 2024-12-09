@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 using Amazon.Lambda.APIGatewayEvents;
+
 namespace GetCharityTypes;
 
 public class Function
@@ -33,8 +34,11 @@ public class Function
         _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                   $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
-        Func<ILambdaContext, Task<string>> handler = FunctionHandler;
-        await LambdaBootstrapBuilder.Create(handler, new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()).Build().RunAsync();
+        // Use the source generator serializer
+        await LambdaBootstrapBuilder.Create(
+            FunctionHandler,
+            new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
+        ).Build().RunAsync();
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
@@ -45,7 +49,6 @@ public class Function
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-
                 string sql = "SELECT id, name FROM types";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
@@ -67,20 +70,26 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        var options = new JsonSerializerOptions
-        {
-            TypeInfoResolver = null // Enables reflection-based serialization
-        };
-        return JsonSerializer.Serialize(types, options);
+
+        // Use the source generator serialization
+        return JsonSerializer.Serialize(types, CustomSerializerContext.Default.ListCharityType);
     }
 }
+
 [JsonSerializable(typeof(APIGatewayProxyRequest))]
 [JsonSerializable(typeof(APIGatewayProxyResponse))]
 [JsonSerializable(typeof(CharityType))]
+[JsonSerializable(typeof(List<CharityType>))]
 public partial class CustomSerializer : JsonSerializerContext
 {
-
 }
+
+//[JsonSerializable(typeof(List<CharityType>))]
+//[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+//public partial class CustomSerializerContext : JsonSerializerContext
+//{
+//}
+
 public class CharityType
 {
     public int Id { get; set; }
