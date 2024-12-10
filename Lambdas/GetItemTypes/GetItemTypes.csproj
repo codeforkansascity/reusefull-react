@@ -19,6 +19,6 @@
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.4" />
     <PackageReference Include="AWSSDK.RDS" Version="3.7.409.1" />
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
-    <PackageReference Include="MySql.Data" Version="9.1.0" />
+    <PackageReference Include="MySqlConnector" Version="2.4.0" />
   </ItemGroup>
 </Project>
