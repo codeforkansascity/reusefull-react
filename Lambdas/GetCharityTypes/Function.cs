@@ -1,12 +1,12 @@
+using Amazon;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.RDS.Util;
-using Amazon;
+using MySqlConnector;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Amazon.Lambda.APIGatewayEvents;
-using MySqlConnector;
 
 namespace GetCharityTypes;
 
@@ -33,7 +33,6 @@ public class Function
         _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                   $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
-
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -43,7 +42,6 @@ public class Function
             handler,
             new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
         ).Build().RunAsync();
-
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
@@ -76,13 +74,9 @@ public class Function
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
 
-        // Log the serialized output
         string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
-        LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
-
+        //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
-        // Use the source generator serialization
-        //return JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
     }
 }
 

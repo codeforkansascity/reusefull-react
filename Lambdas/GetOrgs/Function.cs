@@ -1,11 +1,14 @@
+using Amazon;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
-using System.Text.Json;
 using Amazon.RDS.Util;
-using Amazon;
 using MySqlConnector;
-namespace GetItemTypes;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace GetOrgs;
 
 public class Function
 {
@@ -30,8 +33,15 @@ public class Function
         _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                   $"User={_dbUser};Password={authToken};SSL Mode=Required;";
 
-        Func<ILambdaContext, Task<string>> handler = FunctionHandler;
-        await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer()).Build().RunAsync();
+        Func<ILambdaContext, Task<string>> handler = async (context) =>
+        {
+            return await FunctionHandler(context);
+        };
+
+        await LambdaBootstrapBuilder.Create(
+            handler,
+            new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
+        ).Build().RunAsync();
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
@@ -64,9 +74,20 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        return JsonSerializer.Serialize(types);
+        string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListItemType);
+        //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
+        return serializedTypes;
     }
 }
+
+[JsonSerializable(typeof(APIGatewayProxyRequest))]
+[JsonSerializable(typeof(APIGatewayProxyResponse))]
+[JsonSerializable(typeof(ItemType))]
+[JsonSerializable(typeof(List<ItemType>))]
+public partial class CustomSerializer : JsonSerializerContext
+{
+}
+
 public class ItemType
 {
     public int Id { get; set; }
