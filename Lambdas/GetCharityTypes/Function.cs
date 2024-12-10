@@ -39,10 +39,10 @@ public class Function
             return await FunctionHandler(context);
         };
 
-        //await LambdaBootstrapBuilder.Create(
-        //    handler,
-        //    new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
-        //).Build().RunAsync();
+        await LambdaBootstrapBuilder.Create(
+            handler,
+            new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
+        ).Build().RunAsync();
 
     }
 
@@ -76,8 +76,13 @@ public class Function
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
 
+        // Log the serialized output
+        string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
+        LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
+
+        return serializedTypes;
         // Use the source generator serialization
-        return JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
+        //return JsonSerializer.Serialize(types, CustomSerializer.Default.ListCharityType);
     }
 }
 
