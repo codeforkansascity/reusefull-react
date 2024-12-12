@@ -71,7 +71,7 @@ public class Function
                     }
                 }
             }
-        }
+        } 
         catch (Exception ex)
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
