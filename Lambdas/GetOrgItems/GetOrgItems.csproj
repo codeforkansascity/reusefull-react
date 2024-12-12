@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AWSProjectType>Lambda</AWSProjectType>
     <OutputType>Exe</OutputType>
+    <AssemblyName>bootstrap</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
