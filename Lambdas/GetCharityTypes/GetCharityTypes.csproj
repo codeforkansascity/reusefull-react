@@ -14,6 +14,7 @@
 		does not have any unattended consequences.-->
     
 	<PublishTrimmed>true</PublishTrimmed>
+    <InvariantGlobalization>true</InvariantGlobalization>
 <TrimMode>link</TrimMode>
     <!-- Generate ready to run images during publishing to improve cold start time. -->
     <PublishReadyToRun>true</PublishReadyToRun>

@@ -7,6 +7,7 @@
     <AWSProjectType>Lambda</AWSProjectType>
     <OutputType>Exe</OutputType>
     <AssemblyName>bootstrap</AssemblyName>
+	  <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
