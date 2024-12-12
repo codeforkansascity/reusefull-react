@@ -12,5 +12,17 @@
   "function-runtime": "dotnet8",
   "function-memory-size": 512,
   "function-timeout": 30,
-  "function-handler": "bootstrap"
+  "function-handler": "bootstrap",
+  "msbuild-parameters": "--self-contained true",
+  "framework": "dotnet8",
+  "function-name": "GetOrgItems",
+  "package-type": "Zip",
+  "function-role": "arn:aws:iam::537766411402:role/2024LambdasToCallRDS",
+  "function-subnets": "",
+  "function-security-groups": "",
+  "tracing-mode": "PassThrough",
+  "environment-variables": "",
+  "image-tag": "",
+  "function-description": ""
+
 }
