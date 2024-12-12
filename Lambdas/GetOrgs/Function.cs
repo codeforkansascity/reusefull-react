@@ -46,7 +46,7 @@ public class Function
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
-        List<ItemType> types = new List<ItemType>();
+        List<OrgData> types = new List<OrgData>();
         try
         {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
@@ -60,10 +60,28 @@ public class Function
                     {
                         while (await reader.ReadAsync())
                         {
-                            types.Add(new ItemType
+                            types.Add(new OrgData
                             {
                                 Id = reader.GetInt32("id"),
-                                Name = reader.GetString("name")
+                                Name = reader.GetString("name"),
+                                Address = reader.GetString("address"),
+                                ZipCode = reader.GetString("zip_code"),
+                                City = reader.GetString("city"),
+                                ContactName = reader.GetString("contact_name"),
+                                Description = reader.GetString("description"),
+                                Dropoff = reader.GetBoolean("dropoff"),
+                                Email = reader.GetString("email"), Faith = reader.GetBoolean("faith"),
+                                GoodItems = reader.GetBoolean("good_items"),
+                                Lat = reader.GetDouble("lat"),
+                                LinkVolunteer = reader.GetString("link_volunteer"),
+                                LinkWebsite = reader.GetString("link_website"),
+                                LinkWishlist = reader.GetString("link_wishlist"), Lng = reader.GetDouble("lng"),
+                                LogoUrl = reader.GetString("logo_url"),
+                                Mission = reader.GetString("mission"),
+                                NewItems = reader.GetBoolean("new_items"),
+                                Phone = reader.GetString("phone"), Pickup = reader.GetBoolean("pickup"),
+                                Resell = reader.GetBoolean("resell"),
+                                State = reader.GetString("state")
                             });
                         }
                     }
@@ -74,7 +92,7 @@ public class Function
         {
             Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
         }
-        string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListItemType);
+        string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListOrgData);
         //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
     }
@@ -82,14 +100,35 @@ public class Function
 
 [JsonSerializable(typeof(APIGatewayProxyRequest))]
 [JsonSerializable(typeof(APIGatewayProxyResponse))]
-[JsonSerializable(typeof(ItemType))]
-[JsonSerializable(typeof(List<ItemType>))]
+[JsonSerializable(typeof(OrgData))]
+[JsonSerializable(typeof(List<OrgData>))]
 public partial class CustomSerializer : JsonSerializerContext
 {
 }
 
-public class ItemType
+public class OrgData
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-}
+    public string Address { get; set; } = string.Empty;
+    public string ZipCode { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string ContactName { get; set; } = string.Empty;
+    public string Mission { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string LinkVolunteer { get; set; } = string.Empty;
+    public string LinkWebsite { get; set; } = string.Empty;
+    public string LinkWishlist { get; set; } = string.Empty;
+    public bool Pickup { get; set; }
+    public bool Dropoff { get; set; }
+    public bool Resell { get; set; }
+    public bool Faith { get; set; }
+    public bool GoodItems { get; set; }
+    public bool NewItems { get; set; }
+    public string LogoUrl { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public double Lat { get; set; }
+    public double Lng { get; set; }
+}   
