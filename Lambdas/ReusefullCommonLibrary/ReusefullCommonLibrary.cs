@@ -1,12 +1,5 @@
 ﻿using Amazon;
-using Amazon.Lambda.APIGatewayEvents;
-using Amazon.Lambda.Core;
-using Amazon.Lambda.RuntimeSupport;
-using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.RDS.Util;
-using MySqlConnector;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace ReusefullCommonLibrary
 {
@@ -17,24 +10,6 @@ namespace ReusefullCommonLibrary
         static int _dbPort = int.Parse(Environment.GetEnvironmentVariable("DB_PORT") ?? "3306");
         static RegionEndpoint _dbRegion = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("DB_REGION") ?? "us-east-2");
         static string _dbUser = "reusefullrds";
-
-        public static async Task<MySqlDataReader> GetData(string sql)
-        {
-            string connectionString = GetConnectionString();
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
-                {
-                    using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
-                    {
-                        return reader;
-                    }
-                }
-            }
-            return null;
-        }
 
         public static string GetConnectionString()
         {
