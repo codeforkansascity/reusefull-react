@@ -1,9 +1,8 @@
-using Amazon;
+// Ignore Spelling: Serializer
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
-using Amazon.RDS.Util;
 using MySqlConnector;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,27 +11,9 @@ namespace GetItemTypes;
 
 public class Function
 {
-    static string _dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "reusefull.cq0mnx0ystdx.us-east-2.rds.amazonaws.com";
-    static string _dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "reusefull";
-    static int _dbPort = int.Parse(Environment.GetEnvironmentVariable("DB_PORT") ?? "3306");
-    static RegionEndpoint _dbRegion = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("DB_REGION") ?? "us-east-2");
-    static string _dbUser = "reusefullrds";
-    private static string _connectionString = string.Empty;
 
     private static async Task Main(string[] args)
     {
-#if DEBUG
-        _dbUser = "";
-        string pwd = "";
-        _connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
-        var result = await FunctionHandler(null);
-        return;
-#endif
-        string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
-
-        _connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
-                                  $"User={_dbUser};Password={authToken};SSL Mode=Required;";
-
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -40,16 +21,17 @@ public class Function
 
         await LambdaBootstrapBuilder.Create(
             handler,
-            new SourceGeneratorLambdaJsonSerializer<CustomSerializer>()
+            new SourceGeneratorLambdaJsonSerializer<ItemTypeSerializer>()
         ).Build().RunAsync();
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
     {
+        string connectionString = ReusefullCommonLibrary.DatabaseHelper.GetConnectionString();
         List<ItemType> types = new List<ItemType>();
         try
         {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
 
@@ -72,9 +54,9 @@ public class Function
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"connstring={_connectionString} and error: {ex.Message}");
+            Console.WriteLine($"connstring={connectionString} and error: {ex.Message}");
         }
-        string serializedTypes = JsonSerializer.Serialize(types, CustomSerializer.Default.ListItemType);
+        string serializedTypes = JsonSerializer.Serialize(types, ItemTypeSerializer.Default.ListItemType);
         //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
     }
@@ -83,7 +65,7 @@ public class Function
 [JsonSerializable(typeof(APIGatewayProxyResponse))]
 [JsonSerializable(typeof(ItemType))]
 [JsonSerializable(typeof(List<ItemType>))]
-public partial class CustomSerializer : JsonSerializerContext
+public partial class ItemTypeSerializer : JsonSerializerContext
 {
 }
 
