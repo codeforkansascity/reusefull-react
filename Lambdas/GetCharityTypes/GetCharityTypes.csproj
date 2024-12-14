@@ -35,4 +35,7 @@
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReusefullCommonLibrary\ReusefullCommonLibrary.csproj" />
+  </ItemGroup>
 </Project>

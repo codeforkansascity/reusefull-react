@@ -27,3 +27,5 @@ node_modules/
 /Lambdas/GetOrgItems/publish
 /Lambdas/GetOrgItems/.vs
 /Lambdas/.vs
+/Lambdas/ReusefullCommonLibrary/bin/Debug/net8.0
+/Lambdas/ReusefullCommonLibrary/obj
