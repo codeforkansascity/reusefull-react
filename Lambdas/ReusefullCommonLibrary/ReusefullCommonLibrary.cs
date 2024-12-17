@@ -21,13 +21,13 @@ namespace ReusefullCommonLibrary
             pwd = "";
             connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
             return connectionString;
+#endif
 
             string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
 
             connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                       $"User={_dbUser};Password={authToken};SSL Mode=Required;";
             return connectionString;
-#endif
         }
         public static Int32 SafeGetInt32FromDB(MySqlDataReader reader, string columnName)
         {

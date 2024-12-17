@@ -13,10 +13,10 @@ public class Function
 {
     private static async Task Main(string[] args)
     {
-//#if DEBUG
-//        var result = await FunctionHandler(null);
-//        return;
-//#endif
+#if DEBUG
+        var result = await FunctionHandler(null);
+        return;
+#endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
