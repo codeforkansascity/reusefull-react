@@ -15,7 +15,7 @@ public class Function
     {
 #if DEBUG
         var result = await FunctionHandler(null);
-        return;
+        return; 
 #endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
