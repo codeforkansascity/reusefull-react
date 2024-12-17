@@ -13,6 +13,10 @@ public class Function
 {
     private static async Task Main(string[] args)
     {
+#if DEBUG
+        var result = await FunctionHandler(null);
+        return;
+#endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -45,8 +49,8 @@ public class Function
                             {
                                 CharityName = reader.GetString("CharityName"),
                                 ItemName = reader.GetString("ItemName"),
-                                CharityId = reader.GetInt32("CharityId"),
-                                ItemId = reader.GetInt32("ItemId")
+                                CharityId = ReusefullCommonLibrary.DatabaseHelper.SafeGetInt32FromDB(reader, "CharityId"),
+                                ItemId = ReusefullCommonLibrary.DatabaseHelper.SafeGetInt32FromDB(reader, "ItemId"),
                             });
                         }
                     }

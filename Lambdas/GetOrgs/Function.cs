@@ -13,6 +13,10 @@ public class Function
 {
     private static async Task Main(string[] args)
     {
+#if DEBUG
+        var result = await FunctionHandler(null);
+        return;
+#endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -43,25 +47,28 @@ public class Function
                         {
                             types.Add(new OrgData
                             {
-                                Id = reader.GetInt32("id"),
+                                Id = ReusefullCommonLibrary.DatabaseHelper.SafeGetInt32FromDB(reader, "id"),
                                 Name = reader.GetString("name"),
                                 Address = reader.GetString("address"),
                                 ZipCode = reader.GetString("zip_code"),
                                 City = reader.GetString("city"),
                                 ContactName = reader.GetString("contact_name"),
                                 Description = reader.GetString("description"),
-                                Dropoff = reader.GetBoolean("dropoff"),
-                                Email = reader.GetString("email"), Faith = reader.GetBoolean("faith"),
-                                GoodItems = reader.GetBoolean("good_items"),
-                                Lat = reader.GetDouble("lat"),
+                                Dropoff = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "dropoff"),
+                                Email = reader.GetString("email"),
+                                Faith = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "faith"),
+                                GoodItems = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "good_items"),
+                                Lat = ReusefullCommonLibrary.DatabaseHelper.SafeGetDoubleFromDB(reader, "lat"),
                                 LinkVolunteer = reader.GetString("link_volunteer"),
                                 LinkWebsite = reader.GetString("link_website"),
-                                LinkWishlist = reader.GetString("link_wishlist"), Lng = reader.GetDouble("lng"),
+                                LinkWishlist = reader.GetString("link_wishlist"),
+                                Lng = ReusefullCommonLibrary.DatabaseHelper.SafeGetDoubleFromDB(reader, "lng"),
                                 LogoUrl = reader.GetString("logo_url"),
                                 Mission = reader.GetString("mission"),
-                                NewItems = reader.GetBoolean("new_items"),
-                                Phone = reader.GetString("phone"), Pickup = reader.GetBoolean("pickup"),
-                                Resell = reader.GetBoolean("resell"),
+                                NewItems = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "new_items"),
+                                Phone = reader.GetString("phone"),
+                                Pickup = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "pickup"),
+                                Resell = ReusefullCommonLibrary.DatabaseHelper.SafeGetBooleanFromDB(reader, "resell"),
                                 State = reader.GetString("state")
                             });
                         }

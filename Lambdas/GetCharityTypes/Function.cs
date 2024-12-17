@@ -13,6 +13,10 @@ public class Function
 {
     private static async Task Main(string[] args)
     {
+#if DEBUG
+        var result = await FunctionHandler(null);
+        return;
+#endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -22,6 +26,7 @@ public class Function
             handler,
             new SourceGeneratorLambdaJsonSerializer<CharityTypeSerializer>()
         ).Build().RunAsync();
+
     }
 
     public static async Task<string> FunctionHandler(ILambdaContext context)
@@ -42,7 +47,7 @@ public class Function
                         {
                             types.Add(new CharityType
                             {
-                                Id = reader.GetInt32("id"),
+                                Id = ReusefullCommonLibrary.DatabaseHelper.SafeGetInt32FromDB(reader, "id"),
                                 Type = reader.GetString("name")
                             });
                         }

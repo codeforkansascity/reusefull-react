@@ -1,5 +1,6 @@
 ﻿using Amazon;
 using Amazon.RDS.Util;
+using MySqlConnector;
 
 namespace ReusefullCommonLibrary
 {
@@ -16,15 +17,29 @@ namespace ReusefullCommonLibrary
             string connectionString = string.Empty;
             string pwd = "";
 #if DEBUG
+            _dbUser = "reusefull";
             pwd = "";
-            _dbUser = "";
             connectionString = $"Server={_dbHost};Database={_dbName};Port={_dbPort};User Id={_dbUser};Password={pwd};SSL Mode=Required;";
-#endif
+            return connectionString;
+
             string authToken = RDSAuthTokenGenerator.GenerateAuthToken(_dbRegion, _dbHost, _dbPort, _dbUser);
 
             connectionString = $"Server={_dbHost};Port={_dbPort};Database={_dbName};" +
                                       $"User={_dbUser};Password={authToken};SSL Mode=Required;";
             return connectionString;
+#endif
+        }
+        public static Int32 SafeGetInt32FromDB(MySqlDataReader reader, string columnName)
+        {
+            return !reader.IsDBNull(reader.GetOrdinal(columnName)) ? reader.GetInt32(columnName) : 0;
+        }
+        public static bool SafeGetBooleanFromDB(MySqlDataReader reader, string columnName)
+        {
+            return !reader.IsDBNull(reader.GetOrdinal(columnName)) ? reader.GetBoolean(columnName) : false;
+        }
+        public static double SafeGetDoubleFromDB(MySqlDataReader reader, string columnName)
+        {
+            return !reader.IsDBNull(reader.GetOrdinal(columnName)) ? reader.GetDouble(columnName) : 0.0;
         }
     }
 }

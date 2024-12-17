@@ -11,9 +11,12 @@ namespace GetItemTypes;
 
 public class Function
 {
-
     private static async Task Main(string[] args)
     {
+#if DEBUG
+        var result = await FunctionHandler(null);
+        return;
+#endif
         Func<ILambdaContext, Task<string>> handler = async (context) =>
         {
             return await FunctionHandler(context);
@@ -44,7 +47,7 @@ public class Function
                         {
                             types.Add(new ItemType
                             {
-                                Id = reader.GetInt32("id"),
+                                Id = ReusefullCommonLibrary.DatabaseHelper.SafeGetInt32FromDB(reader, "id"),
                                 Name = reader.GetString("name")
                             });
                         }
