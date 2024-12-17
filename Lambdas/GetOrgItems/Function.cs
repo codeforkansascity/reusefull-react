@@ -61,7 +61,7 @@ public class Function
         {
             Console.WriteLine($"connstring={connectionString} and error: {ex.Message}");
         }
-        string serializedTypes = JsonSerializer.Serialize(types, CharityToItemTypeSerializer.Default.CharityToItemType);
+        string serializedTypes = JsonSerializer.Serialize(types, CharityToItemTypeSerializer.Default.ListCharityToItemType);
         //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
     }
