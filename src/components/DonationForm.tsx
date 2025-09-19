@@ -80,7 +80,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                 How would you like to get your donation to the charity? <span className="text-red-500">*</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="pickup"
                     checked={formData.deliveryMethod.pickup}
@@ -91,7 +91,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     Charity will pickup my items
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="dropoff"
                     checked={formData.deliveryMethod.dropoff}
@@ -111,7 +111,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                 Do you have any extra considerations? <span className="text-gray-500 text-xs">(Optional)</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="resell"
                     checked={formData.considerations.resell}
@@ -122,7 +122,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     Include organizations that resell items
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="faithBased"
                     checked={formData.considerations.faithBased}
@@ -142,13 +142,13 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                 Are your items new or used? <span className="text-red-500">*</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
                   <label htmlFor="new" className="flex-1 cursor-pointer text-sm text-card-foreground">
                     New items
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
                   <label htmlFor="used" className="flex-1 cursor-pointer text-sm text-card-foreground">
                     Used items
@@ -174,7 +174,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {items.map((item) => (
-                <div key={item.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={item.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id={`item-${item.Id}`}
                     checked={formData.selectedItems.includes(item.Name)}
@@ -210,7 +210,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {categories.map((category) => (
-                <div key={category.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={category.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id={`category-${category.Id}`}
                     checked={formData.selectedCategories.includes(category.Type)}
