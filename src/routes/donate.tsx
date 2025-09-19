@@ -1,5 +1,5 @@
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
-import { itemsQuery } from '@/api/queries/ItemsQuery'
+import { itemsQuery } from '@/api/queries/itemsQuery'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { DonationForm } from '@/components/DonationForm'

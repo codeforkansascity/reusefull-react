@@ -145,74 +145,83 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           </Button>
         </div>
 
-        {/* Delivery Method Section */}
+        {/* Combined Preferences Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>How would you like to get your donation to the charity?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox id="pickup" checked={formData.deliveryMethod.pickup} onChange={() => handleDeliveryMethodChange('pickup')} />
-                <label htmlFor="pickup" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">Charity will pickup my items</Text>
-                </label>
-              </div>
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox id="dropoff" checked={formData.deliveryMethod.dropoff} onChange={() => handleDeliveryMethodChange('dropoff')} />
-                <label htmlFor="dropoff" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">I will drop-off items</Text>
-                </label>
+          <CardContent className="space-y-6">
+            {/* Delivery Method */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-3">How would you like to get your donation to the charity?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox
+                    id="pickup"
+                    checked={formData.deliveryMethod.pickup}
+                    onChange={() => handleDeliveryMethodChange('pickup')}
+                    size="sm"
+                  />
+                  <label htmlFor="pickup" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">Charity will pickup my items</Text>
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox
+                    id="dropoff"
+                    checked={formData.deliveryMethod.dropoff}
+                    onChange={() => handleDeliveryMethodChange('dropoff')}
+                    size="sm"
+                  />
+                  <label htmlFor="dropoff" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">I will drop-off items</Text>
+                  </label>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Considerations Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Do you have any extra considerations?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox id="resell" checked={formData.considerations.resell} onChange={() => handleConsiderationChange('resell')} />
-                <label htmlFor="resell" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">Include organizations that resell items</Text>
-                </label>
-              </div>
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox
-                  id="faithBased"
-                  checked={formData.considerations.faithBased}
-                  onChange={() => handleConsiderationChange('faithBased')}
-                />
-                <label htmlFor="faithBased" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">Include faith-based organizations</Text>
-                </label>
+            {/* Considerations */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-3">Do you have any extra considerations?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox
+                    id="resell"
+                    checked={formData.considerations.resell}
+                    onChange={() => handleConsiderationChange('resell')}
+                    size="sm"
+                  />
+                  <label htmlFor="resell" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">Include organizations that resell items</Text>
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox
+                    id="faithBased"
+                    checked={formData.considerations.faithBased}
+                    onChange={() => handleConsiderationChange('faithBased')}
+                    size="sm"
+                  />
+                  <label htmlFor="faithBased" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">Include faith-based organizations</Text>
+                  </label>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Item Condition Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Are your items new or used?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} />
-                <label htmlFor="new" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">New items</Text>
-                </label>
-              </div>
-              <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} />
-                <label htmlFor="used" className="flex-1 cursor-pointer">
-                  <Text className="font-medium">Used items</Text>
-                </label>
+            {/* Item Condition */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-3">Are your items new or used?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
+                  <label htmlFor="new" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">New items</Text>
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
+                  <label htmlFor="used" className="flex-1 cursor-pointer">
+                    <Text className="text-sm">Used items</Text>
+                  </label>
+                </div>
               </div>
             </div>
           </CardContent>
