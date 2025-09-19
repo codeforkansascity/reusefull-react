@@ -7,7 +7,7 @@ const containerVariants = tv({
   variants: {
     size: {
       sm: 'max-w-3xl px-4',
-      default: 'max-w-6xl px-4 sm:px-6 lg:px-8',
+      default: 'max-w-5xl px-4 sm:px-6 lg:px-8',
       lg: 'max-w-7xl px-4 sm:px-6 lg:px-8',
       xl: 'max-w-full px-4 sm:px-6 lg:px-8',
       full: 'max-w-none px-4 sm:px-6 lg:px-8',

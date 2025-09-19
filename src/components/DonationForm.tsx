@@ -1,22 +1,6 @@
-import { useState } from 'react'
-import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Headline, Text, Container } from '@/components/ui'
-
-interface DonationFormData {
-  deliveryMethod: {
-    pickup: boolean
-    dropoff: boolean
-  }
-  considerations: {
-    resell: boolean
-    faithBased: boolean
-  }
-  itemCondition: {
-    new: boolean
-    used: boolean
-  }
-  selectedItems: string[]
-  selectedCategories: string[]
-}
+import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Headline, Container } from '@/components/ui'
+import { useDonationStore } from '@/stores/donationStore'
+import { Link } from '@tanstack/react-router'
 
 interface DonationFormProps {
   items: Array<{ Id: number; Name: string }>
@@ -24,121 +8,59 @@ interface DonationFormProps {
 }
 
 export function DonationForm({ items, categories }: DonationFormProps) {
-  const [formData, setFormData] = useState<DonationFormData>({
-    deliveryMethod: {
-      pickup: false,
-      dropoff: false,
-    },
-    considerations: {
-      resell: false,
-      faithBased: false,
-    },
-    itemCondition: {
-      new: false,
-      used: false,
-    },
-    selectedItems: [],
-    selectedCategories: [],
-  })
+  const {
+    formData,
+    setDeliveryMethod,
+    setConsideration,
+    setItemCondition,
+    toggleItem,
+    toggleCategory,
+    selectAllCategories,
+    clearItems,
+    resetAll,
+    isFormValid,
+  } = useDonationStore()
 
   const handleDeliveryMethodChange = (method: 'pickup' | 'dropoff') => {
-    setFormData((prev) => ({
-      ...prev,
-      deliveryMethod: {
-        ...prev.deliveryMethod,
-        [method]: !prev.deliveryMethod[method],
-      },
-    }))
+    setDeliveryMethod(method, !formData.deliveryMethod[method])
   }
 
   const handleConsiderationChange = (consideration: 'resell' | 'faithBased') => {
-    setFormData((prev) => ({
-      ...prev,
-      considerations: {
-        ...prev.considerations,
-        [consideration]: !prev.considerations[consideration],
-      },
-    }))
+    setConsideration(consideration, !formData.considerations[consideration])
   }
 
   const handleItemConditionChange = (condition: 'new' | 'used') => {
-    setFormData((prev) => ({
-      ...prev,
-      itemCondition: {
-        ...prev.itemCondition,
-        [condition]: !prev.itemCondition[condition],
-      },
-    }))
+    setItemCondition(condition, !formData.itemCondition[condition])
   }
 
   const handleItemToggle = (itemName: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedItems: prev.selectedItems.includes(itemName)
-        ? prev.selectedItems.filter((item) => item !== itemName)
-        : [...prev.selectedItems, itemName],
-    }))
+    toggleItem(itemName)
   }
 
   const handleCategoryToggle = (categoryType: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedCategories: prev.selectedCategories.includes(categoryType)
-        ? prev.selectedCategories.filter((cat) => cat !== categoryType)
-        : [...prev.selectedCategories, categoryType],
-    }))
+    toggleCategory(categoryType)
   }
 
   const handleSelectAllCategories = () => {
     const allCategories = categories.map((cat) => cat.Type)
-    setFormData((prev) => ({
-      ...prev,
-      selectedCategories: prev.selectedCategories.length === allCategories.length ? [] : allCategories,
-    }))
+    selectAllCategories(allCategories)
   }
 
   const handleClearItems = () => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedItems: [],
-    }))
+    clearItems()
   }
 
   const handleResetAll = () => {
-    setFormData({
-      deliveryMethod: { pickup: false, dropoff: false },
-      considerations: { resell: false, faithBased: false },
-      itemCondition: { new: false, used: false },
-      selectedItems: [],
-      selectedCategories: [],
-    })
-  }
-
-  const isFormValid = () => {
-    return (
-      (formData.deliveryMethod.pickup || formData.deliveryMethod.dropoff) &&
-      (formData.itemCondition.new || formData.itemCondition.used) &&
-      formData.selectedItems.length > 0 &&
-      formData.selectedCategories.length > 0
-    )
-  }
-
-  const handleSubmit = () => {
-    if (isFormValid()) {
-      // Store form data in sessionStorage for the results page
-      sessionStorage.setItem('donationFormData', JSON.stringify(formData))
-      // Navigate to results page
-      window.location.href = '/donate/results'
-    }
+    resetAll()
   }
 
   return (
-    <Container className="max-w-4xl mx-auto py-8">
+    <Container className="mx-auto py-8">
       <div className="space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
           <Headline size="xl" className="text-white">
-            Tell us more about your items and preferences.
+            Tim & Saiteja are the GOATS!
           </Headline>
           <Button variant="outline" size="sm" onClick={handleResetAll} className="text-white/90 hover:text-white hover:border-white/60">
             Reset all selections
@@ -149,38 +71,35 @@ export function DonationForm({ items, categories }: DonationFormProps) {
         <Card>
           <CardHeader>
             <CardTitle className="text-card-foreground">Tell us about your donation preferences</CardTitle>
+            <p className="text-sm text-muted-foreground">* Required fields</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Delivery Method */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">How would you like to get your donation to the charity?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+                How would you like to get your donation to the charity? <span className="text-red-500">*</span>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleDeliveryMethodChange('pickup')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id="pickup"
                     checked={formData.deliveryMethod.pickup}
                     onChange={() => handleDeliveryMethodChange('pickup')}
                     size="sm"
                   />
-                  <label htmlFor="pickup" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">Charity will pickup my items</Text>
+                  <label htmlFor="pickup" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    Charity will pickup my items
                   </label>
                 </div>
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleDeliveryMethodChange('dropoff')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id="dropoff"
                     checked={formData.deliveryMethod.dropoff}
                     onChange={() => handleDeliveryMethodChange('dropoff')}
                     size="sm"
                   />
-                  <label htmlFor="dropoff" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">I will drop-off items</Text>
+                  <label htmlFor="dropoff" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    I will drop-off items
                   </label>
                 </div>
               </div>
@@ -188,34 +107,30 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Considerations */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">Do you have any extra considerations?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+                Do you have any extra considerations? <span className="text-gray-500 text-xs">(Optional)</span>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleConsiderationChange('resell')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id="resell"
                     checked={formData.considerations.resell}
                     onChange={() => handleConsiderationChange('resell')}
                     size="sm"
                   />
-                  <label htmlFor="resell" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">Include organizations that resell items</Text>
+                  <label htmlFor="resell" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    Include organizations that resell items
                   </label>
                 </div>
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleConsiderationChange('faithBased')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id="faithBased"
                     checked={formData.considerations.faithBased}
                     onChange={() => handleConsiderationChange('faithBased')}
                     size="sm"
                   />
-                  <label htmlFor="faithBased" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">Include faith-based organizations</Text>
+                  <label htmlFor="faithBased" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    Include faith-based organizations
                   </label>
                 </div>
               </div>
@@ -223,24 +138,20 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Item Condition */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">Are your items new or used?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+                Are your items new or used? <span className="text-red-500">*</span>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleItemConditionChange('new')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
-                  <label htmlFor="new" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">New items</Text>
+                  <label htmlFor="new" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    New items
                   </label>
                 </div>
-                <div
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => handleItemConditionChange('used')}
-                >
+                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
-                  <label htmlFor="used" className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">Used items</Text>
+                  <label htmlFor="used" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    Used items
                   </label>
                 </div>
               </div>
@@ -252,7 +163,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>What kinds of items do you have to donate?</CardTitle>
+              <CardTitle>
+                What kinds of items do you have to donate? <span className="text-red-500">*</span>
+              </CardTitle>
               <Button variant="link" size="sm" onClick={handleClearItems} className="text-card-foreground hover:text-card-foreground/80">
                 Clear selections
               </Button>
@@ -261,18 +174,15 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {items.map((item) => (
-                <div
-                  key={item.Id}
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                >
+                <div key={item.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id={`item-${item.Id}`}
                     checked={formData.selectedItems.includes(item.Name)}
                     onChange={() => handleItemToggle(item.Name)}
                     size="sm"
                   />
-                  <label htmlFor={`item-${item.Id}`} className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">{item.Name}</Text>
+                  <label htmlFor={`item-${item.Id}`} className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    {item.Name}
                   </label>
                 </div>
               ))}
@@ -284,7 +194,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>What kind of organization do you want to donate to?</CardTitle>
+              <CardTitle>
+                What kind of organization do you want to donate to? <span className="text-red-500">*</span>
+              </CardTitle>
               <Button
                 variant="link"
                 size="sm"
@@ -298,18 +210,15 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {categories.map((category) => (
-                <div
-                  key={category.Id}
-                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                >
+                <div key={category.Id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                   <Checkbox
                     id={`category-${category.Id}`}
                     checked={formData.selectedCategories.includes(category.Type)}
                     onChange={() => handleCategoryToggle(category.Type)}
                     size="sm"
                   />
-                  <label htmlFor={`category-${category.Id}`} className="flex-1 cursor-pointer">
-                    <Text className="text-sm text-card-foreground">{category.Type}</Text>
+                  <label htmlFor={`category-${category.Id}`} className="flex-1 cursor-pointer text-sm text-card-foreground">
+                    {category.Type}
                   </label>
                 </div>
               ))}
@@ -319,9 +228,11 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
         {/* Submit Button */}
         <div className="flex justify-center pt-6">
-          <Button size="xl" onClick={handleSubmit} disabled={!isFormValid()} className="px-12 py-4 text-lg">
-            Continue to results
-          </Button>
+          <Link to="/donate/results" disabled={!isFormValid()} className="">
+            <Button size="xl" disabled={!isFormValid()} className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer">
+              Continue to results
+            </Button>
+          </Link>
         </div>
       </div>
     </Container>

@@ -23,7 +23,8 @@
     "react-dom": "^18.3.1",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.1",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.131.44",
