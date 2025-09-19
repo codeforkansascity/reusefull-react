@@ -55,12 +55,12 @@ export function DonationForm({ items, categories }: DonationFormProps) {
   }
 
   return (
-    <Container className="mx-auto py-8">
+    <Container className="max-w-4xl mx-auto py-8">
       <div className="space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
           <Headline size="xl" className="text-white">
-            Tim & Saiteja are the GOATS!
+            Tell us more about your items and preferences.
           </Headline>
           <Button variant="outline" size="sm" onClick={handleResetAll} className="text-white/90 hover:text-white hover:border-white/60">
             Reset all selections
