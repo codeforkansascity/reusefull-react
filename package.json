@@ -17,6 +17,7 @@
     "@types/axios": "^0.14.0",
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
+    "debug": "^4.4.3",
     "lucide-react": "^0.544.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.131.44",
+    "@types/debug": "^4.1.12",
     "@types/node": "^20.19.15",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
