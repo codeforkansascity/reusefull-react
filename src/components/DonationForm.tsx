@@ -147,6 +147,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
         {/* Combined Preferences Section */}
         <Card>
+          <CardHeader>
+            <CardTitle className="text-card-foreground">Tell us about your donation preferences</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-6">
             {/* Delivery Method */}
             <div>
