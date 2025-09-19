@@ -137,10 +137,10 @@ export function DonationForm({ items, categories }: DonationFormProps) {
       <div className="space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <Headline size="xl" className="text-foreground">
+          <Headline size="xl" className="text-white">
             Tell us more about your items and preferences.
           </Headline>
-          <Button variant="outline" size="sm" onClick={handleResetAll} className="text-muted-foreground hover:text-foreground">
+          <Button variant="outline" size="sm" onClick={handleResetAll} className="text-white/90 hover:text-white hover:border-white/60">
             Reset all selections
           </Button>
         </div>
@@ -150,9 +150,12 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent className="space-y-6">
             {/* Delivery Method */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">How would you like to get your donation to the charity?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">How would you like to get your donation to the charity?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleDeliveryMethodChange('pickup')}
+                >
                   <Checkbox
                     id="pickup"
                     checked={formData.deliveryMethod.pickup}
@@ -160,10 +163,13 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     size="sm"
                   />
                   <label htmlFor="pickup" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">Charity will pickup my items</Text>
+                    <Text className="text-sm text-card-foreground">Charity will pickup my items</Text>
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleDeliveryMethodChange('dropoff')}
+                >
                   <Checkbox
                     id="dropoff"
                     checked={formData.deliveryMethod.dropoff}
@@ -171,7 +177,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     size="sm"
                   />
                   <label htmlFor="dropoff" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">I will drop-off items</Text>
+                    <Text className="text-sm text-card-foreground">I will drop-off items</Text>
                   </label>
                 </div>
               </div>
@@ -179,9 +185,12 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Considerations */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Do you have any extra considerations?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">Do you have any extra considerations?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleConsiderationChange('resell')}
+                >
                   <Checkbox
                     id="resell"
                     checked={formData.considerations.resell}
@@ -189,10 +198,13 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     size="sm"
                   />
                   <label htmlFor="resell" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">Include organizations that resell items</Text>
+                    <Text className="text-sm text-card-foreground">Include organizations that resell items</Text>
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleConsiderationChange('faithBased')}
+                >
                   <Checkbox
                     id="faithBased"
                     checked={formData.considerations.faithBased}
@@ -200,7 +212,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     size="sm"
                   />
                   <label htmlFor="faithBased" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">Include faith-based organizations</Text>
+                    <Text className="text-sm text-card-foreground">Include faith-based organizations</Text>
                   </label>
                 </div>
               </div>
@@ -208,18 +220,24 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Item Condition */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Are your items new or used?</h3>
+              <h3 className="text-sm font-semibold text-card-foreground mb-3">Are your items new or used?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleItemConditionChange('new')}
+                >
                   <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
                   <label htmlFor="new" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">New items</Text>
+                    <Text className="text-sm text-card-foreground">New items</Text>
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleItemConditionChange('used')}
+                >
                   <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
                   <label htmlFor="used" className="flex-1 cursor-pointer">
-                    <Text className="text-sm">Used items</Text>
+                    <Text className="text-sm text-card-foreground">Used items</Text>
                   </label>
                 </div>
               </div>
@@ -232,7 +250,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>What kinds of items do you have to donate?</CardTitle>
-              <Button variant="link" size="sm" onClick={handleClearItems} className="text-muted-foreground hover:text-foreground">
+              <Button variant="link" size="sm" onClick={handleClearItems} className="text-card-foreground hover:text-card-foreground/80">
                 Clear selections
               </Button>
             </div>
@@ -240,14 +258,18 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {items.map((item) => (
-                <div key={item.Id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={item.Id}
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                >
                   <Checkbox
                     id={`item-${item.Id}`}
                     checked={formData.selectedItems.includes(item.Name)}
                     onChange={() => handleItemToggle(item.Name)}
+                    size="sm"
                   />
                   <label htmlFor={`item-${item.Id}`} className="flex-1 cursor-pointer">
-                    <Text className="text-sm">{item.Name}</Text>
+                    <Text className="text-sm text-card-foreground">{item.Name}</Text>
                   </label>
                 </div>
               ))}
@@ -260,7 +282,12 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>What kind of organization do you want to donate to?</CardTitle>
-              <Button variant="link" size="sm" onClick={handleSelectAllCategories} className="text-muted-foreground hover:text-foreground">
+              <Button
+                variant="link"
+                size="sm"
+                onClick={handleSelectAllCategories}
+                className="text-card-foreground hover:text-card-foreground/80"
+              >
                 {formData.selectedCategories.length === categories.length ? 'Deselect all' : 'Select all'}
               </Button>
             </div>
@@ -268,14 +295,18 @@ export function DonationForm({ items, categories }: DonationFormProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {categories.map((category) => (
-                <div key={category.Id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={category.Id}
+                  className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                >
                   <Checkbox
                     id={`category-${category.Id}`}
                     checked={formData.selectedCategories.includes(category.Type)}
                     onChange={() => handleCategoryToggle(category.Type)}
+                    size="sm"
                   />
                   <label htmlFor={`category-${category.Id}`} className="flex-1 cursor-pointer">
-                    <Text className="text-sm">{category.Type}</Text>
+                    <Text className="text-sm text-card-foreground">{category.Type}</Text>
                   </label>
                 </div>
               ))}

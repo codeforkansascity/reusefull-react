@@ -11,8 +11,8 @@ export const Route = createFileRoute('/donate/')({
   },
   component: RouteComponent,
   pendingComponent: () => (
-    <div className="flex items-center justify-center min-h-screen">
-      <LoadingSpinner message="Loading donation form..." size="lg" />
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <LoadingSpinner message="Loading donation form..." size="lg" textClassName="text-white" />
     </div>
   ),
 })
