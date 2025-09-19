@@ -9,55 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DonateRouteImport } from './routes/donate'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DonateIndexRouteImport } from './routes/donate/index'
+import { Route as DonateResultsRouteImport } from './routes/donate/results'
 
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DonateIndexRoute = DonateIndexRouteImport.update({
+  id: '/donate/',
+  path: '/donate/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateResultsRoute = DonateResultsRouteImport.update({
+  id: '/donate/results',
+  path: '/donate/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/donate': typeof DonateRoute
+  '/donate/results': typeof DonateResultsRoute
+  '/donate': typeof DonateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/donate': typeof DonateRoute
+  '/donate/results': typeof DonateResultsRoute
+  '/donate': typeof DonateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/donate': typeof DonateRoute
+  '/donate/results': typeof DonateResultsRoute
+  '/donate/': typeof DonateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/donate'
+  fullPaths: '/' | '/donate/results' | '/donate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/donate'
-  id: '__root__' | '/' | '/donate'
+  to: '/' | '/donate/results' | '/donate'
+  id: '__root__' | '/' | '/donate/results' | '/donate/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DonateRoute: typeof DonateRoute
+  DonateResultsRoute: typeof DonateResultsRoute
+  DonateIndexRoute: typeof DonateIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/donate/': {
+      id: '/donate/'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate/results': {
+      id: '/donate/results'
+      path: '/donate/results'
+      fullPath: '/donate/results'
+      preLoaderRoute: typeof DonateResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DonateRoute: DonateRoute,
+  DonateResultsRoute: DonateResultsRoute,
+  DonateIndexRoute: DonateIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

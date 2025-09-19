@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { DonationForm } from '@/components/DonationForm'
 import { LoadingSpinner } from '@/components/ui'
 
-export const Route = createFileRoute('/donate')({
+export const Route = createFileRoute('/donate/')({
   async loader({ context: { queryClient } }) {
     await Promise.all([queryClient.ensureQueryData(itemsQuery), queryClient.ensureQueryData(categoriesQuery)])
   },
