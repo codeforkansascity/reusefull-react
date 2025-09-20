@@ -24,6 +24,37 @@ declare global {
       Id: number
       Type: string
     }[]
+    'https://4nekwiwkkyz4uwidxgxuykksmq0xvuez.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+      CharityName: string
+      ItemName: string
+      CharityId: number
+      ItemId: number
+    }[]
+    'https://lrx3rtyjpiibqojpa47q2ppace0oxvlm.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+      Id: number
+      Name: string
+      Address: string
+      ZipCode: string
+      Phone: string
+      Email: string
+      ContactName: string
+      Mission: string
+      Description: string
+      LinkVolunteer: string
+      LinkWebsite: string
+      LinkWishlist: string
+      Pickup: boolean
+      Dropoff: boolean
+      Resell: boolean
+      Faith: boolean
+      GoodItems: boolean
+      NewItems: boolean
+      LogoUrl: string
+      City: string
+      State: string
+      Lat: number
+      Lng: number
+    }[]
   }
   interface PostEndpoints {}
   interface PutEndpoints {}

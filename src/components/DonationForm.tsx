@@ -227,7 +227,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-center pt-6">
+        <div className="flex justify-center">
           <Link to="/donate/results" disabled={!isFormValid()} className="">
             <Button size="xl" disabled={!isFormValid()} className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer">
               Continue to results
