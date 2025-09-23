@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DonateIndexRouteImport } from './routes/donate/index'
 import { Route as DonateResultsRouteImport } from './routes/donate/results'
+import { Route as CharityCharityIdRouteImport } from './routes/charity/$charityId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,42 @@ const DonateResultsRoute = DonateResultsRouteImport.update({
   path: '/donate/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CharityCharityIdRoute = CharityCharityIdRouteImport.update({
+  id: '/charity/$charityId',
+  path: '/charity/$charityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
   '/donate': typeof DonateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
   '/donate': typeof DonateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
   '/donate/': typeof DonateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/donate/results' | '/donate'
+  fullPaths: '/' | '/charity/$charityId' | '/donate/results' | '/donate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/donate/results' | '/donate'
-  id: '__root__' | '/' | '/donate/results' | '/donate/'
+  to: '/' | '/charity/$charityId' | '/donate/results' | '/donate'
+  id: '__root__' | '/' | '/charity/$charityId' | '/donate/results' | '/donate/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CharityCharityIdRoute: typeof CharityCharityIdRoute
   DonateResultsRoute: typeof DonateResultsRoute
   DonateIndexRoute: typeof DonateIndexRoute
 }
@@ -82,11 +92,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/charity/$charityId': {
+      id: '/charity/$charityId'
+      path: '/charity/$charityId'
+      fullPath: '/charity/$charityId'
+      preLoaderRoute: typeof CharityCharityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CharityCharityIdRoute: CharityCharityIdRoute,
   DonateResultsRoute: DonateResultsRoute,
   DonateIndexRoute: DonateIndexRoute,
 }

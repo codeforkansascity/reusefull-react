@@ -1,7 +1,9 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useDonationStore } from '@/stores/donationStore'
 import { useCallback } from 'react'
 import useResults from '@/hooks/useResults'
+import { formatPhone } from '@/utils/formatPhone'
+import { CharityMap } from '@/components/CharityMap'
 import {
   Container,
   Card,
@@ -42,16 +44,16 @@ function RouteComponent() {
 
   if (results.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+      <div className="min-h-screen">
         <Container size="lg" className="py-16">
           <div className="text-center space-y-6">
-            <Headline as="h1" size="3xl" variant="reusefull" className="mb-8">
+            <Headline as="h1" size="3xl" className="mb-8 text-white">
               No Organizations Found
             </Headline>
-            <Text size="lg" variant="muted" className="max-w-2xl mx-auto">
+            <Text size="lg" className="max-w-2xl mx-auto text-white/90">
               We couldn't find any organizations that match your donation criteria. Try adjusting your preferences to see more results.
             </Text>
-            <Button onClick={startOver} size="lg" className="mt-8">
+            <Button onClick={startOver} size="lg" className="mt-8 cursor-pointer">
               Start Over
             </Button>
           </div>
@@ -61,19 +63,30 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+    <div className="min-h-screen">
       <Container size="lg" className="py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <Headline as="h1" size="3xl" variant="reusefull" className="mb-4">
+          <Headline as="h1" size="3xl" className="mb-4 text-white">
             Matching Organizations
           </Headline>
-          <Text size="lg" variant="muted" className="max-w-2xl mx-auto mb-8">
+          <Text size="lg" className="max-w-2xl mx-auto mb-8 text-white/90">
             We found {results.length} organization{results.length !== 1 ? 's' : ''} that match your donation criteria
           </Text>
-          <Button onClick={startOver} variant="outline" size="lg">
+          <Button onClick={startOver} variant="outline" size="lg" className="cursor-pointer">
             Start Over
           </Button>
+        </div>
+
+        {/* Map */}
+        <div className="mb-12">
+          <div className="mb-6">
+            <Headline as="h2" size="xl" className="text-white mb-4">
+              Organization Locations
+            </Headline>
+            <Text className="text-white/90">Click on any marker to view organization details</Text>
+          </div>
+          <CharityMap charities={results} className="h-96" />
         </div>
 
         {/* Results Grid */}
@@ -127,7 +140,6 @@ function CharityCard({ organization }: CharityCardProps) {
     Mission,
     Description,
     LinkWebsite,
-    LinkWishlist,
     Pickup,
     Dropoff,
     Resell,
@@ -152,7 +164,7 @@ function CharityCard({ organization }: CharityCardProps) {
               <img
                 src={LogoUrl}
                 alt={`${Name} logo`}
-                className="w-12 h-12 rounded-lg object-cover"
+                className="w-12 h-12 rounded-lg object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
@@ -198,13 +210,20 @@ function CharityCard({ organization }: CharityCardProps) {
         <div className="space-y-2 mb-4">
           <div className="flex items-center gap-2 text-sm">
             <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-            <span className="text-sm text-muted-foreground line-clamp-1">{fullAddress}</span>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground line-clamp-1 hover:text-primary transition-colors cursor-pointer"
+            >
+              {fullAddress}
+            </a>
           </div>
 
           {Phone && (
             <div className="flex items-center gap-2 text-sm">
               <PhoneIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <span className="text-sm text-muted-foreground">{Phone}</span>
+              <span className="text-sm text-muted-foreground">{formatPhone(Phone)}</span>
             </div>
           )}
 
@@ -218,16 +237,21 @@ function CharityCard({ organization }: CharityCardProps) {
 
         {/* Action Buttons */}
         <div className="flex gap-2 mt-auto">
+          <Link to="/charity/$charityId" params={{ charityId: organization.Id.toString() }}>
+            <Button variant="default" size="sm" className="flex-1 cursor-pointer">
+              <CheckCircle className="w-4 h-4 mr-1" />
+              View Details
+            </Button>
+          </Link>
           {LinkWebsite && (
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => window.open(LinkWebsite, '_blank')}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
+              onClick={() => window.open(LinkWebsite, '_blank')}
+            >
               <Globe className="w-4 h-4 mr-1" />
               Website
-            </Button>
-          )}
-          {LinkWishlist && (
-            <Button variant="default" size="sm" className="flex-1" onClick={() => window.open(LinkWishlist, '_blank')}>
-              <CheckCircle className="w-4 h-4 mr-1" />
-              Wishlist
             </Button>
           )}
         </div>
