@@ -14,7 +14,7 @@ import {
   Text,
   LoadingSpinner,
 } from '@/components/ui'
-import { MapPin, Phone as PhoneIcon, Globe, CheckCircle, Truck, Package } from 'lucide-react'
+import { MapPin, Phone as PhoneIcon, Globe, Truck, Package } from 'lucide-react'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
 
@@ -127,7 +127,6 @@ function CharityCard({ organization }: CharityCardProps) {
     Mission,
     Description,
     LinkWebsite,
-    LinkWishlist,
     Pickup,
     Dropoff,
     Resell,
@@ -217,20 +216,14 @@ function CharityCard({ organization }: CharityCardProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2 mt-auto">
-          {LinkWebsite && (
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => window.open(LinkWebsite, '_blank')}>
+        {LinkWebsite && (
+          <div className="mt-auto">
+            <Button variant="outline" size="sm" className="w-full" onClick={() => window.open(LinkWebsite, '_blank')}>
               <Globe className="w-4 h-4 mr-1" />
-              Website
+              Visit Website
             </Button>
-          )}
-          {LinkWishlist && (
-            <Button variant="default" size="sm" className="flex-1" onClick={() => window.open(LinkWishlist, '_blank')}>
-              <CheckCircle className="w-4 h-4 mr-1" />
-              Wishlist
-            </Button>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
