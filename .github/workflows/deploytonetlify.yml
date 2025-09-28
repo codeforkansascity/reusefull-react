@@ -31,17 +31,18 @@ jobs:
     - name: Build project
       run: npm run build
       
-    - name: Install Netlify CLI
-      run: npm install -g netlify-cli
-
-    - name: build netlify
+    - name: Deploy to Netlify using API
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: netlify build
-
-    - name: Deploy to Netlify
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: npx netlify deploy --prod --dir=dist # Adjust the directory to your build output folder
+      run: |
+        # Create a zip file of the dist directory
+        cd dist
+        zip -r ../deploy.zip .
+        cd ..
+        
+        # Deploy using Netlify API
+        curl -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
+             -H "Content-Type: application/zip" \
+             --data-binary @deploy.zip \
+             "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/deploys"
