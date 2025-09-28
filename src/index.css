@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-
+ 
 @theme {
   /* Reusefull Color Palette - Light Mode */
   --color-background: oklch(0.4782 0.0691 236.28);
