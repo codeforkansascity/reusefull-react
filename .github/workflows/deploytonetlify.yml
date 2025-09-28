@@ -20,7 +20,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20' # or any version you prefer
-
+    - name: Clear npm cache
+      run: npm cache clean --force
+    - name: Install Netlify CLI
+      run: npm install -g netlify-cli@latest
     - name: Install dependencies
       run: npm install
 
