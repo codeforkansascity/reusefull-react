@@ -10,7 +10,11 @@ export default function useResults() {
     queries: [orgsQuery, orgItemsQuery],
   })
 
-  console.log({ orgs, orgItems, formData })
+  console.log('=== DEBUGGING FILTERING ===')
+  console.log('Total organizations in database:', orgs?.length)
+  console.log('Form data:', formData)
+  console.log('Selected items:', formData.selectedItems)
+  console.log('Selected categories:', formData.selectedCategories)
 
   return useMemo(() => {
     if (!orgs || !orgItems) return []
@@ -22,9 +26,8 @@ export default function useResults() {
 
       if (!deliveryMatch) return false
 
-      // Check consideration requirements - only apply if user selected them
-      if (formData.considerations.resell && !org.Resell) return false
-      if (formData.considerations.faithBased && !org.Faith) return false
+      // Check consideration requirements - these are preferences, not requirements
+      // Don't filter based on considerations - they're just preferences for display
 
       // Check item condition requirements - only apply if user selected them
       const itemConditionMatch =

@@ -59,24 +59,24 @@ export function DonationForm({ items, categories }: DonationFormProps) {
       <div className="space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <Headline size="xl" className="text-white">
-            Tell us more about your items and preferences.
+          <Headline size="lg" className="text-white">
+            Tell us more about your items and preferences
           </Headline>
-          <Button variant="outline" size="sm" onClick={handleResetAll} className="text-white/90 hover:text-white hover:border-white/60">
+          <Button variant="outline" size="sm" onClick={handleResetAll} className="text-white/90 hover:text-white hover:border-white/60 cursor-pointer">
             Reset all selections
           </Button>
         </div>
 
         {/* Combined Preferences Section */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-card-foreground">Tell us about your donation preferences</CardTitle>
-            <p className="text-sm text-muted-foreground">* Required fields</p>
+            <p className="text-sm text-muted-foreground text-red-500">* Required fields</p>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Delivery Method */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+              <h3 className="text-base font-semibold text-card-foreground mb-3">
                 How would you like to get your donation to the charity? <span className="text-red-500">*</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -87,7 +87,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleDeliveryMethodChange('pickup')}
                     size="sm"
                   />
-                  <label htmlFor="pickup" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="pickup" className="flex-1 cursor-pointer text-base text-card-foreground">
                     Charity will pickup my items
                   </label>
                 </div>
@@ -98,7 +98,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleDeliveryMethodChange('dropoff')}
                     size="sm"
                   />
-                  <label htmlFor="dropoff" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="dropoff" className="flex-1 cursor-pointer text-base text-card-foreground">
                     I will drop-off items
                   </label>
                 </div>
@@ -107,7 +107,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Considerations */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+              <h3 className="text-base font-semibold text-card-foreground mb-3">
                 Do you have any extra considerations? <span className="text-gray-500 text-xs">(Optional)</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -118,7 +118,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleConsiderationChange('resell')}
                     size="sm"
                   />
-                  <label htmlFor="resell" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="resell" className="flex-1 cursor-pointer text-base text-card-foreground">
                     Include organizations that resell items
                   </label>
                 </div>
@@ -129,7 +129,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleConsiderationChange('faithBased')}
                     size="sm"
                   />
-                  <label htmlFor="faithBased" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="faithBased" className="flex-1 cursor-pointer text-base text-card-foreground">
                     Include faith-based organizations
                   </label>
                 </div>
@@ -138,19 +138,19 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
             {/* Item Condition */}
             <div>
-              <h3 className="text-sm font-semibold text-card-foreground mb-3">
+              <h3 className="text-base font-semibold text-card-foreground mb-3">
                 Are your items new or used? <span className="text-red-500">*</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
-                  <label htmlFor="new" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="new" className="flex-1 cursor-pointer text-base text-card-foreground">
                     New items
                   </label>
                 </div>
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
-                  <label htmlFor="used" className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor="used" className="flex-1 cursor-pointer text-base text-card-foreground">
                     Used items
                   </label>
                 </div>
@@ -166,7 +166,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
               <CardTitle>
                 What kinds of items do you have to donate? <span className="text-red-500">*</span>
               </CardTitle>
-              <Button variant="link" size="sm" onClick={handleClearItems} className="text-card-foreground hover:text-card-foreground/80">
+              <Button variant="link" size="sm" onClick={handleClearItems} className="text-card-foreground hover:text-card-foreground/80 cursor-pointer">
                 Clear selections
               </Button>
             </div>
@@ -181,7 +181,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleItemToggle(item.Name)}
                     size="sm"
                   />
-                  <label htmlFor={`item-${item.Id}`} className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor={`item-${item.Id}`} className="flex-1 cursor-pointer text-base text-card-foreground">
                     {item.Name}
                   </label>
                 </div>
@@ -201,7 +201,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                 variant="link"
                 size="sm"
                 onClick={handleSelectAllCategories}
-                className="text-card-foreground hover:text-card-foreground/80"
+                className="text-card-foreground hover:text-card-foreground/80 cursor-pointer"
               >
                 {formData.selectedCategories.length === categories.length ? 'Deselect all' : 'Select all'}
               </Button>
@@ -217,7 +217,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     onChange={() => handleCategoryToggle(category.Type)}
                     size="sm"
                   />
-                  <label htmlFor={`category-${category.Id}`} className="flex-1 cursor-pointer text-sm text-card-foreground">
+                  <label htmlFor={`category-${category.Id}`} className="flex-1 cursor-pointer text-base text-card-foreground">
                     {category.Type}
                   </label>
                 </div>

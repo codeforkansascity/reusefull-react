@@ -47,54 +47,54 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden 2xl:flex items-center space-x-6">
+          <nav className="hidden 2xl:flex items-center space-x-3">
             <div className="relative group">
               <Link
                 to="/donate"
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors flex items-center"
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors flex items-center"
               >
                 Donate
                 <ChevronDown className="ml-1 h-4 w-4" />
               </Link>
             </div>
             <div className="relative group">
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors flex items-center">
+              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors flex items-center">
                 What We Do
                 <ChevronDown className="ml-1 h-4 w-4" />
               </a>
             </div>
             <div className="relative group">
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors flex items-center">
+              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors flex items-center">
                 Get Involved
                 <ChevronDown className="ml-1 h-4 w-4" />
               </a>
             </div>
             <div className="relative group">
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors flex items-center">
+              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors flex items-center">
                 Charity Partners
                 <ChevronDown className="ml-1 h-4 w-4" />
               </a>
             </div>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
+            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               Contact
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
+            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               About
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
+            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               Blog
             </a>
           </nav>
 
           {/* Desktop Action Buttons */}
           <div className="hidden 2xl:flex items-center space-x-4">
-            <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 text-sm font-medium">
+            <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 text-md font-medium">
               Signup
             </Button>
             <Button
               variant="outline"
               size="sm"
-              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-5 py-2 text-sm font-medium flex items-center"
+              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-5 py-2 text-md font-medium flex items-center"
             >
               Login
             </Button>

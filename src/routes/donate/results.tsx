@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useDonationStore } from '@/stores/donationStore'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import useResults from '@/hooks/useResults'
 import { formatPhone } from '@/utils/formatPhone'
 import { CharityMap } from '@/components/CharityMap'
@@ -37,6 +37,11 @@ function RouteComponent() {
   const navigate = useNavigate()
   const results = useResults()
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const startOver = useCallback(() => {
     resetAll()
     navigate({ to: '/donate' })
@@ -47,13 +52,13 @@ function RouteComponent() {
       <div className="min-h-screen">
         <Container size="lg" className="py-16">
           <div className="text-center space-y-6">
-            <Headline as="h1" size="3xl" className="mb-8 text-white">
+            <Headline as="h1" size="2xl" className="mb-8 text-white">
               No Organizations Found
             </Headline>
             <Text size="lg" className="max-w-2xl mx-auto text-white/90">
               We couldn't find any organizations that match your donation criteria. Try adjusting your preferences to see more results.
             </Text>
-            <Button onClick={startOver} size="lg" className="mt-8 cursor-pointer">
+            <Button onClick={startOver} size="lg" className="mt-8 cursor-pointer text-md">
               Start Over
             </Button>
           </div>
@@ -67,13 +72,13 @@ function RouteComponent() {
       <Container size="lg" className="py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <Headline as="h1" size="3xl" className="mb-4 text-white">
+          <Headline as="h1" size="2xl" className="mb-4 text-white">
             Matching Organizations
           </Headline>
           <Text size="lg" className="max-w-2xl mx-auto mb-8 text-white/90">
             We found {results.length} organization{results.length !== 1 ? 's' : ''} that match your donation criteria
           </Text>
-          <Button onClick={startOver} variant="outline" size="lg" className="cursor-pointer">
+          <Button onClick={startOver} variant="outline" size="lg" className="cursor-pointer text-md">
             Start Over
           </Button>
         </div>
@@ -84,7 +89,7 @@ function RouteComponent() {
             <Headline as="h2" size="xl" className="text-white mb-4">
               Organization Locations
             </Headline>
-            <Text className="text-white/90">Click on any marker to view organization details</Text>
+            <Text className="text-white/90 text-lg">Click on any marker to view organization details</Text>
           </div>
           <CharityMap charities={results} className="h-96" />
         </div>

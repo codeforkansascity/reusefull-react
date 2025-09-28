@@ -33,18 +33,29 @@ interface CharityMapProps {
 }
 
 export function CharityMap({ charities, className = '' }: CharityMapProps) {
-  // Filter charities that have valid coordinates
-  const charitiesWithCoords = charities.filter((charity) => charity.Lat && charity.Lng && !isNaN(charity.Lat) && !isNaN(charity.Lng))
+  console.log('=== MAP DEBUGGING ===')
+  console.log('Total charities passed to map:', charities.length)
+  console.log('Charity coordinates:', charities.map(c => ({ name: c.Name, lat: c.Lat, lng: c.Lng })))
+  
+  // Filter charities that have valid coordinates (not 0,0 and not null/undefined)
+  const charitiesWithCoords = charities.filter((charity) => 
+    charity.Lat && charity.Lng && 
+    !isNaN(charity.Lat) && !isNaN(charity.Lng) &&
+    charity.Lat !== 0 && charity.Lng !== 0
+  )
+  
+  console.log('Charities with valid coordinates:', charitiesWithCoords.length)
+  console.log('Valid coordinates:', charitiesWithCoords.map(c => ({ name: c.Name, lat: c.Lat, lng: c.Lng })))
 
   // Calculate center point of all charities
   const centerLat =
     charitiesWithCoords.length > 0
       ? charitiesWithCoords.reduce((sum, charity) => sum + charity.Lat, 0) / charitiesWithCoords.length
-      : 39.8283 // Default to center of US
+      : 39.0997 // Default to Kansas City area
   const centerLng =
     charitiesWithCoords.length > 0
       ? charitiesWithCoords.reduce((sum, charity) => sum + charity.Lng, 0) / charitiesWithCoords.length
-      : -98.5795 // Default to center of US
+      : -94.5786 // Default to Kansas City area
 
   if (charitiesWithCoords.length === 0) {
     return (
@@ -60,13 +71,13 @@ export function CharityMap({ charities, className = '' }: CharityMapProps) {
     <div className={`rounded-lg overflow-hidden shadow-lg ${className}`}>
       <MapContainer
         center={[centerLat, centerLng]}
-        zoom={charitiesWithCoords.length === 1 ? 12 : 8}
+        zoom={charitiesWithCoords.length === 1 ? 12 : 10}
         style={{ height: '400px', width: '100%' }}
         className="z-0"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a>'
+          url="https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaHlwcm5pY2siLCJhIjoiY2ttYTBidnYyMW45dTJ2cGJxbmxjMGsyMiJ9.po3lOo4mj9GAEdBBnMjDLA"
         />
 
         {charitiesWithCoords.map((charity) => (
