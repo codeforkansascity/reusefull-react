@@ -1,9 +1,6 @@
 [build]
   command = "npm run build"
 
-[functions]
-  directory = "functions"
-
 [context.production]
   command = "npm run build"
 
