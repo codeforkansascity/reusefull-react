@@ -1,32 +1,28 @@
 name: Deploy to Netlify
-
 on:
   push:
     paths:
       - 'src/**'
       - 'index.html'
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # env:
-    #  NODE_ENV: production
-
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
-
+      uses: actions/checkout@v4
+      
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '20' # or any version you prefer
+        node-version: '20'
+        cache: 'npm'
+        
     - name: Clear npm cache
       run: npm cache clean --force
-    - name: Install Netlify CLI
-      run: npm install -g netlify-cli@latest
+      
     - name: Install dependencies
       run: npm install
-
+      
     - name: Fix permissions for Vite
       run: chmod +x ./node_modules/.bin/vite
     
@@ -34,16 +30,10 @@ jobs:
       run: npm run build
       
     - name: Install Netlify CLI
-      run: npm install -g netlify-cli
-
-    - name: build netlify
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: netlify build
-
+      run: npm install -g netlify-cli@latest
+      
     - name: Deploy to Netlify
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      run: npx netlify deploy --prod --dir=dist # Adjust the directory to your build output folder
+      run: netlify deploy --prod --dir=dist
