@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/**'
       - 'index.html'
+      - 'netlify.toml'
 
 jobs:
   deploy:
