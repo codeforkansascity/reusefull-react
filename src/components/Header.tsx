@@ -47,7 +47,7 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden 2xl:flex items-center space-x-3">
+          <nav className="hidden 2xl:flex items-center space-x-2">
             <div className="relative group">
               <Link
                 to="/donate"
