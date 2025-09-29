@@ -108,7 +108,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
             {/* Considerations */}
             <div>
               <h3 className="text-base font-semibold text-card-foreground mb-3">
-                Do you have any extra considerations? <span className="text-gray-500 text-xs">(Optional)</span>
+                Do you have any extra considerations? <span className="text-gray-500 text-sm">(Optional)</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
