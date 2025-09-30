@@ -82,7 +82,7 @@ export function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                   <Link
                     to="/donate"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsDonateDropdownOpen(false)}
                   >
                     Donate
@@ -91,7 +91,7 @@ export function Header() {
                     href="https://reusefull.org/faqs/donor-faqs/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsDonateDropdownOpen(false)}
                   >
                     Donor FAQs
@@ -100,7 +100,7 @@ export function Header() {
                     href="https://reusefull.org/un-dumpster-day/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsDonateDropdownOpen(false)}
                   >
                     Un-Dumpster Day
@@ -124,7 +124,7 @@ export function Header() {
                     href="https://reusefull.org/un-dumpster-day/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
                     Un-Dumpster Day
@@ -133,7 +133,7 @@ export function Header() {
                     href="https://reusefull.org/repair-cafes/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
                     Repair Cafes
@@ -142,7 +142,7 @@ export function Header() {
                     href="https://reusefull.org/webinars/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
                     Webinars
@@ -166,7 +166,7 @@ export function Header() {
                     href="https://reusefull.org/sign-up-for-our-newsletter/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
                     Subscribe
@@ -175,7 +175,7 @@ export function Header() {
                     href="https://reusefull.org/events/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
                     Calendar
@@ -184,7 +184,7 @@ export function Header() {
                     href="https://reusefull.org/sign-up-to-volunteer/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
                     Volunteer
@@ -193,7 +193,7 @@ export function Header() {
                     href="https://givebutter.com/bereusefull"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
                     Make a Donation
@@ -217,7 +217,7 @@ export function Header() {
                     href="https://reusefull.org/become-a-charity-partner/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
                     Charity Partners
@@ -226,14 +226,14 @@ export function Header() {
                     href="https://app.reusefull.org/charity/signup/step/1"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
                     Signup
                   </a>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
                     Update Profile
@@ -242,7 +242,7 @@ export function Header() {
                     href="https://reusefull.org/become-a-charity-partner/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
                     Charity Partner FAQs
@@ -251,7 +251,7 @@ export function Header() {
                     href="https://reusefull.org/un-dumpster-day/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
                     Un-Dumpster Day
@@ -314,7 +314,7 @@ export function Header() {
                 </div>
                 <Link
                   to="/donate"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Donate
@@ -323,7 +323,7 @@ export function Header() {
                   href="https://reusefull.org/faqs/donor-faqs/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Donor FAQs
@@ -332,7 +332,7 @@ export function Header() {
                   href="https://reusefull.org/un-dumpster-day/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Un-Dumpster Day
@@ -346,7 +346,7 @@ export function Header() {
                   href="https://reusefull.org/un-dumpster-day/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Un-Dumpster Day
@@ -355,7 +355,7 @@ export function Header() {
                   href="https://reusefull.org/repair-cafes/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Repair Cafes
@@ -364,7 +364,7 @@ export function Header() {
                   href="https://reusefull.org/webinars/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Webinars
@@ -378,7 +378,7 @@ export function Header() {
                   href="https://reusefull.org/sign-up-for-our-newsletter/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Subscribe
@@ -387,7 +387,7 @@ export function Header() {
                   href="https://reusefull.org/events/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Calendar
@@ -396,7 +396,7 @@ export function Header() {
                   href="https://reusefull.org/sign-up-to-volunteer/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Volunteer
@@ -405,7 +405,7 @@ export function Header() {
                   href="https://givebutter.com/bereusefull"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Make a Donation
@@ -419,7 +419,7 @@ export function Header() {
                   href="https://reusefull.org/become-a-charity-partner/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Charity Partners
@@ -428,14 +428,14 @@ export function Header() {
                   href="https://app.reusefull.org/charity/signup/step/1"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Signup
                 </a>
                 <a
                   href="#"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Update Profile
@@ -444,7 +444,7 @@ export function Header() {
                   href="https://reusefull.org/become-a-charity-partner/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Charity Partner FAQs
@@ -453,7 +453,7 @@ export function Header() {
                   href="https://reusefull.org/un-dumpster-day/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50 ml-4"
+                  className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Un-Dumpster Day
