@@ -48,7 +48,7 @@ export default function useResults() {
             const itemNameLower = orgItem.ItemName.toLowerCase()
 
             // Exact match or partial match for broader categories
-            return itemNameLower.includes(selectedLower) || selectedLower.includes(itemNameLower.split(' - ')[0])
+            return itemNameLower.includes(selectedLower)
           })
         })
 
