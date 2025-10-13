@@ -233,13 +233,13 @@ export function Header() {
                 </div>
               )}
             </div>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
+            <a href="https://reusefull.org/contact-us/" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               Contact
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
+            <a href="https://reusefull.org/about-us/" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               About
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
+            <a href="https://reusefull.org/blog/" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-md font-medium transition-colors">
               Blog
             </a>
           </nav>
