@@ -89,8 +89,6 @@ export function Header() {
                   </Link>
                   <a
                     href="https://reusefull.org/faqs/donor-faqs/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsDonateDropdownOpen(false)}
                   >
@@ -98,8 +96,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/un-dumpster-day/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsDonateDropdownOpen(false)}
                   >
@@ -122,8 +118,6 @@ export function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                   <a
                     href="https://reusefull.org/un-dumpster-day/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
@@ -131,8 +125,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/repair-cafes/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
@@ -140,8 +132,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/webinars/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsWhatWeDoDropdownOpen(false)}
                   >
@@ -164,8 +154,6 @@ export function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                   <a
                     href="https://reusefull.org/sign-up-for-our-newsletter/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
@@ -173,8 +161,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/events/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
@@ -182,8 +168,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/sign-up-to-volunteer/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
@@ -191,8 +175,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://givebutter.com/bereusefull"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsGetInvolvedDropdownOpen(false)}
                   >
@@ -215,8 +197,6 @@ export function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                   <a
                     href="https://reusefull.org/become-a-charity-partner/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
@@ -224,8 +204,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://app.reusefull.org/charity/signup/step/1"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
@@ -240,8 +218,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/become-a-charity-partner/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
@@ -249,8 +225,6 @@ export function Header() {
                   </a>
                   <a
                     href="https://reusefull.org/un-dumpster-day/"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                     onClick={() => setIsCharityDropdownOpen(false)}
                   >
@@ -321,8 +295,6 @@ export function Header() {
                 </Link>
                 <a
                   href="https://reusefull.org/faqs/donor-faqs/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -330,8 +302,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/un-dumpster-day/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -344,8 +314,6 @@ export function Header() {
                 </div>
                 <a
                   href="https://reusefull.org/un-dumpster-day/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -353,8 +321,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/repair-cafes/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -362,8 +328,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/webinars/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -376,8 +340,6 @@ export function Header() {
                 </div>
                 <a
                   href="https://reusefull.org/sign-up-for-our-newsletter/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -385,8 +347,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/events/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -394,8 +354,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/sign-up-to-volunteer/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -403,8 +361,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://givebutter.com/bereusefull"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -417,8 +373,6 @@ export function Header() {
                 </div>
                 <a
                   href="https://reusefull.org/become-a-charity-partner/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -426,8 +380,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://app.reusefull.org/charity/signup/step/1"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -442,8 +394,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/become-a-charity-partner/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -451,8 +401,6 @@ export function Header() {
                 </a>
                 <a
                   href="https://reusefull.org/un-dumpster-day/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
