@@ -62,7 +62,7 @@ public class Function
             Console.WriteLine($"connstring={connectionString} and error: {ex.Message}");
         }
         string serializedTypes = JsonSerializer.Serialize(types, CharityToTypeTypeSerializer.Default.ListCharityToTypeType);
-        LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
+        //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
     }
 }
