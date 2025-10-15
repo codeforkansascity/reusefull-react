@@ -54,20 +54,17 @@ export function Header() {
         <div className="flex items-center justify-between h-20">
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3 group">
+            <Link to="/" className="flex items-center group">
               <img
                 src="/reusefull-logo-350.png"
                 alt="Reusefull Logo"
-                className="h-10 w-10 object-contain transition-transform group-hover:scale-105"
+                className="h-20 w-20 object-contain transition-transform group-hover:scale-105"
               />
-              <div className="flex items-center space-x-2">
-                <h1 className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">REUSEFULL</h1>
-              </div>
             </Link>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden 2xl:flex items-center space-x-2">
+          <nav className="hidden md:flex items-center space-x-2">
             <div className="relative group" ref={donateDropdownRef}>
               <button
                 onClick={() => setIsDonateDropdownOpen(!isDonateDropdownOpen)}
@@ -245,7 +242,7 @@ export function Header() {
           </nav>
 
           {/* Desktop Action Buttons */}
-          <div className="hidden 2xl:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 text-md font-medium">
               Signup
             </Button>
@@ -259,7 +256,7 @@ export function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="2xl:hidden">
+          <div className="md:hidden">
             <button
               type="button"
               onClick={toggleMobileMenu}
@@ -273,7 +270,7 @@ export function Header() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div ref={mobileMenuRef} className="2xl:hidden border-t border-gray-100 bg-white">
+          <div ref={mobileMenuRef} className="md:hidden border-t border-gray-100 bg-white">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link
                 to="/"
