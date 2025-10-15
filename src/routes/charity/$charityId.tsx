@@ -48,7 +48,7 @@ function CharityDetailsComponent() {
               The organization you're looking for doesn't exist or has been removed.
             </Text>
             <Link to="/donate/results">
-              <Button size="lg" className="mt-8">
+              <Button size="lg" className="mt-8 cursor-pointer">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Results
               </Button>
@@ -65,7 +65,7 @@ function CharityDetailsComponent() {
         {/* Back Button */}
         <div className="mb-8">
           <Link to="/donate/results">
-            <Button variant="outline" size="sm" className="text-white/90 hover:text-white hover:border-white/60">
+            <Button variant="outline" size="sm" className="text-white/90 hover:text-white hover:border-white/60 cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Results
             </Button>
@@ -135,7 +135,7 @@ function CharityDetailsComponent() {
                   <Button
                     size="lg"
                     onClick={() => window.open(organization.LinkWebsite, '_blank')}
-                    className="bg-white text-blue-900 hover:bg-white/90"
+                    className="bg-white text-blue-900 hover:bg-white/90 cursor-pointer"
                   >
                     <Globe className="w-4 h-4 mr-2" />
                     Visit Website
@@ -161,7 +161,7 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="lg"
                     onClick={() => window.open(organization.LinkVolunteer, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10"
+                    className="text-white border-white/30 hover:bg-white/10 cursor-pointer"
                   >
                     <User className="w-4 h-4 mr-2" />
                     Volunteer

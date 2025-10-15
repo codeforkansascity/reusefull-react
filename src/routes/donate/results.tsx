@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { useDonationStore } from '@/stores/donationStore'
-import { useCallback, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useResults from '@/hooks/useResults'
+import { useDonationStore } from '@/stores/donationStore'
 import { formatPhone } from '@/utils/formatPhone'
 import { CharityMap } from '@/components/CharityMap'
 import {
@@ -16,7 +16,7 @@ import {
   Text,
   LoadingSpinner,
 } from '@/components/ui'
-import { MapPin, Phone as PhoneIcon, Globe, Truck, Package, CheckCircle } from 'lucide-react'
+import { MapPin, Phone as PhoneIcon, Globe, Truck, Package, CheckCircle, ArrowLeft } from 'lucide-react'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
 
@@ -33,19 +33,37 @@ export const Route = createFileRoute('/donate/results')({
 })
 
 function RouteComponent() {
-  const { resetAll } = useDonationStore()
   const navigate = useNavigate()
-  const results = useResults()
+  const liveResults = useResults()
+  const [persistentResults, setPersistentResults] = useState<any[]>([])
+  const { loadFiltersFromStorage } = useDonationStore()
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const startOver = useCallback(() => {
-    resetAll()
-    navigate({ to: '/donate' })
-  }, [navigate, resetAll])
+  // Handle persistent results
+  useEffect(() => {
+    // Try to get results from sessionStorage first
+    const storedResults = sessionStorage.getItem('filtered-results')
+    if (storedResults) {
+      try {
+        const parsedResults = JSON.parse(storedResults)
+        setPersistentResults(parsedResults)
+      } catch (error) {
+        console.error('Error parsing stored results:', error)
+        sessionStorage.removeItem('filtered-results')
+      }
+    } else if (liveResults.length > 0) {
+      // If no stored results but we have live results, store them
+      sessionStorage.setItem('filtered-results', JSON.stringify(liveResults))
+      setPersistentResults(liveResults)
+    }
+  }, [liveResults])
+
+  // Use persistent results if available, otherwise use live results
+  const results = persistentResults.length > 0 ? persistentResults : liveResults
 
   if (results.length === 0) {
     return (
@@ -55,11 +73,16 @@ function RouteComponent() {
             <Headline as="h1" size="2xl" className="mb-8 text-white">
               No Organizations Found
             </Headline>
-            <Text size="lg" className="max-w-2xl mx-auto text-white/90">
+            <Text size="lg" className="max-w-2xl mx-auto mb-8 text-white/90">
               We couldn't find any organizations that match your donation criteria. Try adjusting your preferences to see more results.
             </Text>
-            <Button onClick={startOver} size="lg" className="mt-8 cursor-pointer text-md">
-              Start Over
+            <Button onClick={() => {
+              // Load stored filters before navigating
+              loadFiltersFromStorage()
+              navigate({ to: '/donate' })
+            }} size="lg" className="cursor-pointer text-md">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Update Selected Filters
             </Button>
           </div>
         </Container>
@@ -78,8 +101,13 @@ function RouteComponent() {
           <Text size="lg" className="max-w-2xl mx-auto mb-8 text-white/90">
             We found {results.length} organization{results.length !== 1 ? 's' : ''} that match your donation criteria
           </Text>
-          <Button onClick={startOver} variant="outline" size="lg" className="cursor-pointer text-md">
-            Start Over
+          <Button onClick={() => {
+            // Load stored filters before navigating
+            loadFiltersFromStorage()
+            navigate({ to: '/donate' })
+          }} variant="default" size="lg" className="cursor-pointer text-md">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Update Selected Filters
           </Button>
         </div>
 

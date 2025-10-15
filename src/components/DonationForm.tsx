@@ -1,6 +1,8 @@
 import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Headline, Container } from '@/components/ui'
 import { useDonationStore } from '@/stores/donationStore'
-import { Link } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
+import useResults from '@/hooks/useResults'
+import { useEffect } from 'react'
 
 interface DonationFormProps {
   items: Array<{ Id: number; Name: string }>
@@ -19,13 +21,22 @@ export function DonationForm({ items, categories }: DonationFormProps) {
     clearItems,
     resetAll,
     isFormValid,
+    saveFiltersToStorage,
+    loadFiltersFromStorage,
   } = useDonationStore()
+  const navigate = useNavigate()
+  const results = useResults()
+
+  // Load filters from storage when component mounts
+  useEffect(() => {
+    loadFiltersFromStorage()
+  }, [loadFiltersFromStorage])
 
   const handleDeliveryMethodChange = (method: 'pickup' | 'dropoff') => {
     setDeliveryMethod(method, !formData.deliveryMethod[method])
   }
 
-  const handleConsiderationChange = (consideration: 'resell' | 'faithBased') => {
+  const handleConsiderationChange = (consideration: 'resell') => {
     setConsideration(consideration, !formData.considerations[consideration])
   }
 
@@ -52,6 +63,19 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
   const handleResetAll = () => {
     resetAll()
+    // Clear stored filters and results
+    sessionStorage.removeItem('donation-filters')
+    sessionStorage.removeItem('filtered-results')
+  }
+
+  const handleContinueToResults = () => {
+    // Save current filters to storage
+    saveFiltersToStorage()
+    // Store the current results before navigating
+    if (results.length > 0) {
+      sessionStorage.setItem('filtered-results', JSON.stringify(results))
+    }
+    navigate({ to: '/donate/results' })
   }
 
   return (
@@ -108,9 +132,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
             {/* Considerations */}
             <div>
               <h3 className="text-base font-semibold text-card-foreground mb-3">
-                Do you have any extra considerations? <span className="text-gray-500 text-xs">(Optional)</span>
+                Do you have any extra considerations? <span className="text-gray-500 text-sm">(Optional)</span>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="resell"
@@ -119,18 +143,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     size="sm"
                   />
                   <label htmlFor="resell" className="flex-1 cursor-pointer text-base text-card-foreground">
-                    Include organizations that resell items
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
-                  <Checkbox
-                    id="faithBased"
-                    checked={formData.considerations.faithBased}
-                    onChange={() => handleConsiderationChange('faithBased')}
-                    size="sm"
-                  />
-                  <label htmlFor="faithBased" className="flex-1 cursor-pointer text-base text-card-foreground">
-                    Include faith-based organizations
+                    Exclude organizations that resell items
                   </label>
                 </div>
               </div>
@@ -228,11 +241,14 @@ export function DonationForm({ items, categories }: DonationFormProps) {
 
         {/* Submit Button */}
         <div className="flex justify-center">
-          <Link to="/donate/results" disabled={!isFormValid()} className="">
-            <Button size="xl" disabled={!isFormValid()} className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer">
-              Continue to results
-            </Button>
-          </Link>
+          <Button 
+            size="xl" 
+            disabled={!isFormValid()} 
+            onClick={handleContinueToResults}
+            className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer"
+          >
+            Continue to results
+          </Button>
         </div>
       </div>
     </Container>
