@@ -24,7 +24,7 @@ public class Function
 
         await LambdaBootstrapBuilder.Create(
             handler,
-            new SourceGeneratorLambdaJsonSerializer<CharityToItemTypeSerializer>()
+            new SourceGeneratorLambdaJsonSerializer<CharityToTypeTypeSerializer>()
         ).Build().RunAsync();
     }
 
@@ -38,7 +38,7 @@ public class Function
             {
                 await connection.OpenAsync();
 
-                string sql = "select c.name as CharityName, types.name as TypeName, c.id as CharityId, types.id as TypeId from charity c join charity_item i on c.id = i.charity_id inner join types on types.id = i.item_id order by 1,2";
+                string sql = "select c.name as CharityName, types.name as TypeName, c.id as CharityId, types.id as TypeId from charity c join charity_type i on c.id = i.charity_id inner join types on types.id = i.type_id order by 1,2";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
@@ -61,7 +61,7 @@ public class Function
         {
             Console.WriteLine($"connstring={connectionString} and error: {ex.Message}");
         }
-        string serializedTypes = JsonSerializer.Serialize(types, CharityToTypeTypeSerializer.Default.ListCharityToItemType);
+        string serializedTypes = JsonSerializer.Serialize(types, CharityToTypeTypeSerializer.Default.ListCharityToTypeType);
         //LambdaLogger.Log($"Reusefull Serialized types: {serializedTypes}");
         return serializedTypes;
     }
