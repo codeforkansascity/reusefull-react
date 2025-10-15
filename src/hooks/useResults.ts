@@ -104,7 +104,7 @@ export default function useResults() {
       console.log('Selected categories:', formData.selectedCategories)
 
       // Build a keyword list per selected category (basic synonyms to improve recall)
-      const categoryToKeywords = (category) => {
+      const categoryToKeywords = (category: string) => {
         const c = category.toLowerCase()
         if (c.includes('job') || c.includes('employ')) {
           return ['job', 'jobs', 'employment', 'employ', 'employer', 'work', 'workforce', 'career', 'careers', 'training', 'job training', 'career training', 'skill', 'skills', 'resume', 'apprentice', 'apprenticeship', 'intern', 'internship']
