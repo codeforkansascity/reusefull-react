@@ -7,7 +7,6 @@ export interface DonationFormData {
   }
   considerations: {
     resell: boolean
-    faithBased: boolean
   }
   itemCondition: {
     new: boolean
@@ -20,7 +19,7 @@ export interface DonationFormData {
 interface DonationStore {
   formData: DonationFormData
   setDeliveryMethod: (method: 'pickup' | 'dropoff', value: boolean) => void
-  setConsideration: (consideration: 'resell' | 'faithBased', value: boolean) => void
+  setConsideration: (consideration: 'resell', value: boolean) => void
   setItemCondition: (condition: 'new' | 'used', value: boolean) => void
   toggleItem: (itemName: string) => void
   toggleCategory: (categoryType: string) => void
@@ -29,6 +28,8 @@ interface DonationStore {
   resetAll: () => void
   isFormValid: () => boolean
   setFormData: (data: Partial<DonationFormData>) => void
+  saveFiltersToStorage: () => void
+  loadFiltersFromStorage: () => void
 }
 
 const initialFormData: DonationFormData = {
@@ -38,7 +39,6 @@ const initialFormData: DonationFormData = {
   },
   considerations: {
     resell: false,
-    faithBased: false,
   },
   itemCondition: {
     new: false,
@@ -142,4 +142,22 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
         ...data,
       },
     })),
+
+  saveFiltersToStorage: () => {
+    const { formData } = get()
+    sessionStorage.setItem('donation-filters', JSON.stringify(formData))
+  },
+
+  loadFiltersFromStorage: () => {
+    const storedFilters = sessionStorage.getItem('donation-filters')
+    if (storedFilters) {
+      try {
+        const parsedFilters = JSON.parse(storedFilters)
+        set({ formData: parsedFilters })
+      } catch (error) {
+        console.error('Error parsing stored filters:', error)
+        sessionStorage.removeItem('donation-filters')
+      }
+    }
+  },
 }))
