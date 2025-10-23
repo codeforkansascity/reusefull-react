@@ -1,167 +1,177 @@
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
+import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { useDonationStore } from '@/stores/donationStore'
 import { useSuspenseQueries } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import {useState, useEffect } from 'react'
+import { isOrgWithinDistance } from '@/utils/geocoding'
 
 export default function useResults() {
   const { formData } = useDonationStore()
-  const [{ data: orgs }, { data: orgItems }, { data: categories }] = useSuspenseQueries({
-    queries: [orgsQuery, orgItemsQuery, categoriesQuery],
+  const [{ data: orgs }, { data: orgItems }, { data: categories }, { data: orgCharityTypes }] = useSuspenseQueries({
+    queries: [orgsQuery, orgItemsQuery, categoriesQuery, orgCharityTypesQuery],
   })
 
-  console.log('=== DEBUGGING FILTERING ===')
-  console.log('Total organizations in database:', orgs?.length)
-  console.log('Total org items in database:', orgItems?.length)
-  console.log('Total categories in database:', categories?.length)
-  console.log('Form data:', JSON.stringify(formData, null, 2))
-  console.log('Selected items:', formData.selectedItems)
-  console.log('Selected categories:', formData.selectedCategories)
-  console.log('Delivery method:', formData.deliveryMethod)
-  console.log('Considerations:', formData.considerations)
-  console.log('Item condition:', formData.itemCondition)
-  
-  // Debug sample data
-  console.log('Sample org:', orgs?.[0])
-  console.log('Sample orgItem:', orgItems?.[0])
-  console.log('Sample category:', categories?.[0])
 
-  return useMemo(() => {
-    if (!orgs || !orgItems || !categories) return []
+  const [finalResults, setFinalResults] = useState<NonNullable<typeof orgs>[number][]>([])
+  const [, setIsFiltering] = useState(false)
 
-    // Step-by-step filtering approach
-    let filteredOrgs = [...orgs] // Start with all organizations
-    console.log(`Step 0: Starting with ${filteredOrgs.length} organizations`)
+  // Complete filtering logic with location filtering
+  useEffect(() => {
+    if (!orgs || !orgItems || !categories || !orgCharityTypes) {
+      setFinalResults([])
+      return
+    }
 
-    // Step 1: Filter by delivery method (pickup or dropoff)
-    filteredOrgs = filteredOrgs.filter((org) => {
-      const deliveryMatch = (formData.deliveryMethod.pickup && org.Pickup) || (formData.deliveryMethod.dropoff && org.Dropoff)
-      if (!deliveryMatch) {
-        console.log(`❌ Filtered out org ${org.Id} (${org.Name}): pickup=${org.Pickup}, dropoff=${org.Dropoff}`)
+    const performFiltering = async () => {
+      setIsFiltering(true)
+      console.log('=== COMPLETE FILTERING LOGIC ===')
+      console.log('Form data:', JSON.stringify(formData, null, 2))
+      console.log('Total orgs:', orgs.length)
+      console.log('Total orgItems:', orgItems.length)
+      console.log('Total categories:', categories.length)
+      console.log('Total orgCharityTypes:', orgCharityTypes.length)
+
+      // STEP 0: LOCATION FILTERING (FIRST - most restrictive)
+      let currentFilteredOrgs = [...orgs]
+      
+      if (formData.location.zipCode) {
+        console.log('STEP 0 - Location Filtering: Checking ZIP code and distance...')
+        
+        const locationFilteredResults = []
+        
+      for (const org of orgs) {
+        if (org.Lat && org.Lng) {
+          console.log(`Checking org: ${org.Name} at coordinates (${org.Lat}, ${org.Lng})`)
+          
+          const isWithinDistance = await isOrgWithinDistance(
+            org.Lat,                    // Real Lat from API endpoint
+            org.Lng,                    // Real Lng from API endpoint
+            formData.location.zipCode,
+            formData.location.distance
+          )
+          
+          if (isWithinDistance) {
+            locationFilteredResults.push(org)
+            console.log(`✅ ${org.Name} is within distance`)
+          } else {
+            console.log(`❌ ${org.Name} is too far`)
+          }
+        } else {
+          console.log(`⚠️ ${org.Name} has no coordinates (Lat: ${org.Lat}, Lng: ${org.Lng})`)
+        }
       }
-      return deliveryMatch
-    })
-    console.log(`Step 1: After delivery method filtering: ${filteredOrgs.length} organizations`)
-
-    // Step 2: Filter by extra considerations (resell)
-    filteredOrgs = filteredOrgs.filter((org) => {
-      // If user doesn't want resell orgs, exclude them
-      if (!formData.considerations.resell && org.Resell) {
-        return false
+        
+        currentFilteredOrgs = locationFilteredResults
+        console.log(`STEP 0 - Location Filtering: ${currentFilteredOrgs.length} orgs within ${formData.location.distance} miles of ${formData.location.zipCode}`)
       }
       
-      return true
-    })
-    console.log(`Step 2: After considerations filtering: ${filteredOrgs.length} organizations`)
+      console.log(`Starting with ${currentFilteredOrgs.length} organizations`)
 
-    // Step 3: Filter by item condition (new items only - match Go logic)
-    filteredOrgs = filteredOrgs.filter((org) => {
-      // If user selected new items, org must accept new items
-      if (formData.itemCondition.new && !org.NewItems) {
-        return false
+    // STEP 1: DELIVERY METHOD FILTERING
+    // Check both pickup and dropoff options
+    currentFilteredOrgs = currentFilteredOrgs.filter((org) => {
+      const pickupMatch = formData.deliveryMethod.pickup && org.Pickup
+      const dropoffMatch = formData.deliveryMethod.dropoff && org.Dropoff
+      return pickupMatch || dropoffMatch
+    })
+    console.log(`STEP 1 - Delivery Method: ${currentFilteredOrgs.length} orgs`)
+
+    // STEP 2: RESELL CONSIDERATIONS FILTERING
+    // If user selected "exclude resell orgs", remove orgs with Resell: true
+    currentFilteredOrgs = currentFilteredOrgs.filter((org) => {
+      if (formData.considerations.resell && org.Resell) {
+        return false // Exclude this org
       }
-      
-      // Note: Go code doesn't filter by used items (good_items), so we don't either
-      return true
+      return true // Include this org
     })
-    console.log(`Step 3: After item condition filtering: ${filteredOrgs.length} organizations`)
+    console.log(`STEP 2 - Resell Considerations: ${currentFilteredOrgs.length} orgs`)
 
-    // Step 4 & 5: Get charity IDs that match items and categories (like Go's itBits and ctBits)
-    let itemTypeCharityIds = new Set()
-    let charityTypeCharityIds = new Set()
-    
-    // Step 4: Get charity IDs that accept the selected item types (like Go's itBits)
+    // STEP 3: ITEM CONDITION FILTERING
+    // Check both new and used options
+    currentFilteredOrgs = currentFilteredOrgs.filter((org) => {
+      const newItemsMatch = formData.itemCondition.new && org.NewItems
+      const usedItemsMatch = formData.itemCondition.used && org.GoodItems
+      return newItemsMatch || usedItemsMatch
+    })
+    console.log(`STEP 3 - Item Condition: ${currentFilteredOrgs.length} orgs`)
+
+    // STEP 4: ITEM TYPES FILTERING
+    // Use orgItems endpoint to find orgs that accept selected items
     if (formData.selectedItems.length > 0) {
-      console.log('🔍 Checking item matches...')
-      console.log('Selected items:', formData.selectedItems)
+      console.log('STEP 4 - Item Types: Checking', formData.selectedItems)
+      console.log('Sample orgItem:', orgItems[0])
       
+      // Get charity IDs that accept the selected items
+      const itemTypeCharityIds = new Set<number>()
       orgItems.forEach((orgItem) => {
-        // Check if this orgItem matches any selected item
-        const matches = formData.selectedItems.some((selectedItem) => {
+        const itemMatches = formData.selectedItems.some((selectedItem) => {
           const selectedLower = selectedItem.toLowerCase()
           const itemNameLower = orgItem.ItemName.toLowerCase()
           const match = itemNameLower.includes(selectedLower) || selectedLower.includes(itemNameLower)
           
           if (match) {
-            console.log(`✅ Item match: "${orgItem.ItemName}" matches "${selectedItem}" for org ${orgItem.CharityId}`)
+            console.log(`✅ Item match: "${orgItem.ItemName}" matches "${selectedItem}" for charity ${orgItem.CharityId} (${orgItem.CharityName})`)
           }
           
           return match
         })
         
-        if (matches) {
+        if (itemMatches) {
           itemTypeCharityIds.add(orgItem.CharityId)
         }
       })
       
-      console.log(`Item types matching charity IDs:`, Array.from(itemTypeCharityIds))
+      console.log(`STEP 4 - Item Types: Found ${itemTypeCharityIds.size} matching charity IDs:`, Array.from(itemTypeCharityIds))
+      
+      // Filter organizations to only include those that accept the selected items
+      currentFilteredOrgs = currentFilteredOrgs.filter((org) => itemTypeCharityIds.has(org.Id))
+      console.log(`STEP 4 - Item Types: ${currentFilteredOrgs.length} orgs after item filtering`)
     }
 
-    // Step 5: Category filtering via robust text matching against org fields (temporary until mapping endpoint)
+    // STEP 5: CATEGORY TYPES FILTERING
+    // Use orgCharityTypes endpoint to find orgs that match selected categories
     if (formData.selectedCategories.length > 0) {
-      console.log('🔍 Checking category matches...')
-      console.log('Selected categories:', formData.selectedCategories)
-
-      // Build a keyword list per selected category (basic synonyms to improve recall)
-      const categoryToKeywords = (category: string) => {
-        const c = category.toLowerCase()
-        if (c.includes('job') || c.includes('employ')) {
-          return ['job', 'jobs', 'employment', 'employ', 'employer', 'work', 'workforce', 'career', 'careers', 'training', 'job training', 'career training', 'skill', 'skills', 'resume', 'apprentice', 'apprenticeship', 'intern', 'internship']
-        }
-        if (c.includes('college') || c.includes('universit')) {
-          return ['college', 'university', 'universities', 'campus', 'higher education', 'students']
-        }
-        // default: use the raw category text
-        return [category]
-      }
-
-      const keywords = formData.selectedCategories.flatMap(categoryToKeywords).map((k) => k.toLowerCase())
-
-      orgs.forEach((org) => {
-        const blob = `${org.Name || ''} ${org.Mission || ''} ${org.Description || ''}`.toLowerCase()
-        const matches = keywords.some((kw) => blob.includes(kw))
-        if (matches) {
-          charityTypeCharityIds.add(org.Id)
+      console.log('STEP 5 - Category Types: Checking', formData.selectedCategories)
+      
+      // Map selected category names to their TypeIds
+      const selectedTypeIds = new Set<number>()
+      formData.selectedCategories.forEach((selectedCategory) => {
+        const categoryMatch = categories.find(cat => 
+          cat.Type.toLowerCase() === selectedCategory.toLowerCase()
+        )
+        if (categoryMatch) {
+          selectedTypeIds.add(categoryMatch.Id)
         }
       })
-
-      console.log('Category keyword list used:', keywords)
-      console.log('Charity types matching charity IDs:', Array.from(charityTypeCharityIds))
-    }
-    
-    // Step 6: Combine item types and charity types (like Go's itBits.And(ctBits))
-    let finalCharityIds = new Set()
-    
-    if (itemTypeCharityIds.size > 0 && charityTypeCharityIds.size > 0) {
-      // Both item types and charity types selected - combine them (AND operation)
-      finalCharityIds = new Set([...itemTypeCharityIds].filter(id => charityTypeCharityIds.has(id)))
-      console.log(`Combining item types (${itemTypeCharityIds.size}) with charity types (${charityTypeCharityIds.size})`)
-      console.log(`Final combined charity IDs:`, Array.from(finalCharityIds))
-    } else if (itemTypeCharityIds.size > 0) {
-      // Only item types selected
-      finalCharityIds = itemTypeCharityIds
-      console.log(`Using only item types:`, Array.from(finalCharityIds))
-    } else if (charityTypeCharityIds.size > 0) {
-      // Only charity types selected
-      finalCharityIds = charityTypeCharityIds
-      console.log(`Using only charity types:`, Array.from(finalCharityIds))
-    }
-    
-    // Step 7: Apply the final filtering based on combined item types and charity types
-    // Gate on either items or categories now that category filtering is enabled
-    const userSelectedSomething = formData.selectedItems.length > 0 || formData.selectedCategories.length > 0
-    if (userSelectedSomething) {
-      // If the user selected items/categories but there are no matches, return [] (match Go behavior)
-      if (finalCharityIds.size === 0) {
-        console.log('No item/category matches for current selections → returning 0 orgs')
-        return []
-      }
-
-      filteredOrgs = filteredOrgs.filter((org) => finalCharityIds.has(org.Id))
-      console.log(`Step 4&5: After combined items/categories filtering: ${filteredOrgs.length} organizations`)
+      
+      console.log(`STEP 5 - Category Types: Mapped to TypeIds:`, Array.from(selectedTypeIds))
+      
+      // Get charity IDs that match the selected categories
+      const charityTypeCharityIds = new Set<number>()
+      orgCharityTypes.forEach((mapping) => {
+        if (selectedTypeIds.has(mapping.TypeId)) {
+          charityTypeCharityIds.add(mapping.CharityId)
+        }
+      })
+      
+      console.log(`STEP 5 - Category Types: Found ${charityTypeCharityIds.size} matching charity IDs`)
+      
+      // Filter organizations to only include those that match the selected categories
+      currentFilteredOrgs = currentFilteredOrgs.filter((org) => charityTypeCharityIds.has(org.Id))
+      console.log(`STEP 5 - Category Types: ${currentFilteredOrgs.length} orgs after category filtering`)
     }
 
-    return filteredOrgs
-  }, [orgs, orgItems, categories, formData])
+      console.log('=== FINAL RESULTS ===')
+      console.log('Final orgs:', currentFilteredOrgs.map(org => ({ id: org.Id, name: org.Name })))
+      
+      setFinalResults(currentFilteredOrgs)
+      setIsFiltering(false)
+    }
+
+    performFiltering()
+  }, [orgs, orgItems, categories, orgCharityTypes, formData])
+
+  return finalResults
 }

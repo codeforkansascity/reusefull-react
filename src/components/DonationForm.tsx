@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Headline, Container } from '@/components/ui'
+import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Headline, Container, Input, Text } from '@/components/ui'
 import { useDonationStore } from '@/stores/donationStore'
 import { useNavigate } from '@tanstack/react-router'
 import useResults from '@/hooks/useResults'
@@ -23,6 +23,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
     isFormValid,
     saveFiltersToStorage,
     loadFiltersFromStorage,
+    setLocation,
   } = useDonationStore()
   const navigate = useNavigate()
   const results = useResults()
@@ -147,6 +148,44 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                   </label>
                 </div>
               </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <h3 className="text-base font-semibold text-card-foreground mb-3">
+                Where are you located? <span className="text-gray-500 text-sm">(Optional)</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="zipCode" className="block text-sm font-medium text-card-foreground mb-2">
+                    ZIP Code
+                  </label>
+                  <Input
+                    id="zipCode"
+                    type="text"
+                    placeholder="Enter ZIP code"
+                    value={formData.location.zipCode}
+                    onChange={(e) => setLocation(e.target.value, formData.location.distance)}
+                    className="w-full bg-white border-gray-300 text-gray-900 text-base"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="distance" className="block text-sm font-medium text-card-foreground mb-2">
+                    Distance (miles)
+                  </label>
+                  <Input
+                    id="distance"
+                    type="text"
+                    placeholder="Enter distance in miles"
+                    value={formData.location.distance || ''}
+                    onChange={(e) => setLocation(formData.location.zipCode, parseInt(e.target.value))}
+                    className="w-full bg-white border-gray-300 text-gray-900 text-base"
+                  />
+                </div>
+              </div>
+              <Text size="sm" className="text-gray-500 mt-2">
+                Enter your ZIP code to find organizations within your specified distance range.
+              </Text>
             </div>
 
             {/* Item Condition */}
