@@ -163,7 +163,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                   <Input
                     id="zipCode"
                     type="text"
-                    placeholder="e.g., 66223"
+                    placeholder="Enter ZIP code"
                     value={formData.location.zipCode}
                     onChange={(e) => setLocation(e.target.value, formData.location.distance)}
                     className="w-full bg-white border-gray-300 text-gray-900 text-base"
@@ -176,7 +176,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                   <Input
                     id="distance"
                     type="text"
-                    placeholder="e.g., 10"
+                    placeholder="Enter distance in miles"
                     value={formData.location.distance || ''}
                     onChange={(e) => setLocation(formData.location.zipCode, parseInt(e.target.value))}
                     className="w-full bg-white border-gray-300 text-gray-900 text-base"

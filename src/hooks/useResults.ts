@@ -4,7 +4,7 @@ import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { useDonationStore } from '@/stores/donationStore'
 import { useSuspenseQueries } from '@tanstack/react-query'
-import { useMemo, useState, useEffect } from 'react'
+import {useState, useEffect } from 'react'
 import { isOrgWithinDistance } from '@/utils/geocoding'
 
 export default function useResults() {
@@ -14,8 +14,8 @@ export default function useResults() {
   })
 
 
-  const [finalResults, setFinalResults] = useState([])
-  const [isFiltering, setIsFiltering] = useState(false)
+  const [finalResults, setFinalResults] = useState<NonNullable<typeof orgs>[number][]>([])
+  const [, setIsFiltering] = useState(false)
 
   // Complete filtering logic with location filtering
   useEffect(() => {
