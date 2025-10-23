@@ -55,6 +55,12 @@ declare global {
       Lat: number
       Lng: number
     }[]
+    'https://ea72ghbgvxuwvy37ixyeztt5mu0uvtcm.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+      CharityId: number
+      TypeId: number
+      TypeName: string
+      CharityName: string
+    }[]
   }
   interface PostEndpoints {}
   interface PutEndpoints {}

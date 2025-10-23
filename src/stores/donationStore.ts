@@ -14,6 +14,10 @@ export interface DonationFormData {
   }
   selectedItems: string[]
   selectedCategories: string[]
+  location: {
+    zipCode: string
+    distance: number // in miles
+  }
 }
 
 interface DonationStore {
@@ -30,6 +34,7 @@ interface DonationStore {
   setFormData: (data: Partial<DonationFormData>) => void
   saveFiltersToStorage: () => void
   loadFiltersFromStorage: () => void
+  setLocation: (zipCode: string, distance: number) => void
 }
 
 const initialFormData: DonationFormData = {
@@ -46,6 +51,10 @@ const initialFormData: DonationFormData = {
   },
   selectedItems: [],
   selectedCategories: [],
+  location: {
+    zipCode: '',
+    distance: 0,
+  },
 }
 
 export const useDonationStore = create<DonationStore>((set, get) => ({
@@ -160,4 +169,15 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
       }
     }
   },
+
+  setLocation: (zipCode, distance) =>
+    set((state) => ({
+      formData: {
+        ...state.formData,
+        location: {
+          zipCode,
+          distance,
+        },
+      },
+    })),
 }))
