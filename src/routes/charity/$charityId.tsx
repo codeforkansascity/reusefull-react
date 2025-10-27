@@ -2,6 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
+import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
+import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
 import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, ExternalLink, Heart, Building } from 'lucide-react'
@@ -21,8 +23,10 @@ function CharityDetailsComponent() {
 
   const { data: organizations, isLoading: orgsLoading } = useQuery(orgsQuery)
   const { data: orgItems, isLoading: itemsLoading } = useQuery(orgItemsQuery)
+  const { data: orgCharityTypes, isLoading: typesLoading } = useQuery(orgCharityTypesQuery)
+  const { data: categories, isLoading: categoriesLoading } = useQuery(categoriesQuery)
 
-  if (orgsLoading || itemsLoading) {
+  if (orgsLoading || itemsLoading || typesLoading || categoriesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <LoadingSpinner message="Loading charity details..." size="lg" textClassName="text-white" />
@@ -32,9 +36,16 @@ function CharityDetailsComponent() {
 
   const organization = organizations?.find((org) => org.Id === orgId)
 
+  // safe defaults for possibly-undefined query results
+  const orgCharityTypesSafe = orgCharityTypes ?? []
+  const categoriesSafe = categories ?? []
+
   const filteredOrgItems = Array.from(
     new Set(orgItems?.filter(({ CharityId }) => CharityId === orgId).map(({ ItemName }) => ItemName) ?? [])
   )
+
+  // compute the org's category/type entries safely
+  const orgTypesForOrg = orgCharityTypesSafe.filter((t) => t.CharityId === orgId)
 
   if (!organization) {
     return (
@@ -148,7 +159,7 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="lg"
                     onClick={() => window.open(organization.LinkWishlist, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10"
+                    className="text-white border-white/30 hover:bg-white/10 cursor-pointer"
                   >
                     <Heart className="w-4 h-4 mr-2" />
                     View Wishlist
@@ -242,6 +253,28 @@ function CharityDetailsComponent() {
                       <Text className="text-card-foreground">Accepts drop-offs</Text>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Organization Types */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-card-foreground text-xl md:text-2xl font-semibold">Organization Types</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {orgTypesForOrg.map((type) => {
+                    const category = categoriesSafe.find((cat) => cat.Id === type.TypeId)
+                    return category ? (
+                      <span
+                        key={type.TypeId}
+                        className="px-3 py-2 bg-primary/10 text-primary text-sm font-medium rounded-full"
+                      >
+                        {category.Type}
+                      </span>
+                    ) : null
+                  })}
                 </div>
               </CardContent>
             </Card>
