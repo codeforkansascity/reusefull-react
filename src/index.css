@@ -67,7 +67,13 @@ body {
     'calt' 1;
 }
 
-/* Custom scrollbar */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

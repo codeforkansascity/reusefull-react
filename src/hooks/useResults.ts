@@ -89,12 +89,22 @@ export default function useResults() {
     console.log(`STEP 2 - Resell Considerations: ${currentFilteredOrgs.length} orgs`)
 
     // STEP 3: ITEM CONDITION FILTERING
-    // Check both new and used options
     currentFilteredOrgs = currentFilteredOrgs.filter((org) => {
-      const newItemsMatch = formData.itemCondition.new && org.NewItems
-      const usedItemsMatch = formData.itemCondition.used && org.GoodItems
-      return newItemsMatch || usedItemsMatch
-    })
+      // If both new and used are checked, accept all orgs
+      if (formData.itemCondition.new && formData.itemCondition.used) {
+        return true;
+      }
+      // If only new items checked, accept orgs with NewItems: true
+      if (formData.itemCondition.new) {
+        return org.NewItems === true;
+      }
+      // If only used items checked, accept orgs with NewItems: false
+      if (formData.itemCondition.used) {
+        return org.NewItems === false;
+      }
+      // If neither checked (since it's optional now), accept all orgs
+      return true;
+    });
     console.log(`STEP 3 - Item Condition: ${currentFilteredOrgs.length} orgs`)
 
     // STEP 4: ITEM TYPES FILTERING

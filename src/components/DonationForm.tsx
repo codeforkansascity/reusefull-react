@@ -284,7 +284,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
             size="xl" 
             disabled={!isFormValid()} 
             onClick={handleContinueToResults}
-            className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer"
+            className="px-12 py-4 text-lg disabled:cursor-default cursor-pointer bg-orange-500 hover:bg-orange-600"
           >
             Continue to results
           </Button>
