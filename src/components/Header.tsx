@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui'
+import { useAuth0 } from '@auth0/auth0-react'
 import { useState, useEffect, useRef } from 'react'
 import { Menu, X, ChevronDown, User } from 'lucide-react'
 
 export function Header() {
+  const { isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDonateDropdownOpen, setIsDonateDropdownOpen] = useState(false)
   const [isWhatWeDoDropdownOpen, setIsWhatWeDoDropdownOpen] = useState(false)
@@ -199,13 +201,18 @@ export function Header() {
                   >
                     Charity Partners
                   </a>
-                  <a
-                    href="https://app.reusefull.org/charity/signup/step/1"
-                    className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
-                    onClick={() => setIsCharityDropdownOpen(false)}
+                  <button
+                    className="block w-full text-left px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                    onClick={() => {
+                      setIsCharityDropdownOpen(false)
+                      loginWithRedirect({
+                        authorizationParams: { screen_hint: 'signup', prompt: 'login' },
+                      appState: { returnTo: '/verify-email' },
+                      })
+                    }}
                   >
                     Signup
-                  </a>
+                  </button>
                   <a
                     href="#"
                     className="block px-4 py-2 text-md text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
@@ -243,16 +250,51 @@ export function Header() {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 text-md font-medium">
-              Signup
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-5 py-2 text-md font-medium flex items-center"
-            >
-              Login
-            </Button>
+            {isLoading ? null : isAuthenticated ? (
+              <>
+                <a href="/profile/edit">
+                  <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 text-md font-medium cursor-pointer">
+                    Edit Profile
+                  </Button>
+                </a>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50 px-5 py-2 text-md font-medium flex items-center cursor-pointer"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() =>
+                    loginWithRedirect({
+                      authorizationParams: { screen_hint: 'signup', prompt: 'login' },
+                      appState: { returnTo: '/verify-email' },
+                    })
+                  }
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 text-md font-medium cursor-pointer"
+                >
+                  Signup
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    loginWithRedirect({
+                      authorizationParams: { prompt: 'login' },
+                    })
+                  }
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50 px-5 py-2 text-md font-medium flex items-center cursor-pointer"
+                >
+                  Login
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -376,9 +418,16 @@ export function Header() {
                   Charity Partners
                 </a>
                 <a
-                  href="https://app.reusefull.org/charity/signup/step/1"
+                  href="/charity/signup/step/1"
                   className="text-gray-700 hover:text-blue-600 block px-6 py-2 text-md font-medium rounded-md hover:bg-blue-50 ml-4"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setIsMobileMenuOpen(false)
+                    loginWithRedirect({
+                      authorizationParams: { screen_hint: 'signup' },
+                      appState: { returnTo: '/verify-email' },
+                    })
+                  }}
                 >
                   Signup
                 </a>
@@ -428,21 +477,60 @@ export function Header() {
 
               {/* Mobile Action Buttons */}
               <div className="pt-4 pb-2 space-y-2">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-                >
-                  Charity Signup
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 text-sm font-medium flex items-center justify-center"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Login
-                </Button>
+                {isLoading ? null : isAuthenticated ? (
+                  <>
+                    <a href="/profile/edit" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium cursor-pointer"
+                      >
+                        Edit Profile
+                      </Button>
+                    </a>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        logout({ logoutParams: { returnTo: window.location.origin } })
+                      }}
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 text-sm font-medium flex items-center justify-center cursor-pointer"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                    loginWithRedirect({
+                      authorizationParams: { screen_hint: 'signup', prompt: 'login' },
+                        appState: { returnTo: '/verify-email' },
+                        })
+                      }}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium cursor-pointer"
+                    >
+                      Charity Signup
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                    loginWithRedirect({ authorizationParams: { prompt: 'login' } })
+                      }}
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 text-sm font-medium flex items-center justify-center cursor-pointer"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Login
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

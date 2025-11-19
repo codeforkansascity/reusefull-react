@@ -47,7 +47,7 @@ const initialFormData: DonationFormData = {
   },
   itemCondition: {
     new: false,
-    used: false,
+    used: true,
   },
   selectedItems: [],
   selectedCategories: [],
