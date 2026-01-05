@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { useAuth0 } from '@auth0/auth0-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useCharitySignupStore, CharitySignupData, BudgetSize } from '@/stores/charitySignupStore'
 
 type Step2Form = Pick<
@@ -76,6 +76,7 @@ function Step2Component() {
   })
 
   const selectedBudget = watch('budgetSize')
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
 
   const { isAuthenticated, isLoading, loginWithRedirect, user, getAccessTokenSilently } = useAuth0()
   useEffect(() => {
@@ -100,6 +101,8 @@ function Step2Component() {
         <form
           className="mt-10 space-y-7"
           onSubmit={handleSubmit(async (values) => {
+            // Merge with store so persisted values (like logoUrl) win over empty form fields
+            const storeData = useCharitySignupStore.getState().data
             update(values)
             try {
               const token = await getAccessTokenSilently({
@@ -108,7 +111,7 @@ function Step2Component() {
               await fetch(`${import.meta.env.VITE_API_BASE_URL}/charity-signup/draft`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ ...useCharitySignupStore.getState().data, ...values }),
+                body: JSON.stringify({ ...values, ...storeData }),
               })
             } catch {}
             navigate({ to: '/charity/signup/step/3' })
@@ -154,6 +157,7 @@ function Step2Component() {
                   const file = e.target.files?.[0]
                   if (!file) return
                   try {
+                    setIsUploadingLogo(true)
                     const token = await getAccessTokenSilently({
                       authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
                     })
@@ -161,12 +165,12 @@ function Step2Component() {
                     const presignRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/uploads/logo-url`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                      body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+                      body: JSON.stringify({ fileName: file.name }),
                     })
                     if (!presignRes.ok) throw new Error('Failed to obtain upload URL')
                     const { uploadUrl, publicUrl } = await presignRes.json()
                     // Upload directly to S3
-                    const putRes = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file })
+                    const putRes = await fetch(uploadUrl, { method: 'PUT', body: file })
                     if (!putRes.ok) throw new Error('S3 upload failed')
                     // Save the public URL as logoUrl via draft update
                     setValue('logoUrl', publicUrl)
@@ -176,8 +180,12 @@ function Step2Component() {
                       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                       body: JSON.stringify({ ...useCharitySignupStore.getState().data, logoUrl: publicUrl }),
                     })
-                  } catch {
-                    // swallow for now; could show a toast
+                  } catch (err) {
+                    // Basic feedback to help diagnose issues during upload
+                    console.error('Logo upload error:', err)
+                    alert('Logo upload failed. Please try again.')
+                  } finally {
+                    setIsUploadingLogo(false)
                   }
                 }}
                 className="block w-full text-md text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
@@ -215,7 +223,9 @@ function Step2Component() {
 
           <div className="flex justify-between">
             <button type="button" onClick={() => navigate({ to: '/charity/signup/step/1' })} className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 cursor-pointer">Back</button>
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 shadow-sm cursor-pointer">Next</button>
+            <button type="submit" disabled={isUploadingLogo} className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+              {isUploadingLogo ? 'Uploading…' : 'Next'}
+            </button>
           </div>
         </form>
       </div>

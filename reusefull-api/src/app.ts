@@ -1,4 +1,5 @@
 import express from 'express'
+import type { Request, Response } from 'express'
 import cors from 'cors'
 import { config } from './config.js'
 import { requireAuth } from './auth.js'
@@ -10,7 +11,46 @@ const app = express()
 app.use(cors({ origin: config.corsOrigin, credentials: false }))
 app.use(express.json({ limit: '1mb' }))
 
-app.get('/health', async (_req, res) => {
+async function geocodeAddress(address?: string | null, city?: string | null, state?: string | null, zip?: string | null): Promise<{ lat: number; lng: number } | null> {
+  const parts = [address, city, state, zip].filter(Boolean).join(', ')
+  if (!parts) return null
+  const ua = config.geocodeContactEmail ? `reusefull-api/1.0 (${config.geocodeContactEmail})` : 'reusefull-api/1.0'
+  try {
+    const url = new URL('https://nominatim.openstreetmap.org/search')
+    url.searchParams.set('format', 'json')
+    url.searchParams.set('q', parts)
+    url.searchParams.set('limit', '1')
+    const res = await fetch(url.toString(), { headers: { 'User-Agent': ua } } as any)
+    if (!res.ok) return null
+    const arr: any[] = await res.json()
+    const first = arr?.[0]
+    if (!first) return null
+    const lat = Number(first.lat)
+    const lng = Number(first.lon)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+    return { lat, lng }
+  } catch {
+    return null
+  }
+}
+
+// Simple admin guard that assumes requireAuth already ran
+async function assertAdmin(req: any, res: Response): Promise<{ sub: string }> {
+  const sub: string | undefined = req.auth?.payload?.sub
+  if (!sub) {
+    res.status(401).end()
+    throw new Error('unauthorized')
+  }
+  const pool = getPool()
+  const [[user]]: any = await pool.query('SELECT admin FROM `user` WHERE id = ?', [sub])
+  if (!user || Number(user.admin) !== 1) {
+    res.status(403).json({ error: 'forbidden' })
+    throw new Error('forbidden')
+  }
+  return { sub }
+}
+
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     await pingDb()
     res.send('ok')
@@ -20,12 +60,12 @@ app.get('/health', async (_req, res) => {
 })
 
 // Presigned S3 upload URL for logo images
-app.post('/uploads/logo-url', requireAuth, async (req: any, res) => {
+app.post('/uploads/logo-url', requireAuth, async (req: any, res: Response) => {
   try {
     const sub: string | undefined = req.auth?.payload?.sub
     if (!sub) return res.status(401).end()
-    const { fileName, contentType } = req.body || {}
-    if (!fileName || !contentType) return res.status(400).json({ error: 'fileName and contentType are required' })
+    const { fileName } = req.body || {}
+    if (!fileName) return res.status(400).json({ error: 'fileName is required' })
     const region = process.env.AWS_REGION || 'us-east-2'
     const bucket = process.env.S3_BUCKET
     if (!bucket) return res.status(500).json({ error: 'S3_BUCKET not configured' })
@@ -33,7 +73,8 @@ app.post('/uploads/logo-url', requireAuth, async (req: any, res) => {
     const safe = String(fileName).replace(/[^\w.\-]/g, '_')
     // Store uploads under charities/{userSub}/filename
     const key = `charities/${encodeURIComponent(sub)}/${Date.now()}-${safe}`
-    const put = new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType })
+    // Do NOT constrain ContentType in the signature to avoid client/header mismatches
+    const put = new PutObjectCommand({ Bucket: bucket, Key: key })
     const uploadUrl = await getSignedUrl(s3, put, { expiresIn: 60 })
     const publicUrl = `https://${bucket}.s3.${region}.amazonaws.com/${key}`
     res.json({ uploadUrl, publicUrl, key })
@@ -44,7 +85,7 @@ app.post('/uploads/logo-url', requireAuth, async (req: any, res) => {
 
 // Upsert a user (intended to be called by Auth0 Action after signup)
 // Accepts either a shared secret or a valid JWT
-app.post('/users', async (req, res) => {
+app.post('/users', async (req: Request, res: Response) => {
   const hasSharedSecret = config.actionSecret && req.header('x-action-secret') === config.actionSecret
   if (!hasSharedSecret) {
     // allow from authenticated SPA as well (optional)
@@ -68,7 +109,7 @@ app.post('/users', async (req, res) => {
 //   - URL: https://your-public-url/auth0/logs/webhook  (use ngrok for local)
 //   - Header: x-action-secret: <ACTION_SHARED_SECRET>
 //   - Events: include "Success Email Verification" (type "sv")
-app.post('/auth0/logs/webhook', async (req, res) => {
+app.post('/auth0/logs/webhook', async (req: Request, res: Response) => {
   try {
     if (config.actionSecret && req.header('x-action-secret') !== config.actionSecret) {
       return res.status(401).end()
@@ -95,7 +136,7 @@ app.post('/auth0/logs/webhook', async (req, res) => {
 })
 
 // Save or update draft (requires JWT; uses sub from token)
-app.put('/charity-signup/draft', requireAuth, async (req: any, res) => {
+app.put('/charity-signup/draft', requireAuth, async (req: any, res: Response) => {
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const draft = req.body ?? {}
@@ -104,7 +145,7 @@ app.put('/charity-signup/draft', requireAuth, async (req: any, res) => {
 })
 
 // Final submit
-app.post('/charity-signup/submit', requireAuth, async (req: any, res) => {
+app.post('/charity-signup/submit', requireAuth, async (req: any, res: Response) => {
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const submission = req.body ?? {}
@@ -113,7 +154,7 @@ app.post('/charity-signup/submit', requireAuth, async (req: any, res) => {
 })
 
 // Current user profile + optional draft
-app.get('/me', requireAuth, async (req: any, res) => {
+app.get('/me', requireAuth, async (req: any, res: Response) => {
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const pool = getPool()
@@ -156,84 +197,126 @@ async function upsertCharityForUser(
   const data = normalizeCharityPayload(payload)
 
   if (opts?.markPendingApproval) {
-    // In this schema, pending can be represented by approved = 0 (or NULL). We'll set 0.
-    data.approved = 0
+    // Pending state is represented by approved = NULL until an admin acts
+    data.approved = null
   }
 
+  // Best-effort geocode if we have a location
+  const geo = await geocodeAddress(data.address, data.city, data.state, data.zip_code)
+  const lat = geo?.lat ?? null
+  const lng = geo?.lng ?? null
+
   if (!existingId) {
+    // Build params and coerce undefined → null to satisfy mysql2 bindings
+    const insertParams = [
+      data.name,
+      data.address,
+      data.zip_code,
+      data.phone,
+      data.email,
+      data.contact_name,
+      data.mission,
+      data.description,
+      data.link_donate_cash,
+      data.link_volunteer,
+      data.link_website,
+      data.link_wishlist,
+      data.link_logo,
+      data.pickup,
+      data.dropoff,
+      data.resell,
+      data.faith,
+      data.new_items,
+      data.taxid,
+      sub,
+      data.logo_url,
+      data.city,
+      data.state,
+      lat,
+      lng,
+      data.paused,
+      data.approved ?? null,
+    ].map((v) => (v === undefined ? null : v))
+
     const [result]: any = await pool.execute(
       `INSERT INTO charity
       (name, address, zip_code, phone, email, contact_name, mission, description,
        link_donate_cash, link_volunteer, link_website, link_wishlist, link_logo,
-       pickup, dropoff, resell, faith, new_items, taxid, user_id, logo_url, city, state, paused)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        data.name,
-        data.address,
-        data.zip_code,
-        data.phone,
-        data.email,
-        data.contact_name,
-        data.mission,
-        data.description,
-        data.link_donate_cash,
-        data.link_volunteer,
-        data.link_website,
-        data.link_wishlist,
-        data.link_logo,
-        data.pickup,
-        data.dropoff,
-        data.resell,
-        data.faith,
-        data.new_items,
-        data.taxid,
-        sub,
-        data.logo_url,
-        data.city,
-        data.state,
-        data.paused,
-      ]
+       pickup, dropoff, resell, faith, new_items, taxid, user_id, logo_url, city, state, lat, lng, paused, approved)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      insertParams
     )
     const charityId = Number(result.insertId)
     await upsertJoinTables(charityId, payload)
     return charityId
   } else {
-    await pool.execute(
-      `UPDATE charity SET
-        name = ?, address = ?, zip_code = ?, phone = ?, email = ?, contact_name = ?,
-        mission = ?, description = ?, link_donate_cash = ?, link_volunteer = ?,
-        link_website = ?, link_wishlist = ?, link_logo = ?, pickup = ?, dropoff = ?,
-        resell = ?, faith = ?, new_items = ?, taxid = ?, logo_url = ?, city = ?, state = ?,
-        approved = COALESCE(?, approved), paused = COALESCE(?, paused)
-       WHERE id = ?`,
-      [
-        data.name,
-        data.address,
-        data.zip_code,
-        data.phone,
-        data.email,
-        data.contact_name,
-        data.mission,
-        data.description,
-        data.link_donate_cash,
-        data.link_volunteer,
-        data.link_website,
-        data.link_wishlist,
-        data.link_logo,
-        data.pickup,
-        data.dropoff,
-        data.resell,
-        data.faith,
-        data.new_items,
-        data.taxid,
-        data.logo_url,
-        data.city,
-        data.state,
-        data.approved ?? null,
-        data.paused ?? null,
-        existingId,
-      ]
-    )
+    // Build dynamic UPDATE to allow explicitly setting approved = NULL
+    const sets: string[] = [
+      'name = ?',
+      'address = ?',
+      'zip_code = ?',
+      'phone = ?',
+      'email = ?',
+      'contact_name = ?',
+      'mission = ?',
+      'description = ?',
+      'link_donate_cash = ?',
+      'link_volunteer = ?',
+      'link_website = ?',
+      'link_wishlist = ?',
+      'link_logo = ?',
+      'pickup = ?',
+      'dropoff = ?',
+      'resell = ?',
+      'faith = ?',
+      'new_items = ?',
+      'taxid = ?',
+      'logo_url = ?',
+      'city = ?',
+      'state = ?',
+      'lat = COALESCE(?, lat)',
+      'lng = COALESCE(?, lng)',
+      'paused = COALESCE(?, paused)',
+    ]
+    const params: any[] = [
+      data.name,
+      data.address,
+      data.zip_code,
+      data.phone,
+      data.email,
+      data.contact_name,
+      data.mission,
+      data.description,
+      data.link_donate_cash,
+      data.link_volunteer,
+      data.link_website,
+      data.link_wishlist,
+      data.link_logo,
+      data.pickup,
+      data.dropoff,
+      data.resell,
+      data.faith,
+      data.new_items,
+      data.taxid,
+      data.logo_url,
+      data.city,
+      data.state,
+      lat,
+      lng,
+      data.paused ?? null,
+    ]
+
+    // Only include approved assignment if caller provided the field (allow NULL)
+    if ('approved' in data) {
+      sets.push('approved = ?')
+      params.push(data.approved)
+    }
+
+    params.push(existingId)
+
+    const sql = `UPDATE charity SET ${sets.join(', ')}
+                 WHERE id = ?`
+    await pool.execute(sql, params)
     await upsertJoinTables(existingId, payload)
     return existingId
   }
@@ -250,7 +333,7 @@ function normalizeCharityPayload(p: any) {
     contact_name: p.contactName ?? p.contact_name ?? null,
     mission: p.mission ?? null,
     description: p.description ?? null,
-    // NOT NULL in schema: default to empty string if missing
+    // NOT NULL in schema: default to empty string if miss    ing
     link_donate_cash: stringOrEmpty(p.cashDonationsUrl ?? p.link_donate_cash),
     link_volunteer: stringOrEmpty(p.volunteerSignupUrl ?? p.link_volunteer),
     link_website: stringOrEmpty(p.website ?? p.link_website),
@@ -268,7 +351,7 @@ function normalizeCharityPayload(p: any) {
     logo_url: stringOrEmpty(p.logoUrl),
     city: p.city ?? null,
     state: p.state ?? null,
-    approved: p.approved,
+    approved: p.approved ?? null,
     // Ensure NOT NULL default for paused
     paused: Number(!!p.paused),
   }
@@ -312,4 +395,56 @@ async function upsertJoinTables(charityId: number, payload: any) {
 export default app
 
 
+// -------------------- Admin APIs --------------------
+// List charities awaiting approval (approved IS NULL)
+app.get('/admin/charities/pending', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const pool = getPool()
+    const [rows]: any = await pool.query(
+      `SELECT id, name, pickup, dropoff, address, phone, taxid, logo_url, city, state, zip_code, contact_name, email
+       FROM charity
+       WHERE approved IS NULL
+       ORDER BY created_at DESC
+       LIMIT 200`
+    )
+    res.json(rows || [])
+  } catch (e) {
+    // handled in assertAdmin when unauthorized/forbidden
+  }
+})
+
+// Approve charity (flip from NULL → 1)
+app.post('/admin/charities/:id/approve', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const id = Number(req.params.id)
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid_id' })
+    const pool = getPool()
+    const [result]: any = await pool.execute(
+      'UPDATE charity SET approved = 1 WHERE id = ? AND approved IS NULL',
+      [id]
+    )
+    res.json({ updated: Number(result?.affectedRows ?? 0) })
+  } catch {
+    // handled in assertAdmin when unauthorized/forbidden
+  }
+})
+
+// Deny charity (flip from NULL → 0)
+app.post('/admin/charities/:id/deny', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const id = Number(req.params.id)
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid_id' })
+    const pool = getPool()
+    const [result]: any = await pool.execute(
+      'UPDATE charity SET approved = 0 WHERE id = ? AND approved IS NULL',
+      [id]
+    )
+    res.json({ updated: Number(result?.affectedRows ?? 0) })
+  } catch {
+    // handled in assertAdmin when unauthorized/forbidden
+  }
+})
 

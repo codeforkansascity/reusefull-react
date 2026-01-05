@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Menu, X, ChevronDown, User } from 'lucide-react'
 
 export function Header() {
-  const { isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0()
+  const { isAuthenticated, isLoading, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDonateDropdownOpen, setIsDonateDropdownOpen] = useState(false)
   const [isWhatWeDoDropdownOpen, setIsWhatWeDoDropdownOpen] = useState(false)
@@ -16,10 +16,39 @@ export function Header() {
   const whatWeDoDropdownRef = useRef<HTMLDivElement>(null)
   const getInvolvedDropdownRef = useRef<HTMLDivElement>(null)
   const charityDropdownRef = useRef<HTMLDivElement>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
+
+  // Load /me to determine admin flag
+  useEffect(() => {
+    let cancelled = false
+    async function loadMe() {
+      try {
+        if (!isAuthenticated) {
+          setIsAdmin(false)
+          return
+        }
+        const token = await getAccessTokenSilently({
+          authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        })
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (!res.ok) throw new Error('failed')
+        const data = await res.json()
+        if (!cancelled) setIsAdmin(Boolean(data?.user?.admin))
+      } catch {
+        if (!cancelled) setIsAdmin(false)
+      }
+    }
+    loadMe()
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, getAccessTokenSilently])
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -252,9 +281,9 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {isLoading ? null : isAuthenticated ? (
               <>
-                <a href="/profile/edit">
+                <a href={isAdmin ? '/admin' : '/profile/edit'}>
                   <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 text-md font-medium cursor-pointer">
-                    Edit Profile
+                    {isAdmin ? 'Admin Area' : 'Edit Profile'}
                   </Button>
                 </a>
                 <Button 
@@ -479,13 +508,13 @@ export function Header() {
               <div className="pt-4 pb-2 space-y-2">
                 {isLoading ? null : isAuthenticated ? (
                   <>
-                    <a href="/profile/edit" onClick={() => setIsMobileMenuOpen(false)}>
+                    <a href={isAdmin ? '/admin' : '/profile/edit'} onClick={() => setIsMobileMenuOpen(false)}>
                       <Button
                         variant="outline"
                         size="sm"
                         className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium cursor-pointer"
                       >
-                        Edit Profile
+                        {isAdmin ? 'Admin Area' : 'Edit Profile'}
                       </Button>
                     </a>
                     <Button

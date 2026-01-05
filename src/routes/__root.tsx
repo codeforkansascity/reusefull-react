@@ -51,7 +51,12 @@ function RootComponent() {
     if (!isLoading && isAuthenticated) {
       const CLAIM_KEY = 'http://localhost:5173/claims/first_verified_login'
       const firstVerifiedLogin = (user as any)?.[CLAIM_KEY]
-      if (firstVerifiedLogin && window.location.pathname !== '/charity/signup/step/1') {
+      // Only perform the one-time onboarding redirect on the very first landing,
+      // and never override explicit navigation like Edit Profile.
+      if (
+        firstVerifiedLogin &&
+        window.location.pathname === '/' // initial landing only
+      ) {
         navigate({ to: '/charity/signup/step/1' })
       }
     }
@@ -61,8 +66,9 @@ function RootComponent() {
   useEffect(() => {
     ;(async () => {
       if (isLoading || !isAuthenticated) return
-      // If we're already on step1 or we just did the one-time onboarding above, do nothing
-      if (window.location.pathname === '/charity/signup/step/1') return
+      const pathname = window.location.pathname
+      // Do not override explicit navigation to Edit Profile, and skip if already on step 1
+      if (pathname.startsWith('/profile') || pathname === '/charity/signup/step/1') return
       try {
         const token = await getAccessTokenSilently({
           authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
