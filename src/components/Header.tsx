@@ -21,7 +21,7 @@ export function Header() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
-
+ 
   // Load /me to determine admin flag
   useEffect(() => {
     let cancelled = false
@@ -49,7 +49,7 @@ export function Header() {
       cancelled = true
     }
   }, [isAuthenticated, getAccessTokenSilently])
-
+ 
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
