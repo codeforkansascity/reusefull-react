@@ -29,3 +29,7 @@ node_modules/
 /Lambdas/.vs
 /Lambdas/ReusefullCommonLibrary/bin/Debug/net8.0
 /Lambdas/ReusefullCommonLibrary/obj
+dist/
+reusefull-api/dist/
+.env
+*.env

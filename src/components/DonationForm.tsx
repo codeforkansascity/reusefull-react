@@ -41,8 +41,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
     setConsideration(consideration, !formData.considerations[consideration])
   }
 
-  const handleItemConditionChange = (condition: 'new' | 'used') => {
-    setItemCondition(condition, !formData.itemCondition[condition])
+  const handleNewOnlyChange = (checked: boolean) => {
+    setItemCondition('new', checked)
+    setItemCondition('used', !checked)
   }
 
   const handleItemToggle = (itemName: string) => {
@@ -135,7 +136,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
               <h3 className="text-base font-semibold text-card-foreground mb-3">
                 Do you have any extra considerations? <span className="text-gray-500 text-sm">(Optional)</span>
               </h3>
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
                   <Checkbox
                     id="resell"
@@ -191,19 +192,18 @@ export function DonationForm({ items, categories }: DonationFormProps) {
             {/* Item Condition */}
             <div>
               <h3 className="text-base font-semibold text-card-foreground mb-3">
-                Are your items new or used? <span className="text-red-500">*</span>
+                Are your items new or used?
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
-                  <Checkbox id="new" checked={formData.itemCondition.new} onChange={() => handleItemConditionChange('new')} size="sm" />
-                  <label htmlFor="new" className="flex-1 cursor-pointer text-base text-card-foreground">
-                    New items
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/20 transition-colors">
-                  <Checkbox id="used" checked={formData.itemCondition.used} onChange={() => handleItemConditionChange('used')} size="sm" />
-                  <label htmlFor="used" className="flex-1 cursor-pointer text-base text-card-foreground">
-                    Used items
+                  <Checkbox
+                    id="newOnly"
+                    checked={formData.itemCondition.new}
+                    onChange={(e) => handleNewOnlyChange(e.currentTarget.checked)}
+                    size="sm"
+                  />
+                  <label htmlFor="newOnly" className="flex-1 cursor-pointer text-base text-card-foreground">
+                    New items only
                   </label>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
-import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, ExternalLink, Heart, Building } from 'lucide-react'
+import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building } from 'lucide-react'
 
 export const Route = createFileRoute('/charity/$charityId')({
   component: CharityDetailsComponent,
@@ -140,46 +140,7 @@ function CharityDetailsComponent() {
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
-                {organization.LinkWebsite && (
-                  <Button
-                    size="lg"
-                    onClick={() => window.open(organization.LinkWebsite, '_blank')}
-                    className="bg-white text-blue-900 hover:bg-white/90 cursor-pointer"
-                  >
-                    <Globe className="w-4 h-4 mr-2" />
-                    Visit Website
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-
-                {organization.LinkWishlist && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => window.open(organization.LinkWishlist, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10 cursor-pointer"
-                  >
-                    <Heart className="w-4 h-4 mr-2" />
-                    View Wishlist
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-
-                {organization.LinkVolunteer && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => window.open(organization.LinkVolunteer, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10 cursor-pointer"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Volunteer
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
+              {/* Action Buttons duplicated below in Quick Actions card — removed for clarity */}
             </div>
           </div>
         </div>
