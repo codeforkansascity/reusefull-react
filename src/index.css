@@ -32,6 +32,7 @@
 }
 
 /* Dark Mode Overrides */
+
 .dark {
   --color-background: oklch(0.3 0.05 236.28);
   --color-foreground: oklch(0.95 0.01 0);
