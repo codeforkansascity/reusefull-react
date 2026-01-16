@@ -85,13 +85,13 @@ export function Header() {
         <div className="flex items-center justify-between h-20">
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center group">
+            <a href="https://reusefull.org/" className="flex items-center group">
               <img
                 src="/reusefull-logo-350.png"
                 alt="Reusefull Logo"
                 className="h-20 w-20 object-contain transition-transform group-hover:scale-105"
               />
-            </Link>
+            </a>
           </div>
 
           {/* Desktop Navigation Links */}
