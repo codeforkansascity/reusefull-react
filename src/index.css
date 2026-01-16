@@ -24,6 +24,7 @@
   --color-info: oklch(0.65 0.2 220);
 }
 
+
 :root {
   --header-height: 4rem;
   --border-radius: 0.75rem;
@@ -32,6 +33,7 @@
 }
 
 /* Dark Mode Overrides */
+
 .dark {
   --color-background: oklch(0.3 0.05 236.28);
   --color-foreground: oklch(0.95 0.01 0);
