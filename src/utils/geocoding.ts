@@ -20,28 +20,48 @@ export interface ZipCodeInfo {
  * @returns Promise with coordinates or null if not found
  */
 export async function geocodeZipCode(zipCode: string): Promise<Coordinates | null> {
-  try {
-    const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`)
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    
-    if (data.places && data.places.length > 0) {
-      const place = data.places[0]
+  return getZipCoordinates(zipCode)
+}
+
+/**
+ * Simple in-memory cache for ZIP geocoding so the app doesn't hammer the API.
+ * - Caches both inflight and resolved lookups (Promise caching)
+ * - Optional TTL so we can refresh occasionally while keeping network quiet
+ */
+const GEO_TTL_MS = 60 * 60 * 1000 // 1 hour
+const zipCache = new Map<string, { ts: number; promise: Promise<Coordinates | null> }>()
+
+async function getZipCoordinates(zipCode: string): Promise<Coordinates | null> {
+  const zip = String(zipCode || '').trim()
+  // Only handle basic US ZIPs - 5 digits
+  if (!/^\d{5}$/.test(zip)) return null
+
+  const now = Date.now()
+  const cached = zipCache.get(zip)
+  if (cached && now - cached.ts < GEO_TTL_MS) {
+    return cached.promise
+  }
+
+  const promise = (async () => {
+    try {
+      const res = await fetch(`https://api.zippopotam.us/us/${zip}`)
+      if (!res.ok) return null
+      const data = await res.json()
+      const place = data?.places?.[0]
+      if (!place) return null
       return {
         latitude: parseFloat(place.latitude),
-        longitude: parseFloat(place.longitude)
+        longitude: parseFloat(place.longitude),
       }
+    } catch (err) {
+      // swallow network errors; treat as not found
+      console.error('Error geocoding ZIP code:', err)
+      return null
     }
-    
-    return null
-  } catch (error) {
-    console.error('Error geocoding ZIP code:', error)
-    return null
-  }
+  })()
+
+  zipCache.set(zip, { ts: now, promise })
+  return promise
 }
 
 /**
