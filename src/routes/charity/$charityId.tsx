@@ -20,6 +20,8 @@ export const Route = createFileRoute('/charity/$charityId')({
 function CharityDetailsComponent() {
   const { charityId } = Route.useParams()
   const orgId = parseInt(charityId, 10)
+  const fromParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('from') : null
+  const backHref = fromParam === 'charitylist' ? '/charitylist' : '/donate/results'
 
   const { data: organizations, isLoading: orgsLoading } = useQuery(orgsQuery)
   const { data: orgItems, isLoading: itemsLoading } = useQuery(orgItemsQuery)
@@ -58,10 +60,10 @@ function CharityDetailsComponent() {
             <Text size="lg" variant="muted" className="max-w-2xl mx-auto">
               The organization you're looking for doesn't exist or has been removed.
             </Text>
-            <Link to="/donate/results">
+            <Link to={backHref}>
               <Button size="lg" className="mt-8 cursor-pointer">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Results
+                {fromParam === 'charitylist' ? 'Back to Charity List' : 'Back to Results'}
               </Button>
             </Link>
           </div>
@@ -75,10 +77,10 @@ function CharityDetailsComponent() {
       <Container size="lg" className="py-16">
         {/* Back Button */}
         <div className="mb-8">
-          <Link to="/donate/results">
+          <Link to={backHref}>
             <Button variant="outline" size="sm" className="text-white/90 hover:text-white hover:border-white/60 cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Results
+              {fromParam === 'charitylist' ? 'Back to Charity List' : 'Back to Results'}
             </Button>
           </Link>
         </div>

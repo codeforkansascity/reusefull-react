@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { formatPhone } from '@/utils/formatPhone'
@@ -39,29 +39,36 @@ function CharityListComponent() {
               className="rounded-md border border-[#e3e6ea] shadow-sm bg-white px-6 py-5"
             >
               <div className="flex items-start gap-6">
-                {org.LogoUrl ? (
-                  <img
-                    src={org.LogoUrl}
-                    alt={`${org.Name} logo`}
-                    className="w-[250px] h-[120px] object-contain bg-white"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                    }}
-                  />
-                ) : (
-                  <div className="w-[250px] h-[120px] bg-gray-100 flex items-center justify-center text-gray-400">
-                    No Logo
-                  </div>
-                )}
+                <Link
+                  to="/charity/$charityId"
+                  params={{ charityId: String(org.Id) }}
+                  search={{ from: 'charitylist' }}
+                  className="shrink-0"
+                >
+                  {org.LogoUrl ? (
+                    <img
+                      src={org.LogoUrl}
+                      alt={`${org.Name} logo`}
+                      className="w-[250px] h-[120px] object-contain bg-white"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  ) : (
+                    <div className="w-[250px] h-[120px] bg-gray-100 flex items-center justify-center text-gray-400">
+                      No Logo
+                    </div>
+                  )}
+                </Link>
                 <div className="flex-1 min-w-0">
-                  <a
-                    href={org.LinkWebsite || '#'}
-                    target={org.LinkWebsite ? '_blank' : undefined}
-                    rel="noreferrer"
+                  <Link
+                    to="/charity/$charityId"
+                    params={{ charityId: String(org.Id) }}
+                    search={{ from: 'charitylist' }}
                     className="text-[18px] font-semibold text-[#2c78c5] underline"
                   >
                     {org.Name}
-                  </a>
+                  </Link>
                   <div className="mt-3 text-[14px] text-[#212529] space-y-1">
                     <div><span className="font-semibold">Pick-Up Service:</span> {org.Pickup ? 'Yes' : 'No'}</div>
                     <div><span className="font-semibold">Dropoff:</span> {org.Dropoff ? 'Yes' : 'No'}</div>
