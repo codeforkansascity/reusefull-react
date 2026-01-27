@@ -16,7 +16,7 @@ const SuccessStyles = 'color: lightgreen;'
 //* Declare global types
 declare global {
   interface GetEndpoints {
-    'https://qg5u2h7j555msnkinngqaw2zfm0enled.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+    'https://kudlj6hfqxkm327mdrzrmx6rri0gvomt.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
       Id: number
       Name: string
     }[]
