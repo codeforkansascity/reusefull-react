@@ -24,6 +24,7 @@
   --color-info: oklch(0.65 0.2 220);
 }
 
+
 :root {
   --header-height: 4rem;
   --border-radius: 0.75rem;
@@ -32,6 +33,7 @@
 }
 
 /* Dark Mode Overrides */
+
 .dark {
   --color-background: oklch(0.3 0.05 236.28);
   --color-foreground: oklch(0.95 0.01 0);
@@ -67,7 +69,13 @@ body {
     'calt' 1;
 }
 
-/* Custom scrollbar */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-x: contain;
+  /* overscroll-behavior-y: none; */
+  touch-action: pan-y;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

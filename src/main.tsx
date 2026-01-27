@@ -5,6 +5,7 @@ import './index.css'
 
 import { routeTree } from './routeTree.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Auth0Provider } from '@auth0/auth0-react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,9 +30,27 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <Auth0Provider
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+          scope: 'openid profile email',
+        }}
+        onRedirectCallback={(appState) => {
+          const target = (appState as any)?.returnTo as string | undefined
+          if (target) {
+            router.navigate({ to: target })
+          }
+        }}
+        useRefreshTokens
+        cacheLocation="localstorage"
+      >
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </Auth0Provider>
     </StrictMode>
   )
 }

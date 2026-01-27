@@ -2,9 +2,11 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
+import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
+import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
-import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, ExternalLink, Heart, Building } from 'lucide-react'
+import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building } from 'lucide-react'
 
 export const Route = createFileRoute('/charity/$charityId')({
   component: CharityDetailsComponent,
@@ -18,11 +20,15 @@ export const Route = createFileRoute('/charity/$charityId')({
 function CharityDetailsComponent() {
   const { charityId } = Route.useParams()
   const orgId = parseInt(charityId, 10)
+  const fromParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('from') : null
+  const backHref = fromParam === 'charitylist' ? '/charitylist' : '/donate/results'
 
   const { data: organizations, isLoading: orgsLoading } = useQuery(orgsQuery)
   const { data: orgItems, isLoading: itemsLoading } = useQuery(orgItemsQuery)
+  const { data: orgCharityTypes, isLoading: typesLoading } = useQuery(orgCharityTypesQuery)
+  const { data: categories, isLoading: categoriesLoading } = useQuery(categoriesQuery)
 
-  if (orgsLoading || itemsLoading) {
+  if (orgsLoading || itemsLoading || typesLoading || categoriesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <LoadingSpinner message="Loading charity details..." size="lg" textClassName="text-white" />
@@ -32,9 +38,16 @@ function CharityDetailsComponent() {
 
   const organization = organizations?.find((org) => org.Id === orgId)
 
+  // safe defaults for possibly-undefined query results
+  const orgCharityTypesSafe = orgCharityTypes ?? []
+  const categoriesSafe = categories ?? []
+
   const filteredOrgItems = Array.from(
     new Set(orgItems?.filter(({ CharityId }) => CharityId === orgId).map(({ ItemName }) => ItemName) ?? [])
   )
+
+  // compute the org's category/type entries safely
+  const orgTypesForOrg = orgCharityTypesSafe.filter((t) => t.CharityId === orgId)
 
   if (!organization) {
     return (
@@ -47,10 +60,10 @@ function CharityDetailsComponent() {
             <Text size="lg" variant="muted" className="max-w-2xl mx-auto">
               The organization you're looking for doesn't exist or has been removed.
             </Text>
-            <Link to="/donate/results">
+            <Link to={backHref}>
               <Button size="lg" className="mt-8 cursor-pointer">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Results
+                {fromParam === 'charitylist' ? 'Back to Charity List' : 'Back to Results'}
               </Button>
             </Link>
           </div>
@@ -64,10 +77,10 @@ function CharityDetailsComponent() {
       <Container size="lg" className="py-16">
         {/* Back Button */}
         <div className="mb-8">
-          <Link to="/donate/results">
+          <Link to={backHref}>
             <Button variant="outline" size="sm" className="text-white/90 hover:text-white hover:border-white/60 cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Results
+              {fromParam === 'charitylist' ? 'Back to Charity List' : 'Back to Results'}
             </Button>
           </Link>
         </div>
@@ -129,46 +142,7 @@ function CharityDetailsComponent() {
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
-                {organization.LinkWebsite && (
-                  <Button
-                    size="lg"
-                    onClick={() => window.open(organization.LinkWebsite, '_blank')}
-                    className="bg-white text-blue-900 hover:bg-white/90 cursor-pointer"
-                  >
-                    <Globe className="w-4 h-4 mr-2" />
-                    Visit Website
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-
-                {organization.LinkWishlist && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => window.open(organization.LinkWishlist, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10"
-                  >
-                    <Heart className="w-4 h-4 mr-2" />
-                    View Wishlist
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-
-                {organization.LinkVolunteer && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => window.open(organization.LinkVolunteer, '_blank')}
-                    className="text-white border-white/30 hover:bg-white/10 cursor-pointer"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Volunteer
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
+              {/* Action Buttons duplicated below in Quick Actions card — removed for clarity */}
             </div>
           </div>
         </div>
@@ -242,6 +216,28 @@ function CharityDetailsComponent() {
                       <Text className="text-card-foreground">Accepts drop-offs</Text>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Organization Types */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-card-foreground text-xl md:text-2xl font-semibold">Organization Types</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {orgTypesForOrg.map((type) => {
+                    const category = categoriesSafe.find((cat) => cat.Id === type.TypeId)
+                    return category ? (
+                      <span
+                        key={type.TypeId}
+                        className="px-3 py-2 bg-primary/10 text-primary text-sm font-medium rounded-full"
+                      >
+                        {category.Type}
+                      </span>
+                    ) : null
+                  })}
                 </div>
               </CardContent>
             </Card>

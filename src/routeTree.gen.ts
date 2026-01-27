@@ -9,11 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as VerifiedRouteImport } from './routes/verified'
+import { Route as CharitylistRouteImport } from './routes/charitylist'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DonateIndexRouteImport } from './routes/donate/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as DonateResultsRouteImport } from './routes/donate/results'
 import { Route as CharityCharityIdRouteImport } from './routes/charity/$charityId'
+import { Route as CharitySignupThankYouRouteImport } from './routes/charity/signup/thank-you'
+import { Route as CharitySignupStep3RouteImport } from './routes/charity/signup/step/3'
+import { Route as CharitySignupStep2RouteImport } from './routes/charity/signup/step/2'
+import { Route as CharitySignupStep1RouteImport } from './routes/charity/signup/step/1'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifiedRoute = VerifiedRouteImport.update({
+  id: '/verified',
+  path: '/verified',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharitylistRoute = CharitylistRouteImport.update({
+  id: '/charitylist',
+  path: '/charitylist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -22,6 +46,16 @@ const IndexRoute = IndexRouteImport.update({
 const DonateIndexRoute = DonateIndexRouteImport.update({
   id: '/donate/',
   path: '/donate/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileEditRoute = ProfileEditRouteImport.update({
+  id: '/profile/edit',
+  path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DonateResultsRoute = DonateResultsRouteImport.update({
@@ -34,43 +68,160 @@ const CharityCharityIdRoute = CharityCharityIdRouteImport.update({
   path: '/charity/$charityId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CharitySignupThankYouRoute = CharitySignupThankYouRouteImport.update({
+  id: '/charity/signup/thank-you',
+  path: '/charity/signup/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharitySignupStep3Route = CharitySignupStep3RouteImport.update({
+  id: '/charity/signup/step/3',
+  path: '/charity/signup/step/3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharitySignupStep2Route = CharitySignupStep2RouteImport.update({
+  id: '/charity/signup/step/2',
+  path: '/charity/signup/step/2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CharitySignupStep1Route = CharitySignupStep1RouteImport.update({
+  id: '/charity/signup/step/1',
+  path: '/charity/signup/step/1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/charitylist': typeof CharitylistRoute
+  '/verified': typeof VerifiedRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/admin': typeof AdminIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/charity/signup/step/1': typeof CharitySignupStep1Route
+  '/charity/signup/step/2': typeof CharitySignupStep2Route
+  '/charity/signup/step/3': typeof CharitySignupStep3Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/charitylist': typeof CharitylistRoute
+  '/verified': typeof VerifiedRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/admin': typeof AdminIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/charity/signup/step/1': typeof CharitySignupStep1Route
+  '/charity/signup/step/2': typeof CharitySignupStep2Route
+  '/charity/signup/step/3': typeof CharitySignupStep3Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/charitylist': typeof CharitylistRoute
+  '/verified': typeof VerifiedRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/charity/$charityId': typeof CharityCharityIdRoute
   '/donate/results': typeof DonateResultsRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/admin/': typeof AdminIndexRoute
   '/donate/': typeof DonateIndexRoute
+  '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/charity/signup/step/1': typeof CharitySignupStep1Route
+  '/charity/signup/step/2': typeof CharitySignupStep2Route
+  '/charity/signup/step/3': typeof CharitySignupStep3Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/charity/$charityId' | '/donate/results' | '/donate'
+  fullPaths:
+    | '/'
+    | '/charitylist'
+    | '/verified'
+    | '/verify-email'
+    | '/charity/$charityId'
+    | '/donate/results'
+    | '/profile/edit'
+    | '/admin'
+    | '/donate'
+    | '/charity/signup/thank-you'
+    | '/charity/signup/step/1'
+    | '/charity/signup/step/2'
+    | '/charity/signup/step/3'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/charity/$charityId' | '/donate/results' | '/donate'
-  id: '__root__' | '/' | '/charity/$charityId' | '/donate/results' | '/donate/'
+  to:
+    | '/'
+    | '/charitylist'
+    | '/verified'
+    | '/verify-email'
+    | '/charity/$charityId'
+    | '/donate/results'
+    | '/profile/edit'
+    | '/admin'
+    | '/donate'
+    | '/charity/signup/thank-you'
+    | '/charity/signup/step/1'
+    | '/charity/signup/step/2'
+    | '/charity/signup/step/3'
+  id:
+    | '__root__'
+    | '/'
+    | '/charitylist'
+    | '/verified'
+    | '/verify-email'
+    | '/charity/$charityId'
+    | '/donate/results'
+    | '/profile/edit'
+    | '/admin/'
+    | '/donate/'
+    | '/charity/signup/thank-you'
+    | '/charity/signup/step/1'
+    | '/charity/signup/step/2'
+    | '/charity/signup/step/3'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CharitylistRoute: typeof CharitylistRoute
+  VerifiedRoute: typeof VerifiedRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   CharityCharityIdRoute: typeof CharityCharityIdRoute
   DonateResultsRoute: typeof DonateResultsRoute
+  ProfileEditRoute: typeof ProfileEditRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
+  CharitySignupThankYouRoute: typeof CharitySignupThankYouRoute
+  CharitySignupStep1Route: typeof CharitySignupStep1Route
+  CharitySignupStep2Route: typeof CharitySignupStep2Route
+  CharitySignupStep3Route: typeof CharitySignupStep3Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verified': {
+      id: '/verified'
+      path: '/verified'
+      fullPath: '/verified'
+      preLoaderRoute: typeof VerifiedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charitylist': {
+      id: '/charitylist'
+      path: '/charitylist'
+      fullPath: '/charitylist'
+      preLoaderRoute: typeof CharitylistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -83,6 +234,20 @@ declare module '@tanstack/react-router' {
       path: '/donate'
       fullPath: '/donate'
       preLoaderRoute: typeof DonateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/profile/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/donate/results': {
@@ -99,14 +264,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CharityCharityIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/charity/signup/thank-you': {
+      id: '/charity/signup/thank-you'
+      path: '/charity/signup/thank-you'
+      fullPath: '/charity/signup/thank-you'
+      preLoaderRoute: typeof CharitySignupThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charity/signup/step/3': {
+      id: '/charity/signup/step/3'
+      path: '/charity/signup/step/3'
+      fullPath: '/charity/signup/step/3'
+      preLoaderRoute: typeof CharitySignupStep3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charity/signup/step/2': {
+      id: '/charity/signup/step/2'
+      path: '/charity/signup/step/2'
+      fullPath: '/charity/signup/step/2'
+      preLoaderRoute: typeof CharitySignupStep2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/charity/signup/step/1': {
+      id: '/charity/signup/step/1'
+      path: '/charity/signup/step/1'
+      fullPath: '/charity/signup/step/1'
+      preLoaderRoute: typeof CharitySignupStep1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CharitylistRoute: CharitylistRoute,
+  VerifiedRoute: VerifiedRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   CharityCharityIdRoute: CharityCharityIdRoute,
   DonateResultsRoute: DonateResultsRoute,
+  ProfileEditRoute: ProfileEditRoute,
+  AdminIndexRoute: AdminIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
+  CharitySignupThankYouRoute: CharitySignupThankYouRoute,
+  CharitySignupStep1Route: CharitySignupStep1Route,
+  CharitySignupStep2Route: CharitySignupStep2Route,
+  CharitySignupStep3Route: CharitySignupStep3Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

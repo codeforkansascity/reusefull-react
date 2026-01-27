@@ -38,10 +38,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   asChild?: boolean
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'button'
-  return <Comp className={buttonVariants({ variant, size, className })} ref={ref} {...props} />
-})
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, type, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button'
+    // Ensure buttons default to type="button" so they don't submit surrounding forms unintentionally
+    const resolvedType = type ?? 'button'
+    return <Comp className={buttonVariants({ variant, size, className })} ref={ref} type={resolvedType as any} {...props} />
+  }
+)
 Button.displayName = 'Button'
 
 export { Button }
