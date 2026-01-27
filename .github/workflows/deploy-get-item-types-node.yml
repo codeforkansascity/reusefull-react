@@ -46,12 +46,6 @@ jobs:
             --zip-file fileb://function.zip \
             --region us-east-2
 
-      - name: Wait for function update
-        run: |
-          aws lambda wait function-updated \
-            --function-name GetItemTypesNode \
-            --region us-east-2
-
       - name: Update function configuration
         run: |
           aws lambda update-function-configuration \
