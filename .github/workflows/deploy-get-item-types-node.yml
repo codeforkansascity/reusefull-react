@@ -46,6 +46,9 @@ jobs:
             --zip-file fileb://function.zip \
             --region us-east-2
 
+      - name: Wait for update to complete
+        run: sleep 10
+
       - name: Update function configuration
         run: |
           aws lambda update-function-configuration \
