@@ -6,4 +6,6 @@ export const orgItemsQuery = queryOptions({
   queryFn() {
     return get('https://4nekwiwkkyz4uwidxgxuykksmq0xvuez.lambda-url.us-east-2.on.aws', {})
   },
+  staleTime: 1000 * 60 * 60 * 2, // 2 hours
+  gcTime: 1000 * 60 * 60 * 3, // 3 hours (how long to keep in cache after unused)
 })
