@@ -4,6 +4,6 @@ import { queryOptions } from '@tanstack/react-query'
 export const categoriesQuery = queryOptions({
   queryKey: ['categories'],
   queryFn() {
-    return get('https://72m57zkngqsdsomp6ameqd2c6u0wqflv.lambda-url.us-east-2.on.aws', {})
+      return get('https://4zm4kqhbosmorygtjwdanxrpqe0imbml.lambda-url.us-east-2.on.aws', {})
   },
 })

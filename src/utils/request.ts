@@ -20,7 +20,7 @@ declare global {
       Id: number
       Name: string
     }[]
-    'https://72m57zkngqsdsomp6ameqd2c6u0wqflv.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+    'https://4zm4kqhbosmorygtjwdanxrpqe0imbml.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
       Id: number
       Type: string
     }[]
