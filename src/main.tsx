@@ -6,8 +6,6 @@ import './index.css'
 import { routeTree } from './routeTree.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Auth0Provider } from '@auth0/auth0-react'
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,13 +13,8 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 3,
       refetchOnWindowFocus: false,
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours - how long to keep in cache
     },
   },
-})
-
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
 })
 
 const router = createRouter({ routeTree, context: { queryClient } })
@@ -54,12 +47,9 @@ if (!rootElement.innerHTML) {
         useRefreshTokens
         cacheLocation="localstorage"
       >
-        <PersistQueryClientProvider 
-          client={queryClient} 
-          persistOptions={{ persister }}
-        >
+        <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
-        </PersistQueryClientProvider>
+        </QueryClientProvider>
       </Auth0Provider>
     </StrictMode>
   )
