@@ -71,11 +71,28 @@ exports.handler = async (event, context) => {
             });
         });
 
-        return JSON.stringify(types);
+        return {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'public, max-age=7200', // 2 hours = 7200 seconds
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS'
+            },
+            body: JSON.stringify(types)
+        };
 
     } catch (error) {
         console.error('Error:', error.message);
-        throw error;
+        return {
+            statusCode: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ error: error.message })
+        };
     } finally {
         // Close connection
         if (connection) {
