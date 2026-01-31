@@ -38,7 +38,7 @@ public class Function
             {
                 await connection.OpenAsync();
 
-                string sql = "select id, name, address, zip_code, phone, email, contact_name, mission, description, link_volunteer, link_website, link_wishlist, pickup, dropoff, resell, faith, good_items, new_items, logo_url, city, state, lat, lng from charity where approved=1 and paused=0";
+                string sql = "select id, name, address, zip_code, phone, email, contact_name, mission, description, link_volunteer, link_website, link_wishlist, pickup, dropoff, resell, faith, good_items, new_items, logo_url, city, state, lat, lng from charity where approved=1 and paused=0 order by Id, Name";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())

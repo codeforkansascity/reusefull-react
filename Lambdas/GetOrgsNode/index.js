@@ -83,7 +83,7 @@ exports.handler = async (event, context) => {
             lat as Lat,
             lng as Lng
         FROM charity where approved=1 and paused=0
-        ORDER BY name`;
+        ORDER BY Id, name`;
         
         const [rows] = await connection.execute(sql);
 
