@@ -1,0 +1,61 @@
+name: Deploy GetOrgItemsNode Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Lambdas/GetOrgItemsNode/**'
+      - '.github/workflows/deploy-get-org-items-node.yml'
+
+jobs:
+  deploy:
+    name: Deploy Lambda Function
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: Lambdas/GetOrgItemsNode
+        run: npm install --production
+
+      - name: Create deployment package
+        working-directory: Lambdas/GetOrgItemsNode
+        run: |
+          zip -r function.zip index.js node_modules package.json
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Deploy to AWS Lambda
+        working-directory: Lambdas/GetOrgItemsNode
+        run: |
+          aws lambda update-function-code \
+            --function-name GetOrgItemsNode \
+            --zip-file fileb://function.zip \
+            --region us-east-2
+
+      - name: Wait for update to complete
+        run: sleep 10
+
+      - name: Update function configuration
+        run: |
+          aws lambda update-function-configuration \
+            --function-name GetOrgItemsNode \
+            --runtime nodejs20.x \
+            --handler index.handler \
+            --region us-east-2
+
+      - name: Deployment successful
+        run: echo "Lambda function GetOrgItemsNode deployed successfully!"

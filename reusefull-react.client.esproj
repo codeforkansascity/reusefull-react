@@ -10,6 +10,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include=".github\workflows\deploy-get-charity-types-node.yml" />
+    <None Include=".github\workflows\deploy-get-item-types-node-updated.yml" />
     <None Include=".github\workflows\deploy-get-item-types-node.yml" />
+    <None Include=".github\workflows\deploy-get-org-items-node.yml" />
+    <None Include=".github\workflows\deploy-get-org-types-node.yml" />
+    <None Include=".github\workflows\deploy-get-orgs-node.yml" />
   </ItemGroup>
 </Project>
