@@ -24,7 +24,7 @@ declare global {
       Id: number //CharityTypes
       Type: string
     }[]
-    'https://4nekwiwkkyz4uwidxgxuykksmq0xvuez.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+    'https://mbgtl54izbhjckuzhrhjijaaga0lzirw.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
       CharityName: string
       ItemName: string
       CharityId: number
