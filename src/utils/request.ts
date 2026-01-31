@@ -21,7 +21,7 @@ declare global {
       Name: string
     }[]
     'https://4zm4kqhbosmorygtjwdanxrpqe0imbml.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
-      Id: number
+      Id: number //CharityTypes
       Type: string
     }[]
     'https://4nekwiwkkyz4uwidxgxuykksmq0xvuez.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
@@ -55,8 +55,8 @@ declare global {
       Lat: number
       Lng: number
     }[]
-    'https://ea72ghbgvxuwvy37ixyeztt5mu0uvtcm.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
-      CharityId: number
+    'https://o6zpi54q3u247x73qsckjxesay0ibtke.lambda-url.us-east-2.on.aws/': (params?: Record<string, unknown>) => {
+      CharityId: number //Org Types
       TypeId: number
       TypeName: string
       CharityName: string
