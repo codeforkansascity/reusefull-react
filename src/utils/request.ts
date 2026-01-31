@@ -30,7 +30,7 @@ declare global {
       CharityId: number
       ItemId: number
     }[]
-    'https://lrx3rtyjpiibqojpa47q2ppace0oxvlm.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
+    'https://4e67jwa7xlurv6riekrumne5h40ssntr.lambda-url.us-east-2.on.aws': (params?: Record<string, unknown>) => {
       Id: number
       Name: string
       Address: string
