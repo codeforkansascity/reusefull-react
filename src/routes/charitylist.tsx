@@ -25,7 +25,9 @@ function CharityListComponent() {
     )
   }
 
-  const orgs = organizations ?? []
+  const orgs = (organizations ?? []).slice().sort((a, b) =>
+    a.Name.localeCompare(b.Name, undefined, { sensitivity: 'base' })
+  )
 
   return (
     <div className="min-h-screen">
