@@ -38,6 +38,15 @@ function RouteComponent() {
   const [persistentResults, setPersistentResults] = useState<any[]>([])
   const { loadFiltersFromStorage } = useDonationStore()
 
+  function shuffle<T>(arr: T[]): T[] {
+    const a = arr.slice()
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
+  }
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -64,6 +73,7 @@ function RouteComponent() {
 
   // Use persistent results if available, otherwise use live results
   const results = persistentResults.length > 0 ? persistentResults : liveResults
+  const randomizedResults = shuffle(results)
 
   if (results.length === 0) {
     return (
@@ -124,7 +134,7 @@ function RouteComponent() {
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {results.map((org) => (
+          {randomizedResults.map((org) => (
             <CharityCard key={org.Id} organization={org} />
           ))}
         </div>
