@@ -74,8 +74,8 @@ function RootComponent() {
     ;(async () => {
       if (isLoading || !isAuthenticated) return
       const pathname = window.location.pathname
-      // Do not override explicit navigation to Edit Profile, and skip if already on step 1
-      if (pathname.startsWith('/profile') || pathname === '/charity/signup/step/1') return
+      // Do not override explicit navigation to Edit Profile, Admin Area, or skip if already on step 1
+      if (pathname.startsWith('/profile') || pathname.startsWith('/admin') || pathname === '/charity/signup/step/1') return
       try {
         const token = await getAccessTokenSilently({
           authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
