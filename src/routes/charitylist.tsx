@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { formatPhone } from '@/utils/formatPhone'
+import { trackCharityInteraction } from '@/utils/analytics'
 import { Container, Headline, LoadingSpinner } from '@/components/ui'
 import { MapPin, Globe, Phone } from 'lucide-react'
 
@@ -46,6 +47,7 @@ function CharityListComponent() {
                   params={{ charityId: String(org.Id) }}
                   search={{ from: 'charitylist' }}
                   className="shrink-0"
+                  onClick={() => trackCharityInteraction('view_details_click', org.Id, org.Name, 'details')}
                 >
                   {org.LogoUrl ? (
                     <img
@@ -68,6 +70,7 @@ function CharityListComponent() {
                     params={{ charityId: String(org.Id) }}
                     search={{ from: 'charitylist' }}
                     className="text-[18px] font-semibold text-[#2c78c5] underline"
+                    onClick={() => trackCharityInteraction('view_details_click', org.Id, org.Name, 'details')}
                   >
                     {org.Name}
                   </Link>
@@ -96,7 +99,13 @@ function CharityListComponent() {
                       <div className="flex items-center gap-2">
                         <Globe className="w-4 h-4 text-[#6c757d]" />
                         <span className="font-semibold">Website:</span>
-                        <a href={org.LinkWebsite} target="_blank" rel="noreferrer" className="text-[#2c78c5] hover:underline break-all">
+                        <a
+                          href={org.LinkWebsite}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[#2c78c5] hover:underline break-all"
+                          onClick={() => trackCharityInteraction('website_click', org.Id, org.Name, 'website')}
+                        >
                           {org.LinkWebsite}
                         </a>
                       </div>

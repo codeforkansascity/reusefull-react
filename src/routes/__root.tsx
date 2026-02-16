@@ -3,6 +3,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/Header'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect } from 'react'
+import { trackPageView } from '@/utils/analytics'
 
 type RouterContext = {
   queryClient: QueryClient
@@ -50,16 +51,7 @@ function RootComponent() {
 
   // GA4: fire page_view on route change
   useEffect(() => {
-    const path = location.pathname + location.search
-    // Only send in production if desired; adjust guard if needed
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      // @ts-expect-error gtag injected by index.html
-      window.gtag?.('event', 'page_view', {
-        page_path: path,
-        page_title: document.title,
-        page_location: window.location.href,
-      })
-    }
+    trackPageView()
   }, [location.pathname, location.search])
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import useResults from '@/hooks/useResults'
 import { useDonationStore } from '@/stores/donationStore'
 import { formatPhone } from '@/utils/formatPhone'
+import { trackCharityInteraction } from '@/utils/analytics'
 import { CharityMap } from '@/components/CharityMap'
 import {
   Container,
@@ -280,7 +281,11 @@ function CharityCard({ organization }: CharityCardProps) {
 
         {/* Action Buttons */}
         <div className="flex gap-2 mt-auto">
-          <Link to="/charity/$charityId" params={{ charityId: organization.Id.toString() }}>
+          <Link
+            to="/charity/$charityId"
+            params={{ charityId: organization.Id.toString() }}
+            onClick={() => trackCharityInteraction('view_details_click', organization.Id, Name, 'details')}
+          >
             <Button variant="default" size="sm" className="flex-1 cursor-pointer">
               <CheckCircle className="w-4 h-4 mr-1" />
               View Details
@@ -291,7 +296,10 @@ function CharityCard({ organization }: CharityCardProps) {
               variant="outline"
               size="sm"
               className="flex-1 cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-              onClick={() => window.open(LinkWebsite, '_blank')}
+              onClick={() => {
+                trackCharityInteraction('website_click', organization.Id, Name, 'website')
+                window.open(LinkWebsite, '_blank')
+              }}
             >
               <Globe className="w-4 h-4 mr-1" />
               Visit Website

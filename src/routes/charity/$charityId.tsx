@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
 import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
+import { trackCharityView, trackCharityInteraction } from '@/utils/analytics'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
 import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building } from 'lucide-react'
 
@@ -37,6 +39,13 @@ function CharityDetailsComponent() {
   }
 
   const organization = organizations?.find((org) => org.Id === orgId)
+
+  // Track charity page view with Google Analytics
+  useEffect(() => {
+    if (organization) {
+      trackCharityView(organization.Id, organization.Name)
+    }
+  }, [organization])
 
   // safe defaults for possibly-undefined query results
   const orgCharityTypesSafe = orgCharityTypes ?? []
@@ -300,6 +309,9 @@ function CharityDetailsComponent() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-primary break-words"
+                          onClick={() =>
+                            trackCharityInteraction('website_click', organization.Id, organization.Name, 'website')
+                          }
                         >
                           {organization.LinkWebsite}
                         </a>
@@ -334,6 +346,7 @@ function CharityDetailsComponent() {
                         size="sm"
                         className="mt-3 text-xs cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
                         onClick={() => {
+                          trackCharityInteraction('map_click', organization.Id, organization.Name, 'map')
                           const mapsUrl = `https://www.google.com/maps?q=${organization.Lat},${organization.Lng}`
                           window.open(mapsUrl, '_blank')
                         }}
@@ -358,7 +371,10 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="sm"
                     className="w-full justify-start cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    onClick={() => window.open(organization.LinkWishlist, '_blank')}
+                    onClick={() => {
+                      trackCharityInteraction('wishlist_click', organization.Id, organization.Name, 'wishlist')
+                      window.open(organization.LinkWishlist, '_blank')
+                    }}
                   >
                     <Heart className="w-4 h-4 mr-2" />
                     View Wishlist
@@ -370,7 +386,10 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="sm"
                     className="w-full justify-start cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    onClick={() => window.open(organization.LinkVolunteer, '_blank')}
+                    onClick={() => {
+                      trackCharityInteraction('volunteer_click', organization.Id, organization.Name, 'volunteer')
+                      window.open(organization.LinkVolunteer, '_blank')
+                    }}
                   >
                     <User className="w-4 h-4 mr-2" />
                     Volunteer Opportunities
@@ -382,7 +401,10 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="sm"
                     className="w-full justify-start cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    onClick={() => window.open(`tel:${organization.Phone}`, '_self')}
+                    onClick={() => {
+                      trackCharityInteraction('phone_click', organization.Id, organization.Name, 'phone')
+                      window.open(`tel:${organization.Phone}`, '_self')
+                    }}
                   >
                     <PhoneIcon className="w-4 h-4 mr-2" />
                     Call Now
@@ -394,7 +416,10 @@ function CharityDetailsComponent() {
                     variant="outline"
                     size="sm"
                     className="w-full justify-start cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    onClick={() => window.open(`mailto:${organization.Email}`, '_self')}
+                    onClick={() => {
+                      trackCharityInteraction('email_click', organization.Id, organization.Name, 'email')
+                      window.open(`mailto:${organization.Email}`, '_self')
+                    }}
                   >
                     <Mail className="w-4 h-4 mr-2" />
                     Send Email
