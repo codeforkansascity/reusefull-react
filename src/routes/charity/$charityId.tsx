@@ -30,6 +30,15 @@ function CharityDetailsComponent() {
   const { data: orgCharityTypes, isLoading: typesLoading } = useQuery(orgCharityTypesQuery)
   const { data: categories, isLoading: categoriesLoading } = useQuery(categoriesQuery)
 
+  const organization = organizations?.find((org) => org.Id === orgId)
+
+  // Track charity page view with Google Analytics (must run on every render to satisfy Rules of Hooks)
+  useEffect(() => {
+    if (organization) {
+      trackCharityView(organization.Id, organization.Name)
+    }
+  }, [organization])
+
   if (orgsLoading || itemsLoading || typesLoading || categoriesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -37,15 +46,6 @@ function CharityDetailsComponent() {
       </div>
     )
   }
-
-  const organization = organizations?.find((org) => org.Id === orgId)
-
-  // Track charity page view with Google Analytics
-  useEffect(() => {
-    if (organization) {
-      trackCharityView(organization.Id, organization.Name)
-    }
-  }, [organization])
 
   // safe defaults for possibly-undefined query results
   const orgCharityTypesSafe = orgCharityTypes ?? []
