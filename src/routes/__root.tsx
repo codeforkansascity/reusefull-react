@@ -48,9 +48,13 @@ function RootComponent() {
   const navigate = useNavigate()
   const { location } = useRouterState()
   useUpsertUser()
+  
 
-  // GA4: fire page_view on route change
+  // GA4: fire page_view on route change (charity detail pages send their own enriched page_view with charity_id/charity_name)
   useEffect(() => {
+    const pathname = location.pathname
+    const isCharityDetailPage = /^\/charity\/\d+$/.test(pathname)
+    if (isCharityDetailPage) return
     trackPageView()
   }, [location.pathname, location.search])
 

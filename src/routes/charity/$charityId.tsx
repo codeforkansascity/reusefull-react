@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { orgItemsQuery } from '@/api/queries/orgItemsQuery'
 import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
@@ -32,10 +32,22 @@ function CharityDetailsComponent() {
 
   const organization = organizations?.find((org) => org.Id === orgId)
 
-  // Track charity page view with Google Analytics (must run on every render to satisfy Rules of Hooks)
+
+  const hasTrackedView = useRef(false)
+
+  // Track charity page view once per mount (avoids duplicate in Strict Mode or effect re-runs)
   useEffect(() => {
-    if (organization) {
+    if (organization && !hasTrackedView.current) {
+      hasTrackedView.current = true
       trackCharityView(organization.Id, organization.Name)
+
+      window && window.gtag && window.gtag?.('event', 'page_view_charity', {
+        charity_id: charityId,
+        charity_name: organization.Name,
+        content_group1: 'Charity Partner',
+        content_group2: organization.Name,
+      })
+    
     }
   }, [organization])
 
