@@ -72,7 +72,7 @@ function Step3Component() {
       }
     }
   }, [isLoading, isAuthenticated, loginWithRedirect, user, navigate])
-  const { register, handleSubmit, watch } = useForm<Step3Form>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<Step3Form>({
     defaultValues: {
       acceptedItemTypes: data.acceptedItemTypes ?? [],
       amazonWishlistUrl: data.amazonWishlistUrl ?? '',
@@ -118,7 +118,14 @@ function Step3Component() {
             {/* New items only - shown separately from the rest */}
             <div className="mt-4">
               <label className="inline-flex items-center gap-2 text-gray-700">
-                <input type="checkbox" value="New items only" {...register('acceptedItemTypes')} /> New items only
+                <input
+                  type="checkbox"
+                  value="New items only"
+                  {...register('acceptedItemTypes', {
+                    validate: (value) => (Array.isArray(value) && value.length > 0) || 'Select at least one item type',
+                  })}
+                />{' '}
+                New items only
               </label>
             </div>
 
@@ -129,6 +136,9 @@ function Step3Component() {
                 </label>
               ))}
             </div>
+            {errors.acceptedItemTypes?.message && (
+              <p className="mt-2 text-sm text-red-600 text-center">{errors.acceptedItemTypes.message}</p>
+            )}
             <div className="text-xs text-gray-500 mt-2">Selected: {accepted.join(', ') || 'None'}</div>
           </div>
 

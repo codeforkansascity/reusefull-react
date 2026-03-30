@@ -58,7 +58,7 @@ const CATEGORY_OPTIONS = [
 function Step2Component() {
   const navigate = useNavigate()
   const { data, update } = useCharitySignupStore()
-  const { register, handleSubmit, watch, setValue } = useForm<Step2Form>({
+  const { register, handleSubmit, watch, setValue, getValues, formState: { errors } } = useForm<Step2Form>({
     defaultValues: {
       website: data.website ?? '',
       budgetSize: data.budgetSize ?? '$0-5k',
@@ -138,11 +138,25 @@ function Step2Component() {
           <div>
             <div className="text-gray-700 text-sm font-medium mb-2">Please select a pick-up or drop-off option <span className="text-red-500">*</span></div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('acceptDropOffs')} /> We accept drop-offs</label>
+              <label className="inline-flex items-center gap-2 text-gray-700">
+                <input
+                  type="checkbox"
+                  {...register('acceptDropOffs', {
+                    validate: () => {
+                      const { acceptDropOffs, pickupDonations } = getValues()
+                      return acceptDropOffs || pickupDonations || 'Select at least one pick-up or drop-off option'
+                    },
+                  })}
+                />{' '}
+                We accept drop-offs
+              </label>
               <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('pickupDonations')} /> We pick up donations</label>
               <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('faithBased')} /> Faith-based charity</label>
               <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('resellItems')} /> We resell items</label>
             </div>
+            {errors.acceptDropOffs?.message && (
+              <p className="mt-2 text-sm text-red-600">{errors.acceptDropOffs.message}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,10 +213,20 @@ function Step2Component() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6">
               {CATEGORY_OPTIONS.map((name) => (
                 <label key={name} className="inline-flex items-center gap-2 text-gray-700">
-                  <input type="checkbox" value={name} {...register('categories')} /> {name}
+                  <input
+                    type="checkbox"
+                    value={name}
+                    {...register('categories', {
+                      validate: (value) => (Array.isArray(value) && value.length > 0) || 'Select at least one charity type',
+                    })}
+                  />{' '}
+                  {name}
                 </label>
               ))}
             </div>
+            {errors.categories?.message && (
+              <p className="mt-2 text-sm text-red-600">{errors.categories.message}</p>
+            )}
             <div className="mt-4 md:w-1/2">
               <Field label="If other please specify:">
                 <input
