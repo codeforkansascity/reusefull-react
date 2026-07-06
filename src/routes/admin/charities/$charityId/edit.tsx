@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { ArrowLeft } from 'lucide-react'
 
 type CharityForm = {
   organizationName: string
@@ -300,6 +301,13 @@ function AdminEditCharityComponent() {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-12">
+        <Link
+          to="/charitylist"
+          className="inline-flex items-center gap-2 mb-6 rounded-md border border-[#2c78c5] px-3 py-1.5 text-sm font-medium text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Charity List
+        </Link>
         <h1 className="text-3xl font-semibold mb-2">Edit Charity</h1>
         <p className="text-gray-600 mb-8">Update this charity&apos;s details as an administrator</p>
 

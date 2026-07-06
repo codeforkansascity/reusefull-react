@@ -421,4 +421,85 @@ app.post('/admin/charities/:id/deny', requireAuth, async (req, res) => {
         // handled in assertAdmin when unauthorized/forbidden
     }
 });
+// Get a single charity by id (admin), including categories and accepted item types
+app.get('/admin/charities/:id', requireAuth, async (req, res) => {
+    try {
+        await assertAdmin(req, res);
+        const id = Number(req.params.id);
+        if (!Number.isFinite(id))
+            return res.status(400).json({ error: 'invalid_id' });
+        const pool = getPool();
+        const [[charity]] = await pool.query('SELECT * FROM charity WHERE id = ?', [id]);
+        if (!charity)
+            return res.status(404).json({ error: 'not_found' });
+        const [typesRows] = await pool.query('SELECT t.name FROM charity_type ct JOIN types t ON t.id = ct.type_id WHERE ct.charity_id = ?', [id]);
+        const [itemsRows] = await pool.query('SELECT i.name FROM charity_item ci JOIN item i ON i.id = ci.item_id WHERE ci.charity_id = ?', [id]);
+        res.json({
+            charity,
+            categories: typesRows.map((r) => r.name),
+            acceptedItemTypes: itemsRows.map((r) => r.name),
+        });
+    }
+    catch {
+        // handled in assertAdmin when unauthorized/forbidden
+    }
+});
+// Update a charity by id (admin). Preserves approval status.
+app.put('/admin/charities/:id', requireAuth, async (req, res) => {
+    try {
+        await assertAdmin(req, res);
+        const id = Number(req.params.id);
+        if (!Number.isFinite(id))
+            return res.status(400).json({ error: 'invalid_id' });
+        const pool = getPool();
+        const [[existing]] = await pool.query('SELECT id FROM charity WHERE id = ?', [id]);
+        if (!existing)
+            return res.status(404).json({ error: 'not_found' });
+        const payload = req.body ?? {};
+        const data = normalizeCharityPayload(payload);
+        const geo = await geocodeAddress(data.address, data.city, data.state, data.zip_code);
+        const lat = geo?.lat ?? null;
+        const lng = geo?.lng ?? null;
+        // Note: `approved` is intentionally NOT updated here to preserve approval status.
+        await pool.execute(`UPDATE charity SET
+        name = ?, address = ?, zip_code = ?, phone = ?, email = ?, contact_name = ?,
+        mission = ?, description = ?, link_donate_cash = ?, link_volunteer = ?,
+        link_website = ?, link_wishlist = ?, link_logo = ?, pickup = ?, dropoff = ?,
+        resell = ?, faith = ?, new_items = ?, taxid = ?, logo_url = ?, city = ?, state = ?,
+        lat = COALESCE(?, lat), lng = COALESCE(?, lng), paused = COALESCE(?, paused)
+       WHERE id = ?`, [
+            data.name,
+            data.address,
+            data.zip_code,
+            data.phone,
+            data.email,
+            data.contact_name,
+            data.mission,
+            data.description,
+            data.link_donate_cash,
+            data.link_volunteer,
+            data.link_website,
+            data.link_wishlist,
+            data.link_logo,
+            data.pickup,
+            data.dropoff,
+            data.resell,
+            data.faith,
+            data.new_items,
+            data.taxid,
+            data.logo_url,
+            data.city,
+            data.state,
+            lat,
+            lng,
+            data.paused ?? null,
+            id,
+        ].map((v) => (v === undefined ? null : v)));
+        await upsertJoinTables(id, payload);
+        res.status(204).end();
+    }
+    catch {
+        // handled in assertAdmin when unauthorized/forbidden
+    }
+});
 //# sourceMappingURL=app.js.map
