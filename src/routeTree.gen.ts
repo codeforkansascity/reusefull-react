@@ -22,6 +22,7 @@ import { Route as CharitySignupThankYouRouteImport } from './routes/charity/sign
 import { Route as CharitySignupStep3RouteImport } from './routes/charity/signup/step/3'
 import { Route as CharitySignupStep2RouteImport } from './routes/charity/signup/step/2'
 import { Route as CharitySignupStep1RouteImport } from './routes/charity/signup/step/1'
+import { Route as AdminCharitiesCharityIdEditRouteImport } from './routes/admin/charities/$charityId/edit'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -88,6 +89,12 @@ const CharitySignupStep1Route = CharitySignupStep1RouteImport.update({
   path: '/charity/signup/step/1',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCharitiesCharityIdEditRoute =
+  AdminCharitiesCharityIdEditRouteImport.update({
+    id: '/admin/charities/$charityId/edit',
+    path: '/admin/charities/$charityId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminIndexRoute
   '/donate': typeof DonateIndexRoute
   '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/admin/charities/$charityId/edit': typeof AdminCharitiesCharityIdEditRoute
   '/charity/signup/step/1': typeof CharitySignupStep1Route
   '/charity/signup/step/2': typeof CharitySignupStep2Route
   '/charity/signup/step/3': typeof CharitySignupStep3Route
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/donate': typeof DonateIndexRoute
   '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/admin/charities/$charityId/edit': typeof AdminCharitiesCharityIdEditRoute
   '/charity/signup/step/1': typeof CharitySignupStep1Route
   '/charity/signup/step/2': typeof CharitySignupStep2Route
   '/charity/signup/step/3': typeof CharitySignupStep3Route
@@ -131,6 +140,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/donate/': typeof DonateIndexRoute
   '/charity/signup/thank-you': typeof CharitySignupThankYouRoute
+  '/admin/charities/$charityId/edit': typeof AdminCharitiesCharityIdEditRoute
   '/charity/signup/step/1': typeof CharitySignupStep1Route
   '/charity/signup/step/2': typeof CharitySignupStep2Route
   '/charity/signup/step/3': typeof CharitySignupStep3Route
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/donate'
     | '/charity/signup/thank-you'
+    | '/admin/charities/$charityId/edit'
     | '/charity/signup/step/1'
     | '/charity/signup/step/2'
     | '/charity/signup/step/3'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/donate'
     | '/charity/signup/thank-you'
+    | '/admin/charities/$charityId/edit'
     | '/charity/signup/step/1'
     | '/charity/signup/step/2'
     | '/charity/signup/step/3'
@@ -178,6 +190,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/donate/'
     | '/charity/signup/thank-you'
+    | '/admin/charities/$charityId/edit'
     | '/charity/signup/step/1'
     | '/charity/signup/step/2'
     | '/charity/signup/step/3'
@@ -194,6 +207,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
   CharitySignupThankYouRoute: typeof CharitySignupThankYouRoute
+  AdminCharitiesCharityIdEditRoute: typeof AdminCharitiesCharityIdEditRoute
   CharitySignupStep1Route: typeof CharitySignupStep1Route
   CharitySignupStep2Route: typeof CharitySignupStep2Route
   CharitySignupStep3Route: typeof CharitySignupStep3Route
@@ -292,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CharitySignupStep1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/charities/$charityId/edit': {
+      id: '/admin/charities/$charityId/edit'
+      path: '/admin/charities/$charityId/edit'
+      fullPath: '/admin/charities/$charityId/edit'
+      preLoaderRoute: typeof AdminCharitiesCharityIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -306,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
   CharitySignupThankYouRoute: CharitySignupThankYouRoute,
+  AdminCharitiesCharityIdEditRoute: AdminCharitiesCharityIdEditRoute,
   CharitySignupStep1Route: CharitySignupStep1Route,
   CharitySignupStep2Route: CharitySignupStep2Route,
   CharitySignupStep3Route: CharitySignupStep3Route,

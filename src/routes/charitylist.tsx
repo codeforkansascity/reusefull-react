@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { trackCharityInteraction } from '@/utils/analytics'
+import { useAdmin } from '@/hooks/useAdmin'
 import { Container, Headline, LoadingSpinner } from '@/components/ui'
-import { MapPin, Globe, Phone } from 'lucide-react'
+import { MapPin, Globe, Phone, Pencil } from 'lucide-react'
 
 export const Route = createFileRoute('/charitylist')({
   component: CharityListComponent,
@@ -17,6 +18,7 @@ export const Route = createFileRoute('/charitylist')({
 
 function CharityListComponent() {
   const { data: organizations, isLoading } = useQuery(orgsQuery)
+  const { isAdmin } = useAdmin()
 
   if (isLoading) {
     return (
@@ -41,6 +43,18 @@ function CharityListComponent() {
               key={org.Id}
               className="rounded-md border border-[#e3e6ea] shadow-sm bg-white px-6 py-5"
             >
+              {isAdmin && (
+                <div className="flex justify-end mb-2">
+                  <Link
+                    to="/admin/charities/$charityId/edit"
+                    params={{ charityId: String(org.Id) }}
+                    className="inline-flex items-center gap-2 rounded-md border border-[#2c78c5] px-3 py-1.5 text-sm font-medium text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white transition-colors"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </Link>
+                </div>
+              )}
               <div className="flex items-start gap-6">
                 <Link
                   to="/charity/$charityId"
