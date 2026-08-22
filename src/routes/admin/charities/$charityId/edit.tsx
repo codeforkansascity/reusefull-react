@@ -394,7 +394,7 @@ function AdminEditCharityComponent() {
                   const presignRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/uploads/logo-url`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                    body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+                    body: JSON.stringify({ fileName: file.name, contentType: file.type, charityId }),
                   })
                   if (!presignRes.ok) throw new Error('Failed to obtain upload URL')
                   const { uploadUrl, publicUrl } = await presignRes.json()
