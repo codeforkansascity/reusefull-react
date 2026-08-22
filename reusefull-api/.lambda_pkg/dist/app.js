@@ -65,17 +65,32 @@ app.post('/uploads/logo-url', requireAuth, async (req, res) => {
         const sub = req.auth?.payload?.sub;
         if (!sub)
             return res.status(401).end();
-        const { fileName } = req.body || {};
+        const { fileName, charityId: requestedCharityId } = req.body || {};
         if (!fileName)
             return res.status(400).json({ error: 'fileName is required' });
+        const pool = getPool();
+        let charityId;
+        if (requestedCharityId) {
+            // Admin uploading on behalf of a charity they don't own
+            await assertAdmin(req, res);
+            charityId = Number(requestedCharityId);
+        }
+        else {
+            const [[charity]] = await pool.query('SELECT id FROM charity WHERE user_id = ?', [sub]);
+            charityId = charity?.id;
+        }
+        if (!charityId || !Number.isFinite(charityId)) {
+            return res.status(400).json({ error: 'charity_not_found' });
+        }
         const region = process.env.AWS_REGION || 'us-east-2';
         const bucket = process.env.S3_BUCKET;
         if (!bucket)
             return res.status(500).json({ error: 'S3_BUCKET not configured' });
         const s3 = new S3Client({ region });
-        const safe = String(fileName).replace(/[^\w.\-]/g, '_');
-        // Store uploads under charities/{userSub}/filename
-        const key = `charities/${encodeURIComponent(sub)}/${Date.now()}-${safe}`;
+        const extMatch = String(fileName).match(/\.[a-zA-Z0-9]+$/);
+        const ext = extMatch ? extMatch[0].toLowerCase() : '';
+        // Store uploads as charities/{charityId}.{ext}, keyed by the charity's own record id
+        const key = `charities/${charityId}${ext}`;
         // Do NOT constrain ContentType in the signature to avoid client/header mismatches
         const put = new PutObjectCommand({ Bucket: bucket, Key: key });
         const uploadUrl = await getSignedUrl(s3, put, { expiresIn: 60 });
@@ -83,7 +98,8 @@ app.post('/uploads/logo-url', requireAuth, async (req, res) => {
         res.json({ uploadUrl, publicUrl, key });
     }
     catch {
-        res.status(500).json({ error: 'failed_to_sign' });
+        if (!res.headersSent)
+            res.status(500).json({ error: 'failed_to_sign' });
     }
 });
 // Upsert a user (intended to be called by Auth0 Action after signup)
