@@ -154,6 +154,9 @@ app.put('/charity-signup/draft', requireAuth, async (req, res) => {
     if (!sub)
         return res.status(401).json({ error: 'unauthorized' });
     const draft = req.body ?? {};
+    const validationError = validateMissionLength(draft);
+    if (validationError)
+        return res.status(400).json({ error: validationError });
     await upsertCharityForUser(sub, draft);
     res.status(204).end();
 });
@@ -163,6 +166,9 @@ app.post('/charity-signup/submit', requireAuth, async (req, res) => {
     if (!sub)
         return res.status(401).json({ error: 'unauthorized' });
     const submission = req.body ?? {};
+    const validationError = validateMissionLength(submission);
+    if (validationError)
+        return res.status(400).json({ error: validationError });
     const charityId = await upsertCharityForUser(sub, submission, { markPendingApproval: true });
     res.status(201).json({ ok: true, charityId });
 });
@@ -320,6 +326,14 @@ async function upsertCharityForUser(sub, payload, opts) {
         return existingId;
     }
 }
+const MISSION_MAX_LENGTH = 630;
+function validateMissionLength(p) {
+    const mission = p?.mission;
+    if (typeof mission === 'string' && mission.length > MISSION_MAX_LENGTH) {
+        return `mission must be ${MISSION_MAX_LENGTH} characters or fewer`;
+    }
+    return null;
+}
 function normalizeCharityPayload(p) {
     return {
         name: p.organizationName ?? p.name ?? null,
@@ -407,6 +421,38 @@ app.get('/admin/charities/pending', requireAuth, async (req, res) => {
         // handled in assertAdmin when unauthorized/forbidden
     }
 });
+function csvValue(v) {
+    if (v === null || v === undefined)
+        return '';
+    const s = v instanceof Date ? v.toISOString() : String(v);
+    return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+function rowsToCsv(rows) {
+    if (rows.length === 0)
+        return '';
+    const headers = Object.keys(rows[0]);
+    const lines = [headers.map(csvValue).join(',')];
+    for (const row of rows) {
+        lines.push(headers.map((h) => csvValue(row[h])).join(','));
+    }
+    return lines.join('\r\n');
+}
+// Export every column of every charity row as CSV (charity table only, no child tables)
+app.get('/admin/charities/export.csv', requireAuth, async (req, res) => {
+    try {
+        await assertAdmin(req, res);
+        const pool = getPool();
+        const [rows] = await pool.query('SELECT * FROM charity ORDER BY id');
+        const csv = rowsToCsv(rows);
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="charities-${new Date().toISOString().slice(0, 10)}.csv"`);
+        res.status(200).send(csv);
+    }
+    catch {
+        if (!res.headersSent)
+            res.status(500).json({ error: 'export_failed' });
+    }
+});
 // Approve charity (flip from NULL → 1)
 app.post('/admin/charities/:id/approve', requireAuth, async (req, res) => {
     try {
@@ -472,6 +518,9 @@ app.put('/admin/charities/:id', requireAuth, async (req, res) => {
         if (!existing)
             return res.status(404).json({ error: 'not_found' });
         const payload = req.body ?? {};
+        const validationError = validateMissionLength(payload);
+        if (validationError)
+            return res.status(400).json({ error: validationError });
         const data = normalizeCharityPayload(payload);
         const geo = await geocodeAddress(data.address, data.city, data.state, data.zip_code);
         const lat = geo?.lat ?? null;
