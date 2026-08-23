@@ -5,6 +5,7 @@ import { requireAuth } from './auth.js';
 import { getPool, pingDb } from './db.js';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { sendCharitySignupNotification } from './email.js';
 const app = express();
 app.use(cors({ origin: config.corsOrigin, credentials: false }));
 app.use(express.json({ limit: '1mb' }));
@@ -170,6 +171,14 @@ app.post('/charity-signup/submit', requireAuth, async (req, res) => {
     if (validationError)
         return res.status(400).json({ error: validationError });
     const charityId = await upsertCharityForUser(sub, submission, { markPendingApproval: true });
+    sendCharitySignupNotification({
+        name: submission.organizationName ?? submission.name ?? 'Unknown organization',
+        contactName: submission.contactName,
+        email: submission.email,
+        phone: submission.phone,
+    }).catch(() => {
+        // best-effort; don't fail the signup if the notification email fails
+    });
     res.status(201).json({ ok: true, charityId });
 });
 // Current user profile + optional draft

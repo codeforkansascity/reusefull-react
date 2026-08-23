@@ -15,6 +15,10 @@ export const config = {
     },
     actionSecret: process.env.ACTION_SHARED_SECRET || '', // optional shared secret for /users
     corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    email: {
+        fromAddress: process.env.SES_FROM_EMAIL || 'hello@reusefull.org',
+        adminNotificationAddress: process.env.ADMIN_NOTIFICATION_EMAIL || 'leslie@reusefull.org',
+    },
     // Optional contact email for Nominatim user-agent etiquette
     geocodeContactEmail: process.env.GEOCODE_CONTACT_EMAIL || '',
 };
