@@ -369,8 +369,6 @@ function normalizeCharityPayload(p) {
     };
 }
 function boolNum(v) {
-    if (v === undefined || v === null)
-        return null;
     return v ? 1 : 0;
 }
 function stringOrEmpty(v) {
