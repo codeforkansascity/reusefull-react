@@ -52,12 +52,18 @@ export async function sendCharitySignupNotification(charity: {
     })
   )
 
-  // Best-effort archive copy; a logging failure shouldn't be treated as a send failure
-  archiveSentEmail({
-    to: config.email.adminNotificationAddress,
-    from: config.email.fromAddress,
-    subject,
-    body,
-    sentAt: new Date().toISOString(),
-  }).catch(() => {})
+  try {
+    // Must be awaited (see caller): Lambda can freeze right after this function
+    // returns, so an un-awaited write here can be killed before it completes.
+    await archiveSentEmail({
+      to: config.email.adminNotificationAddress,
+      from: config.email.fromAddress,
+      subject,
+      body,
+      sentAt: new Date().toISOString(),
+    })
+  } catch (e) {
+    // Best-effort; an archiving failure shouldn't be treated as a send failure
+    console.error('archiveSentEmail failed', e)
+  }
 }

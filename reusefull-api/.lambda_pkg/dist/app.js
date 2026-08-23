@@ -171,14 +171,20 @@ app.post('/charity-signup/submit', requireAuth, async (req, res) => {
     if (validationError)
         return res.status(400).json({ error: validationError });
     const charityId = await upsertCharityForUser(sub, submission, { markPendingApproval: true });
-    sendCharitySignupNotification({
-        name: submission.organizationName ?? submission.name ?? 'Unknown organization',
-        contactName: submission.contactName,
-        email: submission.email,
-        phone: submission.phone,
-    }).catch(() => {
-        // best-effort; don't fail the signup if the notification email fails
-    });
+    try {
+        // Must be awaited: Lambda can freeze the execution environment as soon as the
+        // HTTP response is sent, so a fire-and-forget call here can be killed mid-flight.
+        await sendCharitySignupNotification({
+            name: submission.organizationName ?? submission.name ?? 'Unknown organization',
+            contactName: submission.contactName,
+            email: submission.email,
+            phone: submission.phone,
+        });
+    }
+    catch (e) {
+        // Best-effort; don't fail the signup if the notification email fails
+        console.error('sendCharitySignupNotification failed', e);
+    }
     res.status(201).json({ ok: true, charityId });
 });
 // Current user profile + optional draft
