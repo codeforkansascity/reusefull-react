@@ -377,7 +377,7 @@ export default function EditProfileComponent() {
 
           <label className="block md:col-span-2">
             <Label>Mission</Label>
-            <textarea rows={3} {...register('mission')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <textarea rows={3} {...register('mission', { maxLength: 630 })} maxLength={630} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
           <label className="block md:col-span-2">
             <Label>Description</Label>

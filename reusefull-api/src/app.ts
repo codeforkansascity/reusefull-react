@@ -156,6 +156,8 @@ app.put('/charity-signup/draft', requireAuth, async (req: any, res: Response) =>
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const draft = req.body ?? {}
+  const validationError = validateMissionLength(draft)
+  if (validationError) return res.status(400).json({ error: validationError })
   await upsertCharityForUser(sub, draft)
   res.status(204).end()
 })
@@ -165,6 +167,8 @@ app.post('/charity-signup/submit', requireAuth, async (req: any, res: Response) 
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const submission = req.body ?? {}
+  const validationError = validateMissionLength(submission)
+  if (validationError) return res.status(400).json({ error: validationError })
   const charityId = await upsertCharityForUser(sub, submission, { markPendingApproval: true })
   res.status(201).json({ ok: true, charityId })
 })
@@ -338,6 +342,16 @@ async function upsertCharityForUser(
   }
 }
 
+const MISSION_MAX_LENGTH = 630
+
+function validateMissionLength(p: any): string | null {
+  const mission = p?.mission
+  if (typeof mission === 'string' && mission.length > MISSION_MAX_LENGTH) {
+    return `mission must be ${MISSION_MAX_LENGTH} characters or fewer`
+  }
+  return null
+}
+
 function normalizeCharityPayload(p: any) {
   return {
     name: p.organizationName ?? p.name ?? null,
@@ -502,6 +516,8 @@ app.put('/admin/charities/:id', requireAuth, async (req: any, res: Response) => 
     if (!existing) return res.status(404).json({ error: 'not_found' })
 
     const payload = req.body ?? {}
+    const validationError = validateMissionLength(payload)
+    if (validationError) return res.status(400).json({ error: validationError })
     const data = normalizeCharityPayload(payload)
     const geo = await geocodeAddress(data.address, data.city, data.state, data.zip_code)
     const lat = geo?.lat ?? null

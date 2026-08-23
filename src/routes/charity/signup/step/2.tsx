@@ -239,7 +239,7 @@ function Step2Component() {
           </div>
 
           <Field label={<>Mission <span className="text-red-500">*</span></> }>
-            <textarea {...register('mission', { required: true })} rows={3} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            <textarea {...register('mission', { required: true, maxLength: 630 })} rows={3} maxLength={630} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
           </Field>
           <Field label={<>Description <span className="text-red-500">*</span></>}>
             <textarea {...register('description', { required: true })} rows={5} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
