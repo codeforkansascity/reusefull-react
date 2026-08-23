@@ -73,6 +73,29 @@ function AdminPage() {
     }
   }, [isAuthenticated, isLoading, getAccessTokenSilently, loginWithRedirect, navigate])
 
+  async function downloadCsv() {
+    try {
+      const token = await getAccessTokenSilently({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+      })
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/charities/export.csv`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('export_failed')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `charities-${new Date().toISOString().slice(0, 10)}.csv`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      // no-op; leave button available to retry
+    }
+  }
+
   async function act(id: number, action: 'approve' | 'deny') {
     try {
       const token = await getAccessTokenSilently({
@@ -96,7 +119,15 @@ function AdminPage() {
      <div className="bg-white">
        <Container>
          <div className="py-10">
-          <h2 className="text-[40px] font-semibold text-black leading-none">Needs Approval</h2>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <h2 className="text-[40px] font-semibold text-black leading-none">Needs Approval</h2>
+            <button
+              onClick={downloadCsv}
+              className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"
+            >
+              Download all charities (CSV)
+            </button>
+          </div>
            <div className="mt-6 space-y-8">
              {rows.map((c) => (
                <Card key={c.id} className="p-5 border border-[#e3e6ea] shadow-sm rounded-md">

@@ -444,6 +444,37 @@ app.get('/admin/charities/pending', requireAuth, async (req: any, res: Response)
   }
 })
 
+function csvValue(v: unknown): string {
+  if (v === null || v === undefined) return ''
+  const s = v instanceof Date ? v.toISOString() : String(v)
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+}
+
+function rowsToCsv(rows: Record<string, unknown>[]): string {
+  if (rows.length === 0) return ''
+  const headers = Object.keys(rows[0])
+  const lines = [headers.map(csvValue).join(',')]
+  for (const row of rows) {
+    lines.push(headers.map((h) => csvValue(row[h])).join(','))
+  }
+  return lines.join('\r\n')
+}
+
+// Export every column of every charity row as CSV (charity table only, no child tables)
+app.get('/admin/charities/export.csv', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const pool = getPool()
+    const [rows]: any = await pool.query('SELECT * FROM charity ORDER BY id')
+    const csv = rowsToCsv(rows as Record<string, unknown>[])
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', `attachment; filename="charities-${new Date().toISOString().slice(0, 10)}.csv"`)
+    res.status(200).send(csv)
+  } catch {
+    if (!res.headersSent) res.status(500).json({ error: 'export_failed' })
+  }
+})
+
 // Approve charity (flip from NULL → 1)
 app.post('/admin/charities/:id/approve', requireAuth, async (req: any, res: Response) => {
   try {
