@@ -108,7 +108,7 @@ function AdminEditCharityComponent() {
   const [saving, setSaving] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm<CharityForm>({
+  const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors } } = useForm<CharityForm>({
     defaultValues: {
       organizationName: '',
       contactName: '',
@@ -367,11 +367,27 @@ function AdminEditCharityComponent() {
           </div>
 
           {/* Flags */}
-          <div className="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('acceptDropOffs')} /> We accept drop-offs</label>
-            <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('pickupDonations')} /> We pick up donations</label>
-            <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('faithBased')} /> Faith-based charity</label>
-            <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('resellItems')} /> We resell items</label>
+          <div className="md:col-span-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <label className="inline-flex items-center gap-2 text-gray-700">
+                <input
+                  type="checkbox"
+                  {...register('acceptDropOffs', {
+                    validate: () => {
+                      const { acceptDropOffs, pickupDonations } = getValues()
+                      return acceptDropOffs || pickupDonations || 'Select at least one pick-up or drop-off option'
+                    },
+                  })}
+                />{' '}
+                We accept drop-offs
+              </label>
+              <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('pickupDonations')} /> We pick up donations</label>
+              <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('faithBased')} /> Faith-based charity</label>
+              <label className="inline-flex items-center gap-2 text-gray-700"><input type="checkbox" {...register('resellItems')} /> We resell items</label>
+            </div>
+            {errors.acceptDropOffs?.message && (
+              <p className="mt-2 text-sm text-red-600">{errors.acceptDropOffs.message}</p>
+            )}
           </div>
 
           {/* Tax ID + Logo */}
