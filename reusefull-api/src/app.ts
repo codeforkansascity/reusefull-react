@@ -387,8 +387,7 @@ function normalizeCharityPayload(p: any) {
   }
 }
 
-function boolNum(v: any): number | null {
-  if (v === undefined || v === null) return null
+function boolNum(v: any): number {
   return v ? 1 : 0
 }
 
