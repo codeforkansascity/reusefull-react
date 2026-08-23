@@ -1,6 +1,7 @@
 import { Outlet, createRootRouteWithContext, useNavigate, useRouterState } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect } from 'react'
 import { trackPageView } from '@/utils/analytics'
@@ -100,11 +101,12 @@ function RootComponent() {
   }, [isLoading, isAuthenticated, getAccessTokenSilently, navigate])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
+      <Footer />
     </div>
   )
 }
