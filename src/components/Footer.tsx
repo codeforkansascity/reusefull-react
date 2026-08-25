@@ -41,7 +41,7 @@ export function Footer() {
 
         <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-500">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            <span>&copy; {year} Reusefull. All rights reserved.</span>
+            <span>&copy; 2020-{year} Re.Use.Full. All Rights Reserved.</span>
             <a href="https://reusefull.org/privacy-policy/" className="hover:text-blue-600 transition-colors">
               Privacy Policy
             </a>
