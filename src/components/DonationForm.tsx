@@ -26,7 +26,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
     setLocation,
   } = useDonationStore()
   const navigate = useNavigate()
-  const results = useResults()
+  const { results } = useResults()
 
   const zipCodeEntered = formData.location.zipCode.trim().length > 0
   const isDistanceInvalid = zipCodeEntered && !(Number.isFinite(formData.location.distance) && formData.location.distance > 0)

@@ -15,12 +15,13 @@ export default function useResults() {
 
 
   const [finalResults, setFinalResults] = useState<NonNullable<typeof orgs>[number][]>([])
-  const [, setIsFiltering] = useState(false)
+  const [isFiltering, setIsFiltering] = useState(true)
 
   // Complete filtering logic with location filtering
   useEffect(() => {
     if (!orgs || !orgItems || !categories || !orgCharityTypes) {
       setFinalResults([])
+      setIsFiltering(false)
       return
     }
 
@@ -183,5 +184,5 @@ export default function useResults() {
     performFiltering()
   }, [orgs, orgItems, categories, orgCharityTypes, formData])
 
-  return finalResults
+  return { results: finalResults, isFiltering }
 }

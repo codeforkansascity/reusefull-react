@@ -165,6 +165,12 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
     if (storedFilters) {
       try {
         const parsedFilters = JSON.parse(storedFilters)
+        // Skip the update if nothing actually changed - callers (like the
+        // results page, to survive a hard refresh) invoke this even when the
+        // store already matches, and a new object reference here would
+        // trigger every effect keyed on formData (e.g. re-running the full
+        // org filtering pass) for no reason.
+        if (JSON.stringify(parsedFilters) === JSON.stringify(get().formData)) return
         set({ formData: parsedFilters })
       } catch (error) {
         console.error('Error parsing stored filters:', error)

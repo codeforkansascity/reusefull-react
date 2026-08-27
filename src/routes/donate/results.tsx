@@ -35,8 +35,20 @@ export const Route = createFileRoute('/donate/results')({
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const liveResults = useResults()
-  const [persistentResults, setPersistentResults] = useState<any[]>([])
+  const { results: liveResults, isFiltering } = useResults()
+  // Seed from the last saved snapshot so the page has something to paint
+  // immediately (and survives a hard refresh, which loses the in-memory
+  // filter store) - but this is only ever a placeholder for the first paint.
+  const [persistentResults, setPersistentResults] = useState<any[]>(() => {
+    try {
+      const stored = sessionStorage.getItem('filtered-results')
+      return stored ? JSON.parse(stored) : []
+    } catch (error) {
+      console.error('Error parsing stored results:', error)
+      sessionStorage.removeItem('filtered-results')
+      return []
+    }
+  })
   const { loadFiltersFromStorage } = useDonationStore()
 
   function shuffle<T>(arr: T[]): T[] {
@@ -53,27 +65,26 @@ function RouteComponent() {
     window.scrollTo(0, 0)
   }, [])
 
-  // Handle persistent results
+  // Restore filters into the store in case this is a hard page refresh
+  // (the zustand store is in-memory only and won't survive that).
   useEffect(() => {
-    // Try to get results from sessionStorage first
-    const storedResults = sessionStorage.getItem('filtered-results')
-    if (storedResults) {
-      try {
-        const parsedResults = JSON.parse(storedResults)
-        setPersistentResults(parsedResults)
-      } catch (error) {
-        console.error('Error parsing stored results:', error)
-        sessionStorage.removeItem('filtered-results')
-      }
-    } else if (liveResults.length > 0) {
-      // If no stored results but we have live results, store them
-      sessionStorage.setItem('filtered-results', JSON.stringify(liveResults))
-      setPersistentResults(liveResults)
-    }
-  }, [liveResults])
+    loadFiltersFromStorage()
+  }, [loadFiltersFromStorage])
 
-  // Use persistent results if available, otherwise use live results
-  const results = persistentResults.length > 0 ? persistentResults : liveResults
+  // Once a live filtering pass finishes, it's always authoritative -
+  // replace the placeholder and re-sync storage so a later refresh
+  // reflects the current filters instead of a stale snapshot.
+  useEffect(() => {
+    if (isFiltering) return
+    setPersistentResults(liveResults)
+    if (liveResults.length > 0) {
+      sessionStorage.setItem('filtered-results', JSON.stringify(liveResults))
+    } else {
+      sessionStorage.removeItem('filtered-results')
+    }
+  }, [liveResults, isFiltering])
+
+  const results = persistentResults
   const randomizedResults = shuffle(results)
 
   if (results.length === 0) {
