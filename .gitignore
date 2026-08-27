@@ -31,5 +31,7 @@ node_modules/
 /Lambdas/ReusefullCommonLibrary/obj
 dist/
 reusefull-api/dist/
+reusefull-api/.lambda_pkg/
+reusefull-api/lambda/
 .env
 *.env
