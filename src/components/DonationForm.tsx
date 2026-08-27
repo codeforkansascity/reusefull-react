@@ -28,6 +28,9 @@ export function DonationForm({ items, categories }: DonationFormProps) {
   const navigate = useNavigate()
   const results = useResults()
 
+  const zipCodeEntered = formData.location.zipCode.trim().length > 0
+  const isDistanceInvalid = zipCodeEntered && !(Number.isFinite(formData.location.distance) && formData.location.distance > 0)
+
   // Load filters from storage when component mounts
   useEffect(() => {
     loadFiltersFromStorage()
@@ -172,7 +175,7 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                 </div>
                 <div>
                   <label htmlFor="distance" className="block text-sm font-medium text-card-foreground mb-2">
-                    Distance (miles)
+                    Distance (miles) {zipCodeEntered && <span className="text-red-500">*</span>}
                   </label>
                   <Input
                     id="distance"
@@ -180,8 +183,14 @@ export function DonationForm({ items, categories }: DonationFormProps) {
                     placeholder="Enter distance in miles"
                     value={formData.location.distance || ''}
                     onChange={(e) => setLocation(formData.location.zipCode, parseInt(e.target.value))}
+                    variant={isDistanceInvalid ? 'error' : 'default'}
                     className="w-full bg-white border-gray-300 text-gray-900 text-base"
                   />
+                  {isDistanceInvalid && (
+                    <Text size="sm" className="text-red-500 mt-1">
+                      Please enter a distance greater than 0 miles.
+                    </Text>
+                  )}
                 </div>
               </div>
               <Text size="sm" className="text-gray-500 mt-2">

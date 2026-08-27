@@ -136,11 +136,14 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
 
   isFormValid: () => {
     const { formData } = get()
+    const zipCodeEntered = formData.location.zipCode.trim().length > 0
+    const isDistanceValid = !zipCodeEntered || (Number.isFinite(formData.location.distance) && formData.location.distance > 0)
     return (
       (formData.deliveryMethod.pickup || formData.deliveryMethod.dropoff) &&
       (formData.itemCondition.new || formData.itemCondition.used) &&
       formData.selectedItems.length > 0 &&
-      formData.selectedCategories.length > 0
+      formData.selectedCategories.length > 0 &&
+      isDistanceValid
     )
   },
 
