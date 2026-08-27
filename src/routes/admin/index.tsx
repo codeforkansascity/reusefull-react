@@ -131,15 +131,15 @@ function AdminPage() {
            <div className="mt-6 space-y-8">
              {rows.map((c) => (
                <Card key={c.id} className="p-5 border border-[#e3e6ea] shadow-sm rounded-md">
-                 <div className="flex items-start gap-6">
+                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                    {c.logo_url ? (
-                     <img src={c.logo_url} alt={c.name} className="w-[140px] h-[100px] object-contain rounded bg-white" />
+                     <img src={c.logo_url} alt={c.name} className="w-32 h-[92px] sm:w-[140px] sm:h-[100px] object-contain rounded bg-white self-center sm:self-start" />
                    ) : (
-                     <div className="w-[140px] h-[100px] bg-gray-100 flex items-center justify-center text-gray-400 rounded">
+                     <div className="w-32 h-[92px] sm:w-[140px] sm:h-[100px] bg-gray-100 flex items-center justify-center text-gray-400 rounded self-center sm:self-start">
                        No Logo
                      </div>
                    )}
-                   <div className="flex-1">
+                   <div className="flex-1 w-full">
                      <a className="text-[18px] font-semibold text-[#2c78c5] hover:underline cursor-pointer">{c.name}</a>
                      <div className="mt-2 space-y-1 text-[14px] text-[#212529]">
                        <div className="flex items-center gap-2">
@@ -162,16 +162,16 @@ function AdminPage() {
                        ) : null}
                      </div>
                    </div>
-                   <div className="flex flex-col gap-3">
+                   <div className="flex flex-row sm:flex-col gap-3 w-full sm:w-auto">
                      <button
                        onClick={() => act(c.id, 'approve')}
-                       className="px-4 py-2 rounded bg-[#28a745] hover:bg-[#218838] text-white text-sm font-semibold cursor-pointer"
+                       className="flex-1 sm:flex-none px-4 py-2 rounded bg-[#28a745] hover:bg-[#218838] text-white text-sm font-semibold cursor-pointer"
                      >
                        Approve
                      </button>
                      <button
                        onClick={() => act(c.id, 'deny')}
-                       className="px-4 py-2 rounded bg-[#dc3545] hover:bg-[#c82333] text-white text-sm font-semibold cursor-pointer"
+                       className="flex-1 sm:flex-none px-4 py-2 rounded bg-[#dc3545] hover:bg-[#c82333] text-white text-sm font-semibold cursor-pointer"
                      >
                        Deny
                      </button>

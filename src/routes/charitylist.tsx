@@ -55,30 +55,30 @@ function CharityListComponent() {
                   </Link>
                 </div>
               )}
-              <div className="flex items-start gap-6">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                 <Link
                   to="/charity/$charityId"
                   params={{ charityId: String(org.Id) }}
                   search={{ from: 'charitylist' }}
-                  className="shrink-0"
+                  className="shrink-0 self-center sm:self-start"
                   onClick={() => trackCharityInteraction('view_details_click', org.Id, org.Name, 'details')}
                 >
                   {org.LogoUrl ? (
                     <img
                       src={org.LogoUrl}
                       alt={`${org.Name} logo`}
-                      className="w-[250px] h-[120px] object-contain bg-white"
+                      className="w-40 h-20 sm:w-[250px] sm:h-[120px] object-contain bg-white"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none'
                       }}
                     />
                   ) : (
-                    <div className="w-[250px] h-[120px] bg-gray-100 flex items-center justify-center text-gray-400">
+                    <div className="w-40 h-20 sm:w-[250px] sm:h-[120px] bg-gray-100 flex items-center justify-center text-gray-400">
                       No Logo
                     </div>
                   )}
                 </Link>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 w-full">
                   <Link
                     to="/charity/$charityId"
                     params={{ charityId: String(org.Id) }}
