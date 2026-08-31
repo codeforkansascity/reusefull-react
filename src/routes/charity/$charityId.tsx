@@ -7,8 +7,9 @@ import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { trackCharityView, trackCharityInteraction } from '@/utils/analytics'
+import { useAdmin } from '@/hooks/useAdmin'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
-import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building } from 'lucide-react'
+import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building, Pencil } from 'lucide-react'
 
 export const Route = createFileRoute('/charity/$charityId')({
   component: CharityDetailsComponent,
@@ -29,6 +30,7 @@ function CharityDetailsComponent() {
   const { data: orgItems, isLoading: itemsLoading } = useQuery(orgItemsQuery)
   const { data: orgCharityTypes, isLoading: typesLoading } = useQuery(orgCharityTypesQuery)
   const { data: categories, isLoading: categoriesLoading } = useQuery(categoriesQuery)
+  const { isAdmin } = useAdmin()
 
   const organization = organizations?.find((org) => org.Id === orgId)
 
@@ -97,13 +99,23 @@ function CharityDetailsComponent() {
     <div className="min-h-screen">
       <Container size="lg" className="py-16">
         {/* Back Button */}
-        <div className="mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <Link to={backHref}>
             <Button variant="outline" size="sm" className="text-white/90 hover:text-white hover:border-white/60 cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
               {fromParam === 'charitylist' ? 'Back to Charity List' : 'Back to Results'}
             </Button>
           </Link>
+          {isAdmin && (
+            <Link
+              to="/admin/charities/$charityId/edit"
+              params={{ charityId: String(organization.Id) }}
+              className="inline-flex items-center gap-2 rounded-md border border-white/60 px-3 py-1.5 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              <Pencil className="w-4 h-4" />
+              Edit
+            </Link>
+          )}
         </div>
 
         {/* Header Section */}
