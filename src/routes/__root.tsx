@@ -90,8 +90,9 @@ function RootComponent() {
         })
         if (!res.ok) return
         const data = await res.json()
+        const isAdmin = Boolean(data?.user?.admin)
         const completed = Boolean(data?.completed)
-        if (!completed) {
+        if (!isAdmin && !completed) {
           navigate({ to: '/charity/signup/step/1' })
         }
       } catch {

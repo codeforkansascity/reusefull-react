@@ -1,4 +1,4 @@
- import { createFileRoute, useNavigate } from '@tanstack/react-router'
+ import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
  import { useEffect, useState } from 'react'
  import { useAuth0 } from '@auth0/auth0-react'
  import { Card, Container } from '@/components/ui'
@@ -121,12 +121,20 @@ function AdminPage() {
          <div className="py-10">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <h2 className="text-[40px] font-semibold text-black leading-none">Needs Approval</h2>
-            <button
-              onClick={downloadCsv}
-              className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"
-            >
-              Download all charities (CSV)
-            </button>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/charitylist"
+                className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"
+              >
+                Charity List
+              </Link>
+              <button
+                onClick={downloadCsv}
+                className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"
+              >
+                Download all charities (CSV)
+              </button>
+            </div>
           </div>
            <div className="mt-6 space-y-8">
              {rows.map((c) => (
