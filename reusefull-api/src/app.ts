@@ -529,7 +529,8 @@ app.get('/admin/charity-activity', requireAuth, async (req: any, res: Response) 
       'SELECT id, charity_id, charity_name, event_type, created_at FROM charity_activity ORDER BY created_at DESC LIMIT 500'
     )
     res.json(rows || [])
-  } catch {
+  } catch (e) {
+    console.error('GET /admin/charity-activity failed', e)
     if (!res.headersSent) res.status(500).json({ error: 'failed_to_load' })
   }
 })
@@ -546,7 +547,8 @@ app.get('/admin/charity-activity/export.csv', requireAuth, async (req: any, res:
     res.setHeader('Content-Type', 'text/csv; charset=utf-8')
     res.setHeader('Content-Disposition', `attachment; filename="charity-activity-${new Date().toISOString().slice(0, 10)}.csv"`)
     res.status(200).send(csv)
-  } catch {
+  } catch (e) {
+    console.error('GET /admin/charity-activity/export.csv failed', e)
     if (!res.headersSent) res.status(500).json({ error: 'export_failed' })
   }
 })

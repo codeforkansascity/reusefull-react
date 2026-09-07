@@ -22,6 +22,7 @@ function AdminActivityPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [rows, setRows] = useState<ActivityRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -45,13 +46,20 @@ function AdminActivityPage() {
           return
         }
         if (!cancelled) setIsAdmin(true)
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/charity-activity`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        if (!res.ok) throw new Error('activity_failed')
-        const data = (await res.json()) as ActivityRow[]
-        if (!cancelled) setRows(data)
-      } catch {
+
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/charity-activity`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          if (!res.ok) throw new Error(`activity_failed: ${res.status} ${await res.text()}`)
+          const data = (await res.json()) as ActivityRow[]
+          if (!cancelled) setRows(data)
+        } catch (e) {
+          console.error('Failed to load charity activity', e)
+          if (!cancelled) setError('Could not load activity data. Check the browser console for details.')
+        }
+      } catch (e) {
+        console.error('Failed to verify admin access', e)
         if (!cancelled) setIsAdmin(false)
       } finally {
         if (!cancelled) setLoading(false)
@@ -113,6 +121,12 @@ function AdminActivityPage() {
           <p className="mt-2 text-sm text-gray-600">
             Every time a donor clicks through to a charity's website or clicks to email a charity. Showing the most recent {rows.length} — download the CSV for the full history.
           </p>
+
+          {error && (
+            <div className="mt-4 px-4 py-3 rounded border border-red-300 bg-red-50 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
 
           <div className="mt-6 overflow-x-auto border border-[#e3e6ea] rounded-md">
             <table className="w-full text-sm text-left">
