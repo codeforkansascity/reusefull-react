@@ -128,6 +128,12 @@ function AdminPage() {
               >
                 Charity List
               </Link>
+              <Link
+                to="/admin/activity"
+                className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"
+              >
+                Charity Activity
+              </Link>
               <button
                 onClick={downloadCsv}
                 className="px-4 py-2 rounded border border-[#2c78c5] text-[#2c78c5] hover:bg-[#2c78c5] hover:text-white text-sm font-semibold cursor-pointer"

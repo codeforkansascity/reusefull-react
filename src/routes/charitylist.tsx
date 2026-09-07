@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { orgsQuery } from '@/api/queries/orgsQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { trackCharityInteraction } from '@/utils/analytics'
+import { trackCharityActivity } from '@/utils/activityTracking'
 import { useAdmin } from '@/hooks/useAdmin'
 import { Container, Headline, LoadingSpinner } from '@/components/ui'
 import { MapPin, Globe, Phone, Pencil } from 'lucide-react'
@@ -118,7 +119,10 @@ function CharityListComponent() {
                           target="_blank"
                           rel="noreferrer"
                           className="text-[#2c78c5] hover:underline break-all"
-                          onClick={() => trackCharityInteraction('website_click', org.Id, org.Name, 'website')}
+                          onClick={() => {
+                            trackCharityInteraction('website_click', org.Id, org.Name, 'website')
+                            trackCharityActivity(org.Id, 'website_click')
+                          }}
                         >
                           {org.LinkWebsite}
                         </a>

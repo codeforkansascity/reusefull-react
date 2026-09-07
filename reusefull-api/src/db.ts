@@ -29,5 +29,25 @@ export async function pingDb(): Promise<void> {
   }
 }
 
+let charityActivityTableEnsured = false
+
+// Lazily creates the charity_activity table on first use (idempotent), so no
+// separate migration step is needed. Runs at most once per warm container.
+export async function ensureCharityActivityTable(): Promise<void> {
+  if (charityActivityTableEnsured) return
+  await getPool().query(`
+    CREATE TABLE IF NOT EXISTS charity_activity (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      charity_id INT NOT NULL,
+      charity_name VARCHAR(255) NOT NULL,
+      event_type VARCHAR(32) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_charity_activity_created_at (created_at),
+      INDEX idx_charity_activity_charity_id (charity_id)
+    )
+  `)
+  charityActivityTableEnsured = true
+}
+
 
 

@@ -4,6 +4,7 @@ import useResults from '@/hooks/useResults'
 import { useDonationStore } from '@/stores/donationStore'
 import { formatPhone } from '@/utils/formatPhone'
 import { trackCharityInteraction } from '@/utils/analytics'
+import { trackCharityActivity } from '@/utils/activityTracking'
 import { CharityMap } from '@/components/CharityMap'
 import {
   Container,
@@ -309,6 +310,7 @@ function CharityCard({ organization }: CharityCardProps) {
               className="flex-1 cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
               onClick={() => {
                 trackCharityInteraction('website_click', organization.Id, Name, 'website')
+                trackCharityActivity(organization.Id, 'website_click')
                 window.open(LinkWebsite, '_blank')
               }}
             >

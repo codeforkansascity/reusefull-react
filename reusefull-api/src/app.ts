@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 import cors from 'cors'
 import { config } from './config.js'
 import { requireAuth } from './auth.js'
-import { getPool, pingDb } from './db.js'
+import { getPool, pingDb, ensureCharityActivityTable } from './db.js'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { sendCharitySignupNotification } from './email.js'
@@ -185,6 +185,37 @@ app.post('/charity-signup/submit', requireAuth, async (req: any, res: Response) 
     console.error('sendCharitySignupNotification failed', e)
   }
   res.status(201).json({ ok: true, charityId })
+})
+
+const CHARITY_ACTIVITY_EVENT_TYPES = ['website_click', 'email_click'] as const
+
+// Public, unauthenticated: records a donor clicking through to a charity's
+// website, or clicking to email a charity. No donor accounts exist in this
+// app, so there's no user to attach this to besides the charity itself.
+// Sent via navigator.sendBeacon, which (to stay CORS-preflight-free) posts a
+// plain string as text/plain rather than application/json, so this route
+// accepts both content types and parses the body itself either way.
+app.post('/charity-activity', express.text({ type: 'text/plain' }), async (req: Request, res: Response) => {
+  try {
+    const parsedBody = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body
+    const { charityId, eventType } = parsedBody ?? {}
+    const id = Number(charityId)
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid_charity_id' })
+    if (!(CHARITY_ACTIVITY_EVENT_TYPES as readonly string[]).includes(eventType)) {
+      return res.status(400).json({ error: 'invalid_event_type' })
+    }
+    const pool = getPool()
+    const [[charity]]: any = await pool.query('SELECT name FROM charity WHERE id = ?', [id])
+    if (!charity) return res.status(404).json({ error: 'charity_not_found' })
+    await ensureCharityActivityTable()
+    await pool.execute(
+      'INSERT INTO charity_activity (charity_id, charity_name, event_type) VALUES (?, ?, ?)',
+      [id, charity.name, eventType]
+    )
+    res.status(204).end()
+  } catch {
+    res.status(500).json({ error: 'failed_to_record' })
+  }
 })
 
 // Current user profile + optional draft
@@ -482,6 +513,38 @@ app.get('/admin/charities/export.csv', requireAuth, async (req: any, res: Respon
     const csv = rowsToCsv(rows as Record<string, unknown>[])
     res.setHeader('Content-Type', 'text/csv; charset=utf-8')
     res.setHeader('Content-Disposition', `attachment; filename="charities-${new Date().toISOString().slice(0, 10)}.csv"`)
+    res.status(200).send(csv)
+  } catch {
+    if (!res.headersSent) res.status(500).json({ error: 'export_failed' })
+  }
+})
+
+// Recent website/email click activity across all charities
+app.get('/admin/charity-activity', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const pool = getPool()
+    await ensureCharityActivityTable()
+    const [rows]: any = await pool.query(
+      'SELECT id, charity_id, charity_name, event_type, created_at FROM charity_activity ORDER BY created_at DESC LIMIT 500'
+    )
+    res.json(rows || [])
+  } catch {
+    if (!res.headersSent) res.status(500).json({ error: 'failed_to_load' })
+  }
+})
+
+app.get('/admin/charity-activity/export.csv', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const pool = getPool()
+    await ensureCharityActivityTable()
+    const [rows]: any = await pool.query(
+      'SELECT id, charity_id, charity_name, event_type, created_at FROM charity_activity ORDER BY created_at DESC LIMIT 20000'
+    )
+    const csv = rowsToCsv(rows as Record<string, unknown>[])
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', `attachment; filename="charity-activity-${new Date().toISOString().slice(0, 10)}.csv"`)
     res.status(200).send(csv)
   } catch {
     if (!res.headersSent) res.status(500).json({ error: 'export_failed' })

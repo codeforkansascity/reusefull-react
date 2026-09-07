@@ -7,6 +7,7 @@ import { orgCharityTypesQuery } from '@/api/queries/orgCharityTypesQuery'
 import { categoriesQuery } from '@/api/queries/categoriesQuery'
 import { formatPhone } from '@/utils/formatPhone'
 import { trackCharityView, trackCharityInteraction } from '@/utils/analytics'
+import { trackCharityActivity } from '@/utils/activityTracking'
 import { useAdmin } from '@/hooks/useAdmin'
 import { Container, Card, CardContent, CardHeader, CardTitle, Button, Headline, Text, LoadingSpinner } from '@/components/ui'
 import { MapPin, Phone as PhoneIcon, Mail, Globe, Truck, Package, User, ArrowLeft, Heart, Building, Pencil } from 'lucide-react'
@@ -314,7 +315,14 @@ function CharityDetailsComponent() {
                     <div className="flex-1 min-w-0">
                       <Text className="text-sm font-medium text-card-foreground">Email</Text>
                       <Text className="text-card-foreground break-words">
-                        <a href={`mailto:${organization.Email}`} className="hover:text-primary">
+                        <a
+                          href={`mailto:${organization.Email}`}
+                          className="hover:text-primary"
+                          onClick={() => {
+                            trackCharityInteraction('email_click', organization.Id, organization.Name, 'email')
+                            trackCharityActivity(organization.Id, 'email_click')
+                          }}
+                        >
                           {organization.Email}
                         </a>
                       </Text>
@@ -333,9 +341,10 @@ function CharityDetailsComponent() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-primary break-words"
-                          onClick={() =>
+                          onClick={() => {
                             trackCharityInteraction('website_click', organization.Id, organization.Name, 'website')
-                          }
+                            trackCharityActivity(organization.Id, 'website_click')
+                          }}
                         >
                           {organization.LinkWebsite}
                         </a>
@@ -442,6 +451,7 @@ function CharityDetailsComponent() {
                     className="w-full justify-start cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
                     onClick={() => {
                       trackCharityInteraction('email_click', organization.Id, organization.Name, 'email')
+                      trackCharityActivity(organization.Id, 'email_click')
                       window.open(`mailto:${organization.Email}`, '_self')
                     }}
                   >
