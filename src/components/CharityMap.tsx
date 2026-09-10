@@ -3,6 +3,8 @@ import L from 'leaflet'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui'
 import { MapPin, ExternalLink } from 'lucide-react'
+import { trackCharityInteraction } from '@/utils/analytics'
+import { trackCharityActivity } from '@/utils/activityTracking'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for default markers in react-leaflet
@@ -75,10 +77,17 @@ export function CharityMap({ charities, className = '' }: CharityMapProps) {
         style={{ height: '400px', width: '100%' }}
         className="z-0"
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a>'
-          url="https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaHlwcm5pY2siLCJhIjoiY2ttYTBidnYyMW45dTJ2cGJxbmxjMGsyMiJ9.po3lOo4mj9GAEdBBnMjDLA"
-        />
+        {import.meta.env.VITE_MAPBOX_TOKEN ? (
+          <TileLayer
+            attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a>'
+            url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`}
+          />
+        ) : (
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        )}
 
         {charitiesWithCoords.map((charity) => (
           <Marker
@@ -118,7 +127,11 @@ export function CharityMap({ charities, className = '' }: CharityMapProps) {
                       variant="outline"
                       size="sm"
                       className="text-xs px-3 py-1 cursor-pointer text-card-foreground border-card-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                      onClick={() => window.open(charity.LinkWebsite, '_blank')}
+                      onClick={() => {
+                        trackCharityInteraction('website_click', charity.Id, charity.Name, 'website')
+                        trackCharityActivity(charity.Id, 'website_click')
+                        window.open(charity.LinkWebsite, '_blank')
+                      }}
                     >
                       <ExternalLink className="w-3 h-3 mr-1" />
                       Website
