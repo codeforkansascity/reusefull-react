@@ -1,6 +1,7 @@
 import express from 'express'
 import type { Request, Response } from 'express'
 import cors from 'cors'
+import rateLimit from 'express-rate-limit'
 import { config } from './config.js'
 import { requireAuth } from './auth.js'
 import { getPool, pingDb, ensureCharityActivityTable } from './db.js'
@@ -9,8 +10,24 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { sendCharitySignupNotification } from './email.js'
 
 const app = express()
+// Requests arrive via a Lambda Function URL, which sits in front of us like a
+// proxy, so req.ip needs the forwarded-for header to reflect the real client.
+app.set('trust proxy', 1)
 app.use(cors({ origin: config.corsOrigin, credentials: false }))
 app.use(express.json({ limit: '1mb' }))
+
+// Best-effort abuse guard for the public, unauthenticated activity-tracking
+// endpoint below. The store is in-memory, so this limits each warm Lambda
+// container individually rather than globally across all containers - it
+// won't stop a determined, distributed attacker, but it kills naive scripted
+// spam of fake click events.
+const charityActivityLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'rate_limited' },
+})
 
 async function geocodeAddress(address?: string | null, city?: string | null, state?: string | null, zip?: string | null): Promise<{ lat: number; lng: number } | null> {
   const parts = [address, city, state, zip].filter(Boolean).join(', ')
@@ -195,7 +212,7 @@ const CHARITY_ACTIVITY_EVENT_TYPES = ['website_click', 'email_click'] as const
 // Sent via navigator.sendBeacon, which (to stay CORS-preflight-free) posts a
 // plain string as text/plain rather than application/json, so this route
 // accepts both content types and parses the body itself either way.
-app.post('/charity-activity', express.text({ type: 'text/plain' }), async (req: Request, res: Response) => {
+app.post('/charity-activity', charityActivityLimiter, express.text({ type: 'text/plain' }), async (req: Request, res: Response) => {
   try {
     const parsedBody = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body
     const { charityId, eventType } = parsedBody ?? {}

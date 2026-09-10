@@ -45,6 +45,7 @@ if (!rootElement.innerHTML) {
           }
         }}
         useRefreshTokens
+        useRefreshTokensFallback
         cacheLocation="localstorage"
       >
         <QueryClientProvider client={queryClient}>
