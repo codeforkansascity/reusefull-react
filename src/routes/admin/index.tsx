@@ -29,6 +29,7 @@ function AdminPage() {
   const { isAuthenticated, isLoading, getAccessTokenSilently, loginWithRedirect } = useAuth0()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [rows, setRows] = useState<PendingCharity[]>([])
+  const [pausedRows, setPausedRows] = useState<PendingCharity[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -61,6 +62,14 @@ function AdminPage() {
         if (!res.ok) throw new Error('pending_failed')
         const data = (await res.json()) as PendingCharity[]
         if (!cancelled) setRows(data)
+        // Load paused charities
+        const pausedRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/charities/paused`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (pausedRes.ok) {
+          const pausedData = (await pausedRes.json()) as PendingCharity[]
+          if (!cancelled) setPausedRows(pausedData)
+        }
       } catch {
         if (!cancelled) setIsAdmin(false)
       } finally {
@@ -107,6 +116,22 @@ function AdminPage() {
       })
       if (!res.ok) throw new Error('failed')
       setRows((prev) => prev.filter((r) => r.id !== id))
+    } catch {
+      // no-op; leave row for retry
+    }
+  }
+
+  async function unpause(id: number) {
+    try {
+      const token = await getAccessTokenSilently({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+      })
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/charities/${id}/unpause`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('failed')
+      setPausedRows((prev) => prev.filter((r) => r.id !== id))
     } catch {
       // no-op; leave row for retry
     }
@@ -194,6 +219,37 @@ function AdminPage() {
                </Card>
              ))}
              {rows.length === 0 && <div className="text-gray-600">No pending charities.</div>}
+           </div>
+
+           <h2 className="text-[40px] font-semibold text-black leading-none mt-14">Paused Charities</h2>
+           <p className="mt-2 text-gray-600">Hidden from the charity list and donor search results.</p>
+           <div className="mt-6 space-y-4">
+             {pausedRows.map((c) => (
+               <Card key={c.id} className="p-4 border border-[#e3e6ea] shadow-sm rounded-md">
+                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                   {c.logo_url ? (
+                     <img src={c.logo_url} alt={c.name} className="w-20 h-[56px] object-contain rounded bg-white self-center sm:self-start" />
+                   ) : (
+                     <div className="w-20 h-[56px] bg-gray-100 flex items-center justify-center text-gray-400 rounded text-xs self-center sm:self-start">
+                       No Logo
+                     </div>
+                   )}
+                   <div className="flex-1 w-full">
+                     <Link to="/admin/charities/$charityId/edit" params={{ charityId: c.id.toString() }} className="text-[16px] font-semibold text-[#2c78c5] hover:underline">
+                       {c.name}
+                     </Link>
+                     <div className="text-[13px] text-[#6c757d]">{addr(c)}</div>
+                   </div>
+                   <button
+                     onClick={() => unpause(c.id)}
+                     className="w-full sm:w-auto px-4 py-2 rounded bg-[#28a745] hover:bg-[#218838] text-white text-sm font-semibold cursor-pointer"
+                   >
+                     Unpause
+                   </button>
+                 </div>
+               </Card>
+             ))}
+             {pausedRows.length === 0 && <div className="text-gray-600">No paused charities.</div>}
            </div>
          </div>
        </Container>

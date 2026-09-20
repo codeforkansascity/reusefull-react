@@ -32,6 +32,7 @@ type ProfileForm = {
   amazonWishlistUrl: string
   cashDonationsUrl: string
   volunteerSignupUrl: string
+  paused: boolean
 }
 
 export const Route = createFileRoute('/profile/edit')({
@@ -131,6 +132,7 @@ export default function EditProfileComponent() {
       amazonWishlistUrl: '',
       cashDonationsUrl: '',
       volunteerSignupUrl: '',
+      paused: false,
     },
   })
 
@@ -171,6 +173,7 @@ export default function EditProfileComponent() {
           amazonWishlistUrl: draft.link_wishlist || '',
           cashDonationsUrl: draft.link_donate_cash || '',
           volunteerSignupUrl: draft.link_volunteer || '',
+          paused: Boolean(draft.paused),
         })
       } catch {
         // ignore load errors for now
@@ -325,6 +328,18 @@ export default function EditProfileComponent() {
             {errors.acceptDropOffs?.message && (
               <p className="mt-2 text-sm text-red-600">{errors.acceptDropOffs.message}</p>
             )}
+          </div>
+
+          <div className="md:col-span-2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3">
+            <label className="inline-flex items-start gap-2 text-gray-800">
+              <input type="checkbox" className="mt-1" {...register('paused')} />
+              <span>
+                <span className="font-medium">Temporarily pause our listing</span>
+                <span className="block text-sm text-gray-600">
+                  While paused, we won't appear in the charity list or in donors' search results. You can come back and uncheck this at any time.
+                </span>
+              </span>
+            </label>
           </div>
 
           {/* Step 2 subset */}

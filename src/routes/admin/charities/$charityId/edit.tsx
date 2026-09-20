@@ -29,6 +29,7 @@ type CharityForm = {
   amazonWishlistUrl: string
   cashDonationsUrl: string
   volunteerSignupUrl: string
+  paused: boolean
 }
 
 export const Route = createFileRoute('/admin/charities/$charityId/edit')({
@@ -134,6 +135,7 @@ function AdminEditCharityComponent() {
       amazonWishlistUrl: '',
       cashDonationsUrl: '',
       volunteerSignupUrl: '',
+      paused: false,
     },
   })
 
@@ -201,6 +203,7 @@ function AdminEditCharityComponent() {
             amazonWishlistUrl: charity.link_wishlist || '',
             cashDonationsUrl: charity.link_donate_cash || '',
             volunteerSignupUrl: charity.link_volunteer || '',
+            paused: Boolean(charity.paused),
           })
         }
       } catch {
@@ -388,6 +391,18 @@ function AdminEditCharityComponent() {
             {errors.acceptDropOffs?.message && (
               <p className="mt-2 text-sm text-red-600">{errors.acceptDropOffs.message}</p>
             )}
+          </div>
+
+          <div className="md:col-span-2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3">
+            <label className="inline-flex items-start gap-2 text-gray-800">
+              <input type="checkbox" className="mt-1" {...register('paused')} />
+              <span>
+                <span className="font-medium">Pause this charity's listing</span>
+                <span className="block text-sm text-gray-600">
+                  While paused, this charity won't appear in the charity list or in donors' search results. Use this for charities that are inactive or no longer operating, without losing their record.
+                </span>
+              </span>
+            </label>
           </div>
 
           {/* Tax ID + Logo */}

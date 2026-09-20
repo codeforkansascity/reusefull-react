@@ -505,6 +505,25 @@ app.get('/admin/charities/pending', requireAuth, async (req: any, res: Response)
   }
 })
 
+// Charities currently paused (hidden from the public charity list and search results)
+app.get('/admin/charities/paused', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const pool = getPool()
+    const [rows]: any = await pool.query(
+      `SELECT id, name, pickup, dropoff, address, phone, taxid, logo_url, city, state, zip_code, contact_name, email
+       FROM charity
+       WHERE paused = 1
+       ORDER BY name
+       LIMIT 200`
+    )
+    res.json(rows || [])
+  } catch (e) {
+    console.error('GET /admin/charities/paused failed', e)
+    if (!res.headersSent) res.status(500).json({ error: 'failed_to_load' })
+  }
+})
+
 function csvValue(v: unknown): string {
   if (v === null || v === undefined) return ''
   const s = v instanceof Date ? v.toISOString() : String(v)
@@ -598,6 +617,20 @@ app.post('/admin/charities/:id/deny', requireAuth, async (req: any, res: Respons
       'UPDATE charity SET approved = 0 WHERE id = ? AND approved IS NULL',
       [id]
     )
+    res.json({ updated: Number(result?.affectedRows ?? 0) })
+  } catch {
+    // handled in assertAdmin when unauthorized/forbidden
+  }
+})
+
+// Quick unpause from the paused-charities list, without opening the full edit form
+app.post('/admin/charities/:id/unpause', requireAuth, async (req: any, res: Response) => {
+  try {
+    await assertAdmin(req, res)
+    const id = Number(req.params.id)
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid_id' })
+    const pool = getPool()
+    const [result]: any = await pool.execute('UPDATE charity SET paused = 0 WHERE id = ?', [id])
     res.json({ updated: Number(result?.affectedRows ?? 0) })
   } catch {
     // handled in assertAdmin when unauthorized/forbidden
