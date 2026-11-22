@@ -4,6 +4,8 @@ Reusefull is a donation-matching site for the Kansas City area: donors describe 
 
 Live site: [app.reusefull.org](https://app.reusefull.org) · Project board: [github.com/orgs/codeforkansascity/projects/1](https://github.com/orgs/codeforkansascity/projects/1) · License: MIT (Code for Kansas City)
 
+**New to this project? Start with [docs/SYSTEM-OVERVIEW.md](docs/SYSTEM-OVERVIEW.md)**: where every piece of the system lives, two diagrams (the site, and how it is deployed), and how to deploy each piece.
+
 ## What it does
 
 - **Donate flow** (`/donate` → `/donate/results`) — pick the items you're giving away, see matching charities.
@@ -19,10 +21,7 @@ Live site: [app.reusefull.org](https://app.reusefull.org) · Project board: [git
 graph TB
     User((Donor / charity user))
 
-    subgraph Hosting["Static hosting — build output"]
-        S3Site[S3 + CloudFront]
-        Netlify[Netlify]
-    end
+    S3Site["S3 + CloudFront<br/>app.reusefull.org"]
 
     SPA[React SPA in the browser<br/>TanStack Router + Query]
     Auth0[Auth0<br/>OAuth2 / JWT]
@@ -35,9 +34,7 @@ graph TB
     end
 
     User -->|loads app| S3Site
-    User -->|loads app, mirror| Netlify
     S3Site --> SPA
-    Netlify --> SPA
 
     SPA -->|login, token refresh| Auth0
     SPA -->|GET charities / items / types| ReadLambdas
@@ -82,7 +79,7 @@ Create a `.env` in the repo root:
 ```ini
 VITE_API_BASE_URL=http://localhost:3001
 VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
-VITE_AUTH0_CLIENT_ID=your_spa_client_id
+VITE_AUTH0_CLIENT_ID=BTVY7zrLoZ0n7wnViGKHJQwyxpR6x0Xc
 VITE_AUTH0_AUDIENCE=https://reusefull-api
 ```
 
@@ -136,12 +133,11 @@ Open `Reusefull-react.sln` in Visual Studio (.NET 8 SDK). Each project under `La
 | Piece | Trigger | Mechanism |
 |---|---|---|
 | Frontend (S3 + CloudFront) | Auto — push to **any branch** touching `src/**` or `index.html` | `.github/workflows/deploy-aws.yml` |
-| Frontend (Netlify) | Auto — same trigger, runs in parallel | `.github/workflows/deploytonetlify.yml` |
 | 5 Node Lambdas | Auto — push to `main` touching `Lambdas/<Name>Node/**` | `.github/workflows/deploy-get-*-node.yml` |
 | `reusefull-api` | **Manual** — no workflow | see below |
 | 5 legacy .NET Lambdas | **Manual** — no workflow | see below |
 
-The frontend and the 5 Node Lambdas deploy themselves on push — nothing to do beyond merging. Two things worth knowing: the frontend workflows have no branch filter, so pushing to *any* branch that touches `src/**` redeploys production to both S3+CloudFront and Netlify; and the site currently has two live copies (S3+CloudFront and Netlify) from the same trigger.
+The frontend and the 5 Node Lambdas deploy themselves on push — nothing to do beyond merging. One thing worth knowing: the frontend workflow has no branch filter, so pushing to *any* branch that touches `src/**` redeploys production. (Netlify used to be a second deploy target; that workflow was removed and `netlify.toml` is a leftover.)
 
 ### Deploying `reusefull-api`
 
