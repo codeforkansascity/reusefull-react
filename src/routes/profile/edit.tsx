@@ -32,6 +32,13 @@ type ProfileForm = {
   amazonWishlistUrl: string
   cashDonationsUrl: string
   volunteerSignupUrl: string
+  donationContactName: string
+  donationContactEmail: string
+  xUrl: string
+  facebookUrl: string
+  instagramUrl: string
+  youtubeUrl: string
+  linkedinUrl: string
   paused: boolean
 }
 
@@ -132,6 +139,13 @@ export default function EditProfileComponent() {
       amazonWishlistUrl: '',
       cashDonationsUrl: '',
       volunteerSignupUrl: '',
+      donationContactName: '',
+      donationContactEmail: '',
+      xUrl: '',
+      facebookUrl: '',
+      instagramUrl: '',
+      youtubeUrl: '',
+      linkedinUrl: '',
       paused: false,
     },
   })
@@ -173,6 +187,13 @@ export default function EditProfileComponent() {
           amazonWishlistUrl: draft.link_wishlist || '',
           cashDonationsUrl: draft.link_donate_cash || '',
           volunteerSignupUrl: draft.link_volunteer || '',
+          donationContactName: draft.donation_contact_name || '',
+          donationContactEmail: draft.donation_contact_email || '',
+          xUrl: draft.link_x || '',
+          facebookUrl: draft.link_facebook || '',
+          instagramUrl: draft.link_instagram || '',
+          youtubeUrl: draft.link_youtube || '',
+          linkedinUrl: draft.link_linkedin || '',
           paused: Boolean(draft.paused),
         })
       } catch {
@@ -258,13 +279,21 @@ export default function EditProfileComponent() {
             <input {...register('organizationName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
           <label className="block">
-            <Label>Contact Name</Label>
+            <Label>Account Contact Name</Label>
             <input {...register('contactName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
 
           <label className="block">
-            <Label>Email</Label>
+            <Label>Account Contact Email</Label>
             <input {...register('email')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Donation Contact Name</Label>
+            <input {...register('donationContactName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Donation Contact Email</Label>
+            <input type="email" {...register('donationContactEmail')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
           <label className="block">
             <Label>Phone</Label>
@@ -445,6 +474,26 @@ export default function EditProfileComponent() {
           <label className="block">
             <Label>Link for volunteer signup</Label>
             <input type="url" {...register('volunteerSignupUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>X (Twitter) page</Label>
+            <input type="url" placeholder="https://x.com/yourcharity" {...register('xUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Facebook page</Label>
+            <input type="url" placeholder="https://facebook.com/yourcharity" {...register('facebookUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Instagram page</Label>
+            <input type="url" placeholder="https://instagram.com/yourcharity" {...register('instagramUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>YouTube channel</Label>
+            <input type="url" placeholder="https://youtube.com/@yourcharity" {...register('youtubeUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>LinkedIn page</Label>
+            <input type="url" placeholder="https://linkedin.com/company/yourcharity" {...register('linkedinUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
 
           <label className="block md:col-span-2">

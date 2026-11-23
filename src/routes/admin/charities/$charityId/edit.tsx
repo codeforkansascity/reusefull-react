@@ -29,6 +29,13 @@ type CharityForm = {
   amazonWishlistUrl: string
   cashDonationsUrl: string
   volunteerSignupUrl: string
+  donationContactName: string
+  donationContactEmail: string
+  xUrl: string
+  facebookUrl: string
+  instagramUrl: string
+  youtubeUrl: string
+  linkedinUrl: string
   paused: boolean
 }
 
@@ -135,6 +142,13 @@ function AdminEditCharityComponent() {
       amazonWishlistUrl: '',
       cashDonationsUrl: '',
       volunteerSignupUrl: '',
+      donationContactName: '',
+      donationContactEmail: '',
+      xUrl: '',
+      facebookUrl: '',
+      instagramUrl: '',
+      youtubeUrl: '',
+      linkedinUrl: '',
       paused: false,
     },
   })
@@ -203,6 +217,13 @@ function AdminEditCharityComponent() {
             amazonWishlistUrl: charity.link_wishlist || '',
             cashDonationsUrl: charity.link_donate_cash || '',
             volunteerSignupUrl: charity.link_volunteer || '',
+            donationContactName: charity.donation_contact_name || '',
+            donationContactEmail: charity.donation_contact_email || '',
+            xUrl: charity.link_x || '',
+            facebookUrl: charity.link_facebook || '',
+            instagramUrl: charity.link_instagram || '',
+            youtubeUrl: charity.link_youtube || '',
+            linkedinUrl: charity.link_linkedin || '',
             paused: Boolean(charity.paused),
           })
         }
@@ -321,13 +342,21 @@ function AdminEditCharityComponent() {
             <input {...register('organizationName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
           <label className="block">
-            <Label>Contact Name</Label>
+            <Label>Account Contact Name</Label>
             <input {...register('contactName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
 
           <label className="block">
-            <Label>Email</Label>
+            <Label>Account Contact Email</Label>
             <input {...register('email')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Donation Contact Name</Label>
+            <input {...register('donationContactName')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Donation Contact Email</Label>
+            <input type="email" {...register('donationContactEmail')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
           <label className="block">
             <Label>Phone</Label>
@@ -505,6 +534,26 @@ function AdminEditCharityComponent() {
           <label className="block">
             <Label>Link for volunteer signup</Label>
             <input type="url" {...register('volunteerSignupUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>X (Twitter) page</Label>
+            <input type="url" placeholder="https://x.com/yourcharity" {...register('xUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Facebook page</Label>
+            <input type="url" placeholder="https://facebook.com/yourcharity" {...register('facebookUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>Instagram page</Label>
+            <input type="url" placeholder="https://instagram.com/yourcharity" {...register('instagramUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>YouTube channel</Label>
+            <input type="url" placeholder="https://youtube.com/@yourcharity" {...register('youtubeUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </label>
+          <label className="block">
+            <Label>LinkedIn page</Label>
+            <input type="url" placeholder="https://linkedin.com/company/yourcharity" {...register('linkedinUrl')} className="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </label>
 
           <div className="md:col-span-2 flex justify-end gap-3">

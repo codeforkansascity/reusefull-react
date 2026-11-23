@@ -8,6 +8,8 @@ export type CharitySignupData = {
   organizationName?: string
   contactName?: string
   email?: string
+  donationContactName?: string
+  donationContactEmail?: string
   phone?: string
   address?: string
   city?: string
@@ -31,6 +33,11 @@ export type CharitySignupData = {
   amazonWishlistUrl?: string
   cashDonationsUrl?: string
   volunteerSignupUrl?: string
+  xUrl?: string
+  facebookUrl?: string
+  instagramUrl?: string
+  youtubeUrl?: string
+  linkedinUrl?: string
 }
 
 type Store = {

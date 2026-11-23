@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect, useState } from 'react'
 import { useCharitySignupStore, CharitySignupData, BudgetSize } from '@/stores/charitySignupStore'
+import { requiredText } from '@/utils/formRules'
 
 type Step2Form = Pick<
   CharitySignupData,
@@ -24,11 +25,12 @@ export const Route = createFileRoute('/charity/signup/step/2')({
   component: Step2Component,
 })
 
-function Field({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
+function Field({ label, error, children }: { label: React.ReactNode; error?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="text-gray-700 text-sm font-medium">{label}</span>
       <div className="mt-1">{children}</div>
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </label>
   )
 }
@@ -61,7 +63,7 @@ function Step2Component() {
   const { register, handleSubmit, watch, setValue, getValues, formState: { errors } } = useForm<Step2Form>({
     defaultValues: {
       website: data.website ?? '',
-      budgetSize: data.budgetSize ?? '$0-5k',
+      budgetSize: data.budgetSize,
       acceptDropOffs: data.acceptDropOffs ?? false,
       pickupDonations: data.pickupDonations ?? false,
       faithBased: data.faithBased ?? false,
@@ -118,8 +120,8 @@ function Step2Component() {
           })}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Field label={<>Organization Website <span className="text-red-500">*</span></>}>
-              <input type="url" {...register('website', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            <Field label={<>Organization Website <span className="text-red-500">*</span></>} error={errors.website?.message}>
+              <input type="url" {...register('website', requiredText('Website'))} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
             </Field>
 
             <div>
@@ -127,11 +129,14 @@ function Step2Component() {
               <div className="flex gap-2 flex-wrap">
                 {BUDGET_SIZES.map((size) => (
                   <label key={size} className={`px-3 py-2 border rounded-md cursor-pointer shadow-sm ${selectedBudget === size ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 text-gray-700'}`}>
-                    <input type="radio" value={size} {...register('budgetSize', { required: true })} className="hidden" />
+                    <input type="radio" value={size} {...register('budgetSize', { required: 'Select a budget size' })} className="hidden" />
                     {size}
                   </label>
                 ))}
               </div>
+              {errors.budgetSize?.message && (
+                <p className="mt-2 text-sm text-red-600">{errors.budgetSize.message}</p>
+              )}
             </div>
           </div>
 
@@ -238,11 +243,11 @@ function Step2Component() {
             </div>
           </div>
 
-          <Field label={<>Mission <span className="text-red-500">*</span></> }>
-            <textarea {...register('mission', { required: true, maxLength: 630 })} rows={3} maxLength={630} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label={<>Mission <span className="text-red-500">*</span></> } error={errors.mission?.message}>
+            <textarea {...register('mission', { ...requiredText('Mission'), maxLength: 630 })} rows={3} maxLength={630} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
           </Field>
-          <Field label={<>Description <span className="text-red-500">*</span></>}>
-            <textarea {...register('description', { required: true })} rows={5} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label={<>Description <span className="text-red-500">*</span></>} error={errors.description?.message}>
+            <textarea {...register('description', requiredText('Description'))} rows={5} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
           </Field>
 
           <div className="flex justify-between">

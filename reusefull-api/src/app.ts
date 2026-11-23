@@ -4,7 +4,7 @@ import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import { config } from './config.js'
 import { requireAuth } from './auth.js'
-import { getPool, pingDb, ensureCharityActivityTable } from './db.js'
+import { getPool, pingDb, ensureCharityActivityTable, ensureExtraCharityColumns, EXTRA_CHARITY_COLUMNS } from './db.js'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { sendCharitySignupNotification } from './email.js'
@@ -174,7 +174,7 @@ app.put('/charity-signup/draft', requireAuth, async (req: any, res: Response) =>
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const draft = req.body ?? {}
-  const validationError = validateMissionLength(draft)
+  const validationError = validateMissionLength(draft) ?? validateExtraFields(draft)
   if (validationError) return res.status(400).json({ error: validationError })
   await upsertCharityForUser(sub, draft)
   res.status(204).end()
@@ -185,8 +185,10 @@ app.post('/charity-signup/submit', requireAuth, async (req: any, res: Response) 
   const sub: string | undefined = req.auth?.payload?.sub
   if (!sub) return res.status(401).json({ error: 'unauthorized' })
   const submission = req.body ?? {}
-  const validationError = validateMissionLength(submission)
+  const validationError = validateMissionLength(submission) ?? validateExtraFields(submission)
   if (validationError) return res.status(400).json({ error: validationError })
+  const missing = validateSignupSubmission(submission)
+  if (missing.length) return res.status(400).json({ error: 'validation_failed', missing })
   const charityId = await upsertCharityForUser(sub, submission, { markPendingApproval: true })
   try {
     // Must be awaited: Lambda can freeze the execution environment as soon as the
@@ -330,6 +332,7 @@ async function upsertCharityForUser(
     )
     const charityId = Number(result.insertId)
     await upsertJoinTables(charityId, payload)
+    await saveExtraCharityFields(charityId, payload)
     return charityId
   } else {
     // Build dynamic UPDATE to allow explicitly setting approved = NULL
@@ -400,6 +403,7 @@ async function upsertCharityForUser(
                  WHERE id = ?`
     await pool.execute(sql, params)
     await upsertJoinTables(existingId, payload)
+    await saveExtraCharityFields(existingId, payload)
     return existingId
   }
 }
@@ -412,6 +416,87 @@ function validateMissionLength(p: any): string | null {
     return `mission must be ${MISSION_MAX_LENGTH} characters or fewer`
   }
   return null
+}
+
+const isBlank = (v: unknown) => typeof v !== 'string' || v.trim().length === 0
+const looksLikeEmail = (v: unknown) => typeof v === 'string' && /^\S+@\S+\.\S+$/.test(v.trim())
+
+// Everything an organization must provide to complete signup. Only enforced on
+// final submit; drafts are saved step by step and are necessarily incomplete.
+function validateSignupSubmission(p: any): string[] {
+  const missing: string[] = []
+  const requireText = (value: unknown, label: string) => {
+    if (isBlank(value)) missing.push(label)
+  }
+  requireText(p.organizationName ?? p.name, 'Organization Name')
+  requireText(p.contactName, 'Account Contact Name')
+  if (isBlank(p.email)) missing.push('Account Contact Email')
+  else if (!looksLikeEmail(p.email)) missing.push('Account Contact Email (must be a valid email)')
+  requireText(p.phone, 'Phone')
+  requireText(p.address, 'Address')
+  requireText(p.city, 'City')
+  requireText(p.state, 'State')
+  requireText(p.zip, 'Zip')
+  requireText(p.website, 'Website')
+  requireText(p.budgetSize, 'Budget Size')
+  if (!p.acceptDropOffs && !p.pickupDonations) missing.push('Drop-offs or pick-ups (choose at least one)')
+  if (!Array.isArray(p.categories) || p.categories.length === 0) missing.push('Charity type (choose at least one)')
+  requireText(p.mission, 'Mission')
+  requireText(p.description, 'Description')
+  // "New items only" is a condition on what's accepted, not an item type itself
+  const itemTypes = Array.isArray(p.acceptedItemTypes)
+    ? p.acceptedItemTypes.filter((t: unknown) => t !== 'New items only')
+    : []
+  if (itemTypes.length === 0) missing.push('Accepted item types (choose at least one)')
+  if (!isBlank(p.donationContactEmail) && !looksLikeEmail(p.donationContactEmail)) {
+    missing.push('Donation Contact Email (must be a valid email)')
+  }
+  return missing
+}
+
+// Optional contact/social fields, stored in their own columns (see db.ts)
+const EXTRA_FIELD_SOURCES: Array<{ column: (typeof EXTRA_CHARITY_COLUMNS)[number]; keys: string[]; label: string }> = [
+  { column: 'donation_contact_name', keys: ['donationContactName', 'donation_contact_name'], label: 'Donation Contact Name' },
+  { column: 'donation_contact_email', keys: ['donationContactEmail', 'donation_contact_email'], label: 'Donation Contact Email' },
+  { column: 'link_x', keys: ['xUrl', 'link_x'], label: 'X link' },
+  { column: 'link_facebook', keys: ['facebookUrl', 'link_facebook'], label: 'Facebook link' },
+  { column: 'link_instagram', keys: ['instagramUrl', 'link_instagram'], label: 'Instagram link' },
+  { column: 'link_youtube', keys: ['youtubeUrl', 'link_youtube'], label: 'YouTube link' },
+  { column: 'link_linkedin', keys: ['linkedinUrl', 'link_linkedin'], label: 'LinkedIn link' },
+]
+
+function validateExtraFields(p: any): string | null {
+  for (const f of EXTRA_FIELD_SOURCES) {
+    const key = f.keys.find((k) => p?.[k] !== undefined)
+    const value = key ? p[key] : undefined
+    if (typeof value === 'string' && value.trim().length > 255) {
+      return `${f.label} must be 255 characters or fewer`
+    }
+  }
+  return null
+}
+
+// Saves only the extra fields the caller actually sent, so an older client that
+// doesn't know about them can't blank them out.
+async function saveExtraCharityFields(charityId: number, payload: any) {
+  const sets: string[] = []
+  const params: any[] = []
+  for (const f of EXTRA_FIELD_SOURCES) {
+    const key = f.keys.find((k) => payload?.[k] !== undefined)
+    if (!key) continue
+    const raw = payload[key]
+    const value = typeof raw === 'string' && raw.trim() ? raw.trim() : null
+    sets.push(`${f.column} = ?`)
+    params.push(value)
+  }
+  if (!sets.length) return
+  try {
+    await ensureExtraCharityColumns()
+    await getPool().execute(`UPDATE charity SET ${sets.join(', ')} WHERE id = ?`, [...params, charityId])
+  } catch (e) {
+    // Don't fail the whole save (and lose the rest of the profile) over these
+    console.error('saveExtraCharityFields failed', e)
+  }
 }
 
 function normalizeCharityPayload(p: any) {
@@ -675,7 +760,7 @@ app.put('/admin/charities/:id', requireAuth, async (req: any, res: Response) => 
     if (!existing) return res.status(404).json({ error: 'not_found' })
 
     const payload = req.body ?? {}
-    const validationError = validateMissionLength(payload)
+    const validationError = validateMissionLength(payload) ?? validateExtraFields(payload)
     if (validationError) return res.status(400).json({ error: validationError })
     const data = normalizeCharityPayload(payload)
     const geo = await geocodeAddress(data.address, data.city, data.state, data.zip_code)
@@ -721,6 +806,7 @@ app.put('/admin/charities/:id', requireAuth, async (req: any, res: Response) => 
       ].map((v) => (v === undefined ? null : v))
     )
     await upsertJoinTables(id, payload)
+    await saveExtraCharityFields(id, payload)
     res.status(204).end()
   } catch {
     // handled in assertAdmin when unauthorized/forbidden

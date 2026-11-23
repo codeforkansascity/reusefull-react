@@ -2,11 +2,11 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { useCharitySignupStore, CharitySignupData } from '@/stores/charitySignupStore'
 import { useAuth0 } from '@auth0/auth0-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 type Step3Form = Pick<
   CharitySignupData,
-  'acceptedItemTypes' | 'amazonWishlistUrl' | 'cashDonationsUrl' | 'volunteerSignupUrl'
+  'acceptedItemTypes' | 'amazonWishlistUrl' | 'cashDonationsUrl' | 'volunteerSignupUrl' | 'xUrl' | 'facebookUrl' | 'instagramUrl' | 'youtubeUrl' | 'linkedinUrl'
 >
 
 export const Route = createFileRoute('/charity/signup/step/3')({
@@ -78,8 +78,15 @@ function Step3Component() {
       amazonWishlistUrl: data.amazonWishlistUrl ?? '',
       cashDonationsUrl: data.cashDonationsUrl ?? '',
       volunteerSignupUrl: data.volunteerSignupUrl ?? '',
+      xUrl: data.xUrl ?? '',
+      facebookUrl: data.facebookUrl ?? '',
+      instagramUrl: data.instagramUrl ?? '',
+      youtubeUrl: data.youtubeUrl ?? '',
+      linkedinUrl: data.linkedinUrl ?? '',
     },
   })
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const accepted = watch('acceptedItemTypes') || []
   if (isLoading || !isAuthenticated || !user?.email_verified) {
@@ -96,17 +103,33 @@ function Step3Component() {
           className="mt-10 space-y-7"
           onSubmit={handleSubmit(async (values) => {
             update(values)
+            setSubmitError(null)
+            setSubmitting(true)
             // Submit to backend: mark as completed (approved set to 0 server-side)
             try {
               const token = await getAccessTokenSilently({
                 authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
               })
-              await fetch(`${import.meta.env.VITE_API_BASE_URL}/charity-signup/submit`, {
+              const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/charity-signup/submit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ ...useCharitySignupStore.getState().data, ...values }),
               })
-            } catch {}
+              if (!res.ok) {
+                const body = await res.json().catch(() => null)
+                if (Array.isArray(body?.missing) && body.missing.length) {
+                  setSubmitError(`Please go back and complete: ${body.missing.join('; ')}.`)
+                } else {
+                  setSubmitError(body?.error ? `We couldn't submit your application: ${body.error}` : "We couldn't submit your application. Please try again.")
+                }
+                return
+              }
+            } catch {
+              setSubmitError("We couldn't submit your application. Please check your connection and try again.")
+              return
+            } finally {
+              setSubmitting(false)
+            }
             navigate({ to: '/charity/signup/thank-you' })
           })}
         >
@@ -122,7 +145,8 @@ function Step3Component() {
                   type="checkbox"
                   value="New items only"
                   {...register('acceptedItemTypes', {
-                    validate: (value) => (Array.isArray(value) && value.length > 0) || 'Select at least one item type',
+                    validate: (value) =>
+                      (Array.isArray(value) && value.some((v) => v !== 'New items only')) || 'Select at least one item type',
                   })}
                 />{' '}
                 New items only
@@ -152,11 +176,30 @@ function Step3Component() {
             <Field label="Link for volunteer signup">
               <input type="url" {...register('volunteerSignupUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
             </Field>
+            <Field label="X (Twitter) page">
+              <input type="url" placeholder="https://x.com/yourcharity" {...register('xUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            </Field>
+            <Field label="Facebook page">
+              <input type="url" placeholder="https://facebook.com/yourcharity" {...register('facebookUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            </Field>
+            <Field label="Instagram page">
+              <input type="url" placeholder="https://instagram.com/yourcharity" {...register('instagramUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            </Field>
+            <Field label="YouTube channel">
+              <input type="url" placeholder="https://youtube.com/@yourcharity" {...register('youtubeUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            </Field>
+            <Field label="LinkedIn page">
+              <input type="url" placeholder="https://linkedin.com/company/yourcharity" {...register('linkedinUrl')} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            </Field>
           </div>
+
+          {submitError && (
+            <div className="px-4 py-3 rounded border border-red-300 bg-red-50 text-red-700 text-sm">{submitError}</div>
+          )}
 
           <div className="flex justify-between">
             <button type="button" onClick={() => navigate({ to: '/charity/signup/step/2' })} className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 cursor-pointer">Back</button>
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 shadow-sm cursor-pointer">Complete</button>
+            <button type="submit" disabled={submitting} className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">{submitting ? 'Submitting…' : 'Complete'}</button>
           </div>
         </form>
       </div>

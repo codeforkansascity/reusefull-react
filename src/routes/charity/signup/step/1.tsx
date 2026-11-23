@@ -3,24 +3,39 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useCharitySignupStore, CharitySignupData } from '@/stores/charitySignupStore'
+import { requiredText } from '@/utils/formRules'
 
 type Step1Form = Pick<
   CharitySignupData,
-  'organizationName' | 'contactName' | 'email' | 'phone' | 'address' | 'city' | 'state' | 'zip'
+  | 'organizationName'
+  | 'contactName'
+  | 'email'
+  | 'donationContactName'
+  | 'donationContactEmail'
+  | 'phone'
+  | 'address'
+  | 'city'
+  | 'state'
+  | 'zip'
 >
 
 export const Route = createFileRoute('/charity/signup/step/1')({
   component: Step1Component,
 })
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="text-gray-700 text-sm font-medium">{label}</span>
+      {hint && <span className="block text-xs text-gray-500">{hint}</span>}
       <div className="mt-1">{children}</div>
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </label>
   )
 }
+
+const inputClass =
+  'w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm'
 
 function Step1Component() {
   const navigate = useNavigate()
@@ -38,11 +53,13 @@ function Step1Component() {
     return null
   }
   const { data, update } = useCharitySignupStore()
-  const { register, handleSubmit } = useForm<Step1Form>({
+  const { register, handleSubmit, formState: { errors } } = useForm<Step1Form>({
     defaultValues: {
       organizationName: data.organizationName ?? '',
       contactName: data.contactName ?? '',
       email: data.email ?? '',
+      donationContactName: data.donationContactName ?? '',
+      donationContactEmail: data.donationContactEmail ?? '',
       phone: data.phone ?? '',
       address: data.address ?? '',
       city: data.city ?? '',
@@ -74,30 +91,38 @@ function Step1Component() {
             navigate({ to: '/charity/signup/step/2' })
           })}
         >
-          <Field label="Organization Name *">
-            <input {...register('organizationName', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label="Organization Name *" error={errors.organizationName?.message}>
+            <input {...register('organizationName', requiredText('Organization name'))} className={inputClass} />
           </Field>
-          <Field label="Contact Name *">
-            <input {...register('contactName', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label="Phone *" error={errors.phone?.message}>
+            <input {...register('phone', requiredText('Phone'))} className={inputClass} />
           </Field>
-          <Field label="Email *">
-            <input type="email" {...register('email', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label="Account Contact Name *" hint="The person who manages your Re.Use.Full account" error={errors.contactName?.message}>
+            <input {...register('contactName', requiredText('Account contact name'))} className={inputClass} />
           </Field>
-          <Field label="Phone *">
-            <input {...register('phone', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label="Account Contact Email *" hint="Used for your Re.Use.Full account" error={errors.email?.message}>
+            <input type="email" {...register('email', requiredText('Account contact email'))} className={inputClass} />
           </Field>
-          <Field label="Address *">
-            <input {...register('address', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+          <Field label="Donation Contact Name" hint="Optional: who donors should talk to about donations">
+            <input {...register('donationContactName')} className={inputClass} />
           </Field>
+          <Field label="Donation Contact Email" hint="Optional: where donation questions should go" error={errors.donationContactEmail?.message}>
+            <input type="email" {...register('donationContactEmail')} className={inputClass} />
+          </Field>
+          <div className="md:col-span-2">
+            <Field label="Address *" error={errors.address?.message}>
+              <input {...register('address', requiredText('Address'))} className={inputClass} />
+            </Field>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:col-span-2">
-            <Field label="City *">
-              <input {...register('city', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            <Field label="City *" error={errors.city?.message}>
+              <input {...register('city', requiredText('City'))} className={inputClass} />
             </Field>
-            <Field label="State *">
-              <input {...register('state', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            <Field label="State *" error={errors.state?.message}>
+              <input {...register('state', requiredText('State'))} className={inputClass} />
             </Field>
-            <Field label="Zip *">
-              <input {...register('zip', { required: true })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+            <Field label="Zip *" error={errors.zip?.message}>
+              <input {...register('zip', requiredText('Zip'))} className={inputClass} />
             </Field>
           </div>
 
