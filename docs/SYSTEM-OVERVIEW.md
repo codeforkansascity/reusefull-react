@@ -31,7 +31,7 @@ AWS account **537766411402**, region **us-east-2 (Ohio)**. On Rob's computer the
 | **Main API** | `reusefull-api/` | Lambda `react-reusefull` (Node 22). URL: `https://6z3jejdqlqa47knjz6atr6edqy0kgkzt.lambda-url.us-east-2.on.aws` | **Manual**: see section 5 |
 | **Read-only Lambdas** (5, Node 20) | `Lambdas/GetOrgsNode`, `GetOrgItemsNode`, `GetOrgTypesNode`, `GetCharityTypesNode`, `GetItemTypesNode` | One Lambda each (URLs below) | **Automatic**: one GitHub Action per Lambda |
 | **Old .NET Lambdas** (5) + `FunctionHandler` | `Lambdas/GetOrgs`, `GetOrgItems`, `GetOrgTypes`, `GetCharityTypes`, `GetItemTypes` | Still deployed in AWS, but **the site does not call them** | Manual (Visual Studio). Safe-to-retire candidates; check first |
-| **Database** | No schema or migration files in the repo | RDS MySQL 8.4 instance `reusefull` | Changed by hand. The main API creates a few tables/columns itself on first use (`reusefull-api/src/db.ts`) |
+| **Database** | No migration files. A structure-only copy for local testing is in `docs/local-dev-schema.sql` | RDS MySQL 8.4 instance `reusefull` | Changed by hand. The main API creates a few tables/columns itself on first use (`reusefull-api/src/db.ts`) |
 | **Logins** | n/a | Auth0 tenant `reusefull.us.auth0.com` (a separate dev tenant, `dev-t2ekjt0w2o6oaw2q`, appears only in local config) | Auth0 dashboard |
 | **Charity logos** | n/a | S3 bucket `reusefullimages` | Uploaded by the main API via short-lived signed links |
 | **Email** | `reusefull-api/src/email.ts` | AWS SES (domain `reusefull.org` verified, sends from `hello@reusefull.org`); copies of each email saved to S3 bucket `reusefull-sent-emails` | SES console |
@@ -211,7 +211,7 @@ There is no automation, and no copy in the repo, for these. Changes are made in 
 - **The database is reachable from the internet** (RDS "publicly accessible" is on). The only protection is its security group and password; worth tightening.
 - **The main API connects with a fixed database password** stored in its Lambda settings, while the five read-only Lambdas use temporary AWS-issued login tokens.
 - **The front end hard-codes the five read-only Lambda URLs.** If one of those Lambdas is ever recreated its URL changes and the code must be edited.
-- **No database schema is in version control.** A new environment can't be rebuilt from this repo alone.
+- **There is no real migration history.** `docs/local-dev-schema.sql` is a one-time snapshot of the table structure (no data) for local testing; production changes are still made by hand, so that snapshot can drift.
 - **Dead weight:** the five .NET Lambdas, `FunctionHandler`, `netlify.toml`, and the unclear bucket and CloudFront distribution listed in section 2.
 
 For local setup, see the [README](../README.md). `docs/ARCHITECTURE.md` has older, more detailed diagrams of the data flow and caching.

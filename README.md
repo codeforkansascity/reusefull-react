@@ -96,7 +96,9 @@ cd reusefull-api
 npm install
 ```
 
-Create `reusefull-api/.env`:
+The API needs a MySQL database. There is no database server to install if you have Docker; the table structure is saved in `docs/local-dev-schema.sql` (no real data; see the instructions at the top of that file to start MySQL and load it).
+
+Then copy `reusefull-api/.env.example` to `reusefull-api/.env` (git ignores `.env`) and fill it in. For reference it contains:
 
 ```ini
 PORT=3001
